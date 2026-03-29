@@ -1,0 +1,53 @@
+// Prisma schema for TrustLayer
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptionTier   String  @default("free") // free | premium
+  subscriptionStatus String? // active | cancelled | expired | trial
+
+  // Settings (JSON)
+  settings Json @default("{\"protectionEnabled\": true, \"privacyMode\": true, \"notificationsEnabled\": true, \"alertLevel\": \"suspicious-and-threat\", \"supportedPlatforms\": {\"chatgpt\": true, \"gemini\": true, \"claude\": true, \"copilot\": true}}")
+
+  // Relations
+  scans ScanResult[]
+
+  @@index([email])
+}
+
+model ScanResult {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Content hash (not the actual content!)
+  contentHash String
+
+  // Scan result
+  verdict         String // clean | suspicious | threat
+  score           Float // 0-1
+  reason          String?
+  detectionLayer  String // heuristic | ml | both
+
+  // Platform
+  platform String // chatgpt | gemini | claude | copilot
+
+  // User (optional, for logged-in users)
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([contentHash])
+  @@index([createdAt])
+}

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: trustlayer-postgres
+    environment:
+      POSTGRES_USER: trustlayer
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: trustlayer
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U trustlayer']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: trustlayer-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ML Service (Python/FastAPI)
+  ml-service:
+    build:
+      context: ./packages/ml-service
+      dockerfile: Dockerfile
+    container_name: trustlayer-ml
+    ports:
+      - '8000:8000'
+    environment:
+      - LOG_LEVEL=info
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # API Service (Node.js/Fastify)
+  # Note: Run separately with pnpm dev for hot reload during development
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: ./packages/api/Dockerfile
+  #   container_name: trustlayer-api
+  #   ports:
+  #     - '3000:3000'
+  #   environment:
+  #     - DATABASE_URL=postgresql://trustlayer:password@postgres:5432/trustlayer?schema=public
+  #     - REDIS_URL=redis://redis:6379
+  #     - ML_SERVICE_URL=http://ml-service:8000
+  #     - NODE_ENV=development
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     ml-service:
+  #       condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:

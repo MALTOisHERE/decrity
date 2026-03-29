@@ -1,0 +1,45 @@
+{
+  "name": "trustlayer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Security Firewall for Consumers - Monorepo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MALTOisHERE/TrustLayer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MALTOisHERE/TrustLayer/issues"
+  },
+  "homepage": "https://github.com/MALTOisHERE/TrustLayer#readme",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "extension:dev": "pnpm --filter @trustlayer/extension dev",
+    "api:dev": "pnpm --filter @trustlayer/api dev",
+    "dashboard:dev": "pnpm --filter @trustlayer/dashboard dev",
+    "ml:dev": "cd packages/ml-service && python -m uvicorn app.main:app --reload",
+    "status": "echo 'See STATUS.md for current project status' && cat STATUS.md | head -30",
+    "progress": "echo 'See PROGRESS.md for detailed progress tracking' && cat PROGRESS.md | grep -E '## v[0-9]' -A 5",
+    "roadmap": "echo 'See ROADMAP.md for product roadmap' && cat ROADMAP.md | head -50",
+    "docs": "echo 'Documentation files:' && ls -1 *.md"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.4",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.4"
+}

@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+.venv/
+venv/
+ENV/
+.turbo/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.pytest_cache/
+.coverage
+
+# Database
+*.db
+*.sqlite
+prisma/migrations/dev.db
+
+# Extension builds
+packages/extension/dist/
+packages/extension/.crx
+packages/extension/web-ext-artifacts/
+
+# ML models (large binary files)
+packages/ml-service/models/*.bin
+packages/ml-service/models/*.pt
+packages/ml-service/models/*.pth
+
+# Secrets
+*.pem
+*.key
+secrets/
+
+# TypeScript
+*.tsbuildinfo
