@@ -6,6 +6,7 @@
 import { ScanRequest, ScanResponse, getPlatformFromUrl } from '@decrity/shared'
 import { injectAlertBanner } from './injector'
 import { getPlatformHandler } from './platforms'
+import { startProtectionGapDetection } from './gapDetector'
 
 console.log('Decrity content script loaded on', window.location.href)
 
@@ -36,6 +37,12 @@ function initializeMonitoring() {
   if (handler.getFileUploadSelector) {
     observeFileUploads(handler.getFileUploadSelector())
   }
+
+  // Protection Gap detection (wayfinder ticket 001): notices when this
+  // platform's input selector stops matching and reports it to the
+  // badge/popup. Re-arms itself on in-page SPA navigation. Does not yet
+  // pause scanning itself (the map's destination calls for that; not built).
+  startProtectionGapDetection(currentPlatform, handler.getInputSelector())
 }
 
 /**
