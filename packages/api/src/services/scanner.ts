@@ -3,7 +3,7 @@
  * Orchestrates Layer 1 (heuristics) and Layer 2 (ML) detection
  */
 
-import { ScanResponse, SupportedPlatform, hashContent } from '@trustlayer/shared'
+import { ScanResponse, SupportedPlatform, hashContent } from '@decrity/shared'
 import { callMLService } from './mlClient.js'
 
 export async function scanContent(

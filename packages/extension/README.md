@@ -1,6 +1,6 @@
-# @trustlayer/extension
+# @decrity/extension
 
-TrustLayer Chrome Extension - AI Security Firewall for consumers.
+Decrity Chrome Extension - AI Security Firewall for consumers.
 
 ## Features
 

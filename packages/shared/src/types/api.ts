@@ -1,5 +1,5 @@
 /**
- * API request/response types for TrustLayer
+ * API request/response types for Decrity
  */
 
 import { ScanResponse, ThreatDetail, SupportedPlatform } from './scan'

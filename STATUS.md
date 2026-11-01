@@ -1,4 +1,4 @@
-# TrustLayer Status Dashboard
+# Decrity Status Dashboard
 
 > **Last Updated:** 2026-03-29
 > **Auto-generated from:** Manual update
@@ -202,8 +202,8 @@ Quick overview of project health and progress.
 
 ### Development
 - [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
-- [GitHub Issues](https://github.com/MALTOisHERE/TrustLayer/issues)
-- [Pull Requests](https://github.com/MALTOisHERE/TrustLayer/pulls)
+- [GitHub Issues](https://github.com/MALTOisHERE/Decrity/issues)
+- [Pull Requests](https://github.com/MALTOisHERE/Decrity/pulls)
 
 ### Project Management
 - Current Sprint: v1.0 Week 1

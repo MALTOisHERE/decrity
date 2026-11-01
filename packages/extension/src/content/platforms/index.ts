@@ -3,7 +3,7 @@
  * Each platform has different DOM selectors and behaviors
  */
 
-import { SupportedPlatform } from '@trustlayer/shared'
+import { SupportedPlatform } from '@decrity/shared'
 import { chatgptHandler } from './chatgpt'
 import { geminiHandler } from './gemini'
 import { claudeHandler } from './claude'

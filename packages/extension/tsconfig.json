@@ -7,12 +7,10 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["chrome", "vite/client"],
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@trustlayer/shared": ["../shared/src/index.ts"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],

@@ -1,8 +1,8 @@
-# TrustLayer Product Roadmap
+# Decrity Product Roadmap
 
 > **Last Updated:** 2026-03-29
 
-A high-level overview of TrustLayer's development journey.
+A high-level overview of Decrity's development journey.
 
 ---
 
@@ -335,10 +335,10 @@ A high-level overview of TrustLayer's development journey.
 ## Community & Feedback
 
 ### Feedback Channels
-- 🐛 [GitHub Issues](https://github.com/MALTOisHERE/TrustLayer/issues)
+- 🐛 [GitHub Issues](https://github.com/MALTOisHERE/Decrity/issues)
 - 💬 Discussions (TBD)
-- 📧 Email: feedback@trustlayer.app (TBD)
-- 🐦 Twitter: @trustlayer (TBD)
+- 📧 Email: feedback@decrity.app (TBD)
+- 🐦 Twitter: @decrity (TBD)
 
 ### How to Contribute
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for developer guidelines.

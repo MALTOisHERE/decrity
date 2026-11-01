@@ -1,6 +1,6 @@
-# @trustlayer/dashboard
+# @decrity/dashboard
 
-TrustLayer Web Dashboard - React app for viewing threat history and managing settings.
+Decrity Web Dashboard - React app for viewing threat history and managing settings.
 
 ## Development
 

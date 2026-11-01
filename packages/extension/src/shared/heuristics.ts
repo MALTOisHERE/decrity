@@ -3,7 +3,7 @@
  * Runs entirely client-side, no API calls
  */
 
-import { ScanVerdict, THREAT_THRESHOLDS } from '@trustlayer/shared'
+import { ScanVerdict, THREAT_THRESHOLDS } from '@decrity/shared'
 
 interface HeuristicResult {
   verdict: ScanVerdict

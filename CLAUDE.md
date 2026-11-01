@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**TrustLayer** is a Chrome browser extension that protects consumers from AI-specific threats (prompt injection, fake chatbots, data harvesting). It's a **monorepo** with 5 packages managed by **Turborepo** and **pnpm workspaces**.
+**Decrity** is a Chrome browser extension that protects consumers from AI-specific threats (prompt injection, fake chatbots, data harvesting). It's a **monorepo** with 5 packages managed by **Turborepo** and **pnpm workspaces**.
 
 **Core Product:** Chrome extension (packages/extension) - everything else supports it.
 
@@ -42,7 +42,7 @@ pnpm ml:dev          # ML service (Python)
 
 # Build packages
 pnpm build                                      # All packages
-pnpm --filter @trustlayer/extension build       # Specific package
+pnpm --filter @decrity/extension build       # Specific package
 ```
 
 ### Database Operations
@@ -174,13 +174,13 @@ User input → content_script.js intercepts
 ## Package Dependencies
 
 ```
-@trustlayer/shared (base)
+@decrity/shared (base)
     ↓
-    ├── @trustlayer/extension  (depends on shared)
-    ├── @trustlayer/api        (depends on shared)
-    └── @trustlayer/dashboard  (depends on shared)
+    ├── @decrity/extension  (depends on shared)
+    ├── @decrity/api        (depends on shared)
+    └── @decrity/dashboard  (depends on shared)
 
-@trustlayer/ml-service (Python, independent)
+@decrity/ml-service (Python, independent)
 ```
 
 **Build Order**: Always build `shared` first if making changes that affect other packages.
@@ -192,7 +192,7 @@ User input → content_script.js intercepts
 ### Loading Extension in Chrome
 ```bash
 # Build extension
-pnpm --filter @trustlayer/extension build
+pnpm --filter @decrity/extension build
 
 # Load in Chrome:
 # 1. Go to chrome://extensions/
@@ -346,7 +346,7 @@ git push
 1. Edit `packages/extension/src/shared/heuristics.ts`
 2. Add pattern to `INJECTION_PATTERNS` array
 3. Test locally (no API needed!)
-4. Rebuild extension: `pnpm --filter @trustlayer/extension build`
+4. Rebuild extension: `pnpm --filter @decrity/extension build`
 5. Test on all platforms
 
 ### Adding API Endpoint

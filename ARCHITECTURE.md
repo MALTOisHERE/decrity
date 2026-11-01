@@ -1,4 +1,4 @@
-# TrustLayer Architecture
+# Decrity Architecture
 
 ## High-Level Overview
 
@@ -7,7 +7,7 @@
 │                    User's Browser                        │
 │                                                          │
 │  ┌──────────────┐      ┌──────────────────────────┐    │
-│  │   AI Tools   │      │   TrustLayer Extension   │    │
+│  │   AI Tools   │      │   Decrity Extension   │    │
 │  │  (ChatGPT,   │◄────►│                          │    │
 │  │  Gemini, ...) │      │  ┌────────────────────┐ │    │
 │  └──────────────┘      │  │  content_script.js  │ │    │
@@ -27,7 +27,7 @@
 └────────────────────────────────────┼────────────────────┘
                                      │ HTTPS
                           ┌──────────▼──────────┐
-                          │   TrustLayer API     │
+                          │   Decrity API     │
                           │   (Node.js/Fastify)  │
                           │                      │
                           │  POST /v1/scan       │
@@ -67,7 +67,7 @@
         ├─ ON  → Run Layer 1 heuristics locally
         └─ OFF → Continue to API
                 ↓
-7. POST /v1/scan to TrustLayer API
+7. POST /v1/scan to Decrity API
         {
           "content": "...",
           "source": "chatgpt"
@@ -96,7 +96,7 @@
 
 ```
 ┌─────────────────┐
-│  @trustlayer/   │
+│  @decrity/   │
 │     shared      │  ← Base package (types, constants, utils)
 └────────┬────────┘
          │

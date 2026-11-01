@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TrustLayer",
+  "name": "Decrity",
   "version": "1.0.0",
   "description": "AI Security Firewall - Protection from prompt injection and AI threats",
   "icons": {
@@ -17,7 +17,7 @@
       "48": "icons/icon-48.png",
       "128": "icons/icon-128.png"
     },
-    "default_title": "TrustLayer - AI Security"
+    "default_title": "Decrity - AI Security"
   },
   "background": {
     "service_worker": "src/background/index.ts",
@@ -27,6 +27,7 @@
     {
       "matches": [
         "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
         "https://gemini.google.com/*",
         "https://claude.ai/*",
         "https://copilot.microsoft.com/*"
@@ -43,6 +44,7 @@
   ],
   "host_permissions": [
     "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
     "https://gemini.google.com/*",
     "https://claude.ai/*",
     "https://copilot.microsoft.com/*"
@@ -52,6 +54,7 @@
       "resources": ["src/content/injector.ts"],
       "matches": [
         "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
         "https://gemini.google.com/*",
         "https://claude.ai/*",
         "https://copilot.microsoft.com/*"

@@ -2,7 +2,7 @@
  * Authentication token management
  */
 
-import { STORAGE_KEYS } from '@trustlayer/shared'
+import { STORAGE_KEYS } from '@decrity/shared'
 
 /**
  * Get auth token from storage

@@ -1,5 +1,5 @@
 /**
- * TrustLayer API Server
+ * Decrity API Server
  * Fastify-based REST API
  */
 
@@ -50,7 +50,7 @@ await server.register(userRoute, { prefix: '/v1' })
 // Start server
 try {
   await server.listen({ port: PORT, host: HOST })
-  console.log(`TrustLayer API server running on http://${HOST}:${PORT}`)
+  console.log(`Decrity API server running on http://${HOST}:${PORT}`)
 } catch (err) {
   server.log.error(err)
   process.exit(1)

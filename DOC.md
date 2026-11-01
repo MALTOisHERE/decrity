@@ -1,4 +1,4 @@
-# TrustLayer — AI Security Firewall for Consumers
+# Decrity — AI Security Firewall for Consumers
 > Project documentation v1.0 — Initial architecture & design decisions
 
 ---
@@ -23,7 +23,7 @@
 
 ## 1. Project Overview
 
-**TrustLayer** is a browser extension + web dashboard that acts as an AI interaction firewall for everyday consumers. It silently monitors, scans, and reports on the user's AI tool usage — protecting them from prompt injection attacks, fake AI impersonation, and invisible data harvesting — without requiring any technical knowledge.
+**Decrity** is a browser extension + web dashboard that acts as an AI interaction firewall for everyday consumers. It silently monitors, scans, and reports on the user's AI tool usage — protecting them from prompt injection attacks, fake AI impersonation, and invisible data harvesting — without requiring any technical knowledge.
 
 | Attribute        | Value                                      |
 |------------------|--------------------------------------------|
@@ -61,7 +61,7 @@ When a mainstream user interacts daily with ChatGPT, Gemini, Copilot, or AI-powe
 
 ## 3. Core Concept
 
-TrustLayer sits **between the user and every AI tool they use**, operating silently in the background. It only surfaces when a threat is detected — using plain language, never jargon.
+Decrity sits **between the user and every AI tool they use**, operating silently in the background. It only surfaces when a threat is detected — using plain language, never jargon.
 
 ### Three pillars
 
@@ -122,7 +122,7 @@ The dashboard is not the primary interface. The extension IS the product. The da
 │                    User's browser                    │
 │                                                      │
 │  ┌──────────────┐      ┌──────────────────────────┐ │
-│  │   AI tools   │      │   TrustLayer Extension   │ │
+│  │   AI tools   │      │   Decrity Extension   │ │
 │  │  (ChatGPT,   │◄────►│                          │ │
 │  │  Gemini, ...) │      │  content_script.js       │ │
 │  └──────────────┘      │  ├─ DOM scanner           │ │
@@ -137,7 +137,7 @@ The dashboard is not the primary interface. The extension IS the product. The da
 └────────────────────────────────────┼────────────────┘
                                      │ HTTPS
                           ┌──────────▼──────────┐
-                          │   TrustLayer API     │
+                          │   Decrity API     │
                           │   (Node.js/FastAPI)  │
                           │                      │
                           │  /scan  (POST)        │
@@ -171,7 +171,7 @@ The extension has two execution contexts:
 
 **`background.js`** (service worker) — runs as a persistent background process:
 - Receives messages from `content_script.js`.
-- Calls the TrustLayer API `/scan` endpoint.
+- Calls the Decrity API `/scan` endpoint.
 - Manages a local cache (IndexedDB) of recent scan results to avoid redundant API calls.
 - Manages the extension badge (green shield = safe, red shield = threat detected).
 - Handles auth token storage and refresh.
@@ -267,7 +267,7 @@ Final verdict: `clean | suspicious | threat` with confidence score and plain-lan
 
 v1.0 will inject content scripts and activate protection on:
 
-- `chat.openai.com` (ChatGPT)
+- `chatgpt.com` / `chat.openai.com` (ChatGPT)
 - `gemini.google.com`
 - `claude.ai`
 - `copilot.microsoft.com`
@@ -303,7 +303,7 @@ Design principles for alerts:
 
 ### F4 — Extension popup
 
-The popup (clicking the TrustLayer icon) shows:
+The popup (clicking the Decrity icon) shows:
 - Protection status (on/off toggle)
 - Current session scan count
 - Last threat detected (if any)
@@ -321,7 +321,7 @@ The popup (clicking the TrustLayer icon) shows:
 ### F6 — Privacy mode
 
 A user-toggleable mode where:
-- No content is sent to the TrustLayer API.
+- No content is sent to the Decrity API.
 - Only local rule-based heuristics run (Layer 1).
 - Dashboard history is disabled.
 
@@ -330,7 +330,7 @@ Privacy mode is available on the free tier. It trades accuracy for zero-data-lea
 ### F7 — Onboarding flow
 
 First-run experience:
-1. Welcome screen explaining what TrustLayer does in one sentence.
+1. Welcome screen explaining what Decrity does in one sentence.
 2. Permission request explanation (why we need `webRequest` access — explained in plain English).
 3. Quick 3-step interactive demo of what a prompt injection looks like.
 4. Done — protection is active.
@@ -361,7 +361,7 @@ background.js checks local cache (IndexedDB)
   └─ Cache miss →
         │
         ▼
-   POST /scan to TrustLayer API
+   POST /scan to Decrity API
    { content: "...", source: "chatgpt", userId: "..." }
         │
         ▼
@@ -397,7 +397,7 @@ content_script.js injects alert banner (if threat/suspicious)
 ## 9. Directory Structure
 
 ```
-trustlayer/
+decrity/
 ├── extension/                  # Chrome extension
 │   ├── src/
 │   │   ├── background/
@@ -509,10 +509,11 @@ These are non-negotiable and must be enforced throughout development.
   ],
   "host_permissions": [
     "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
     "https://gemini.google.com/*",
     "https://claude.ai/*",
     "https://copilot.microsoft.com/*",
-    "https://api.trustlayer.app/*"
+    "https://api.decrity.app/*"
   ]
 }
 ```
@@ -562,7 +563,7 @@ No `<all_urls>` permission. No `webRequest` access to arbitrary sites.
 
 Phase 1 — Build audience via Chrome Web Store organic discovery + tech press coverage (the concept is novel enough for Product Hunt / Hacker News).
 
-Phase 2 — B2B2C: license TrustLayer to telecoms, banks, and ISPs who want to offer it as a value-add to their customers under white-label. This is the high-margin path.
+Phase 2 — B2B2C: license Decrity to telecoms, banks, and ISPs who want to offer it as a value-add to their customers under white-label. This is the high-margin path.
 
 ---
 
@@ -581,7 +582,7 @@ Phase 2 — B2B2C: license TrustLayer to telecoms, banks, and ISPs who want to o
 
 ### v1.5 — Backend + Dashboard *(Target: Month 4–6)*
 
-- [ ] TrustLayer API (Fastify + Postgres + Redis)
+- [ ] Decrity API (Fastify + Postgres + Redis)
 - [ ] ML classifier service (distilbert fine-tuned)
 - [ ] Layer 2 ML scanning (triggered by Layer 1 flags)
 - [ ] User accounts and JWT auth
@@ -629,4 +630,4 @@ When working on this codebase with Claude Code, the following context is importa
 
 ---
 
-*Document maintained by the TrustLayer team. Last updated: 2026-03-29.*
+*Document maintained by the Decrity team. Last updated: 2026-03-29.*

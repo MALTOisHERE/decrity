@@ -4,17 +4,17 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: trustlayer-postgres
+    container_name: decrity-postgres
     environment:
-      POSTGRES_USER: trustlayer
+      POSTGRES_USER: decrity
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: trustlayer
+      POSTGRES_DB: decrity
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U trustlayer']
+      test: ['CMD-SHELL', 'pg_isready -U decrity']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,7 +22,7 @@ services:
   # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: trustlayer-redis
+    container_name: decrity-redis
     ports:
       - '6379:6379'
     volumes:
@@ -38,7 +38,7 @@ services:
     build:
       context: ./packages/ml-service
       dockerfile: Dockerfile
-    container_name: trustlayer-ml
+    container_name: decrity-ml
     ports:
       - '8000:8000'
     environment:
@@ -56,11 +56,11 @@ services:
   #   build:
   #     context: .
   #     dockerfile: ./packages/api/Dockerfile
-  #   container_name: trustlayer-api
+  #   container_name: decrity-api
   #   ports:
   #     - '3000:3000'
   #   environment:
-  #     - DATABASE_URL=postgresql://trustlayer:password@postgres:5432/trustlayer?schema=public
+  #     - DATABASE_URL=postgresql://decrity:password@postgres:5432/decrity?schema=public
   #     - REDIS_URL=redis://redis:6379
   #     - ML_SERVICE_URL=http://ml-service:8000
   #     - NODE_ENV=development

@@ -19,4 +19,4 @@ These are **not installed** in this repo. The Crapper/Dryer/Mutator sections of 
 
 ## Scope
 
-Installed here as a **project-scoped** skill (`.claude/skills/ub-mode/`), vendored from [unclebob/ub-mode](https://github.com/unclebob/ub-mode), so it's committed and shared with anyone who clones TrustLayer. Invoke with `/ub-mode`.
+Installed here as a **project-scoped** skill (`.claude/skills/ub-mode/`), vendored from [unclebob/ub-mode](https://github.com/unclebob/ub-mode), so it's committed and shared with anyone who clones Decrity. Invoke with `/ub-mode`.

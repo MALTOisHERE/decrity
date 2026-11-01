@@ -1,6 +1,6 @@
-# @trustlayer/api
+# @decrity/api
 
-TrustLayer Backend API - Node.js/Fastify REST API
+Decrity Backend API - Node.js/Fastify REST API
 
 ## Setup
 

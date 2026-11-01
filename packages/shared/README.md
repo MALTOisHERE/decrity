@@ -1,6 +1,6 @@
-# @trustlayer/shared
+# @decrity/shared
 
-Shared TypeScript types, constants, and utilities for TrustLayer packages.
+Shared TypeScript types, constants, and utilities for Decrity packages.
 
 ## Usage
 
@@ -13,7 +13,7 @@ import {
   API_ENDPOINTS,
   hashContent,
   isValidPlatform
-} from '@trustlayer/shared'
+} from '@decrity/shared'
 ```
 
 ## Contents

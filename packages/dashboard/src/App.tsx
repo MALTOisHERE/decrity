@@ -1,5 +1,5 @@
 /**
- * TrustLayer Dashboard App
+ * Decrity Dashboard App
  */
 
 import { Routes, Route } from 'react-router-dom'
@@ -13,7 +13,7 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🛡️</span>
-            <h1 className="text-xl font-semibold text-gray-900">TrustLayer</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Decrity</h1>
           </div>
         </div>
       </header>

@@ -3,9 +3,9 @@
  * Injects non-blocking warning banners into AI platform pages
  */
 
-import { ScanResponse } from '@trustlayer/shared'
+import { ScanResponse } from '@decrity/shared'
 
-const BANNER_ID = 'trustlayer-alert-banner'
+const BANNER_ID = 'decrity-alert-banner'
 
 /**
  * Inject alert banner into the page
@@ -79,7 +79,7 @@ function createBannerElement(result: ScanResponse): HTMLElement {
         <div style="font-weight: 600; margin-bottom: 4px;">${title}</div>
         <div style="margin-bottom: 12px;">${result.reason}</div>
         <div style="display: flex; gap: 8px;">
-          <button id="trustlayer-details-btn" style="
+          <button id="decrity-details-btn" style="
             background: white;
             border: 1px solid ${borderColor};
             color: ${textColor};
@@ -89,7 +89,7 @@ function createBannerElement(result: ScanResponse): HTMLElement {
             font-weight: 500;
             cursor: pointer;
           ">See details</button>
-          <button id="trustlayer-dismiss-btn" style="
+          <button id="decrity-dismiss-btn" style="
             background: transparent;
             border: none;
             color: ${textColor};
@@ -104,8 +104,8 @@ function createBannerElement(result: ScanResponse): HTMLElement {
   `
 
   // Add event listeners
-  const detailsBtn = banner.querySelector('#trustlayer-details-btn')
-  const dismissBtn = banner.querySelector('#trustlayer-dismiss-btn')
+  const detailsBtn = banner.querySelector('#decrity-details-btn')
+  const dismissBtn = banner.querySelector('#decrity-dismiss-btn')
 
   detailsBtn?.addEventListener('click', () => {
     showDetailsModal(result)

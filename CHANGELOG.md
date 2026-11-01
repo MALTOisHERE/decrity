@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to TrustLayer will be documented in this file.
+All notable changes to Decrity will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -30,13 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Packages Created
 
-**@trustlayer/shared**
+**@decrity/shared**
 - Type definitions for scan, user, and API contracts
 - Platform constants (ChatGPT, Gemini, Claude, Copilot)
 - Utility functions (hashing, validation)
 - Shared constants (endpoints, thresholds, storage keys)
 
-**@trustlayer/extension**
+**@decrity/extension**
 - Chrome Extension Manifest V3 scaffold
 - Background service worker with scan orchestration
 - Content scripts with platform-specific handlers
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - IndexedDB caching for scan results
 - Vite + CRXJS build pipeline
 
-**@trustlayer/api**
+**@decrity/api**
 - Fastify REST API server
 - Route structure: `/v1/scan`, `/v1/report`, `/v1/user`
 - Prisma ORM with PostgreSQL schema (User, ScanResult)
@@ -54,13 +54,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JWT authentication scaffolding
 - Rate limiting and CORS configuration
 
-**@trustlayer/ml-service**
+**@decrity/ml-service**
 - FastAPI server for ML classification
 - Layer 1 heuristic detection (regex patterns)
 - Layer 2 ML classifier placeholder
 - Dockerfile for containerization
 
-**@trustlayer/dashboard**
+**@decrity/dashboard**
 - React + Vite web application
 - React Router for navigation
 - TanStack Query integration
@@ -221,8 +221,8 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to contribute to this project.
 
 ## Links
 
-- **Repository:** https://github.com/MALTOisHERE/TrustLayer
-- **Issues:** https://github.com/MALTOisHERE/TrustLayer/issues
+- **Repository:** https://github.com/MALTOisHERE/Decrity
+- **Issues:** https://github.com/MALTOisHERE/Decrity/issues
 - **Roadmap:** [ROADMAP.md](./ROADMAP.md)
 - **Progress:** [PROGRESS.md](./PROGRESS.md)
 
@@ -238,5 +238,5 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to contribute to this project.
 
 ---
 
-[Unreleased]: https://github.com/MALTOisHERE/TrustLayer/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/MALTOisHERE/TrustLayer/releases/tag/v0.1.0
+[Unreleased]: https://github.com/MALTOisHERE/Decrity/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/MALTOisHERE/Decrity/releases/tag/v0.1.0

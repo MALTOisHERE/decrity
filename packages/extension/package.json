@@ -1,8 +1,8 @@
 {
-  "name": "@trustlayer/extension",
+  "name": "@decrity/extension",
   "version": "1.0.0",
   "private": true,
-  "description": "TrustLayer Chrome Extension - AI Security Firewall",
+  "description": "Decrity Chrome Extension - AI Security Firewall",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@trustlayer/shared": "workspace:*",
+    "@decrity/shared": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "zustand": "^4.5.0"

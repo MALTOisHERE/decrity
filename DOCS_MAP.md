@@ -1,6 +1,6 @@
-# TrustLayer Documentation Map
+# Decrity Documentation Map
 
-> Your guide to navigating TrustLayer's documentation
+> Your guide to navigating Decrity's documentation
 
 ---
 
@@ -313,6 +313,6 @@
 
 ---
 
-**This documentation map helps you navigate all TrustLayer docs efficiently.**
+**This documentation map helps you navigate all Decrity docs efficiently.**
 
 **Last updated:** 2026-03-29

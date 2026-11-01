@@ -1,14 +1,41 @@
 /**
- * TrustLayer Background Service Worker
+ * Decrity Background Service Worker
  * Handles scan requests, API communication, caching, and badge updates
  */
 
-import { ScanRequest, ScanResponse, STORAGE_KEYS, BADGE_COLORS, BADGE_TEXT } from '@trustlayer/shared'
+import {
+  ScanRequest,
+  ScanResponse,
+  STORAGE_KEYS,
+  BADGE_COLORS,
+  BADGE_TEXT,
+  SupportedPlatform,
+} from '@decrity/shared'
 import { scanContent } from './scanner'
 import { getCachedScan, cacheScanResult } from './cache'
-import { getAuthToken } from './auth'
 
-console.log('TrustLayer background service worker initialized')
+console.log('Decrity background service worker initialized')
+
+/**
+ * Per-platform Protection Gap state, set by the platform detector (ticket 001,
+ * not yet built) via SET_PROTECTION_GAP_STATE. Backed by chrome.storage.session
+ * rather than an in-memory variable: MV3 service workers are torn down after
+ * ~30s idle, which would silently wipe a plain variable between a detector
+ * event and the next popup open. Session storage survives worker restarts but
+ * still clears on browser close, so a fresh detector pass still starts clean.
+ */
+type GapStateMap = Partial<Record<SupportedPlatform, boolean>>
+
+async function getGapState(): Promise<GapStateMap> {
+  const result = await chrome.storage.session.get(STORAGE_KEYS.PROTECTION_GAP_STATE)
+  return result[STORAGE_KEYS.PROTECTION_GAP_STATE] ?? {}
+}
+
+async function setGapState(platform: SupportedPlatform, inGap: boolean): Promise<void> {
+  const state = await getGapState()
+  state[platform] = inGap
+  await chrome.storage.session.set({ [STORAGE_KEYS.PROTECTION_GAP_STATE]: state })
+}
 
 /**
  * Message handler for content scripts
@@ -36,6 +63,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .catch(error => sendResponse({ error: error.message }))
     return true
   }
+
+  if (message.type === 'GET_PROTECTION_GAP_STATE') {
+    const { platform } = message.payload as { platform: SupportedPlatform | null }
+    if (!platform) {
+      sendResponse({ inGap: false })
+      return false
+    }
+    getGapState()
+      .then(state => sendResponse({ inGap: state[platform] ?? false }))
+      .catch(error => sendResponse({ error: error.message }))
+    return true
+  }
+
+  if (message.type === 'SET_PROTECTION_GAP_STATE') {
+    const { platform, inGap } = message.payload as { platform: SupportedPlatform; inGap: boolean }
+    setGapState(platform, inGap)
+      .then(() => {
+        updateGapBadge(inGap, sender.tab?.id)
+        sendResponse({ success: true })
+      })
+      .catch(error => sendResponse({ error: error.message }))
+    return true
+  }
+
+  return false
 })
 
 /**
@@ -87,6 +139,25 @@ function updateBadge(verdict: 'clean' | 'suspicious' | 'threat', tabId?: number)
 }
 
 /**
+ * Show or clear the GAP badge state for a tab
+ */
+function updateGapBadge(inGap: boolean, tabId?: number) {
+  if (inGap) {
+    if (tabId) {
+      chrome.action.setBadgeBackgroundColor({ color: BADGE_COLORS.GAP, tabId })
+      chrome.action.setBadgeText({ text: BADGE_TEXT.GAP, tabId })
+    } else {
+      chrome.action.setBadgeBackgroundColor({ color: BADGE_COLORS.GAP })
+      chrome.action.setBadgeText({ text: BADGE_TEXT.GAP })
+    }
+  } else if (tabId) {
+    chrome.action.setBadgeText({ text: '', tabId })
+  } else {
+    chrome.action.setBadgeText({ text: '' })
+  }
+}
+
+/**
  * Get user settings from storage
  */
 async function getSettings() {
@@ -124,7 +195,7 @@ function getDefaultSettings() {
  */
 chrome.runtime.onInstalled.addListener(details => {
   if (details.reason === 'install') {
-    console.log('TrustLayer installed')
+    console.log('Decrity installed')
     // Initialize default settings
     chrome.storage.sync.set({
       [STORAGE_KEYS.SETTINGS]: getDefaultSettings(),
@@ -134,7 +205,7 @@ chrome.runtime.onInstalled.addListener(details => {
     // Open onboarding page
     // chrome.tabs.create({ url: 'onboarding.html' })
   } else if (details.reason === 'update') {
-    console.log('TrustLayer updated to version', chrome.runtime.getManifest().version)
+    console.log('Decrity updated to version', chrome.runtime.getManifest().version)
   }
 })
 

@@ -5,7 +5,7 @@
  */
 
 import { FastifyInstance } from 'fastify'
-import { UserAPI } from '@trustlayer/shared'
+import { UserAPI } from '@decrity/shared'
 
 export async function userRoute(server: FastifyInstance) {
   // GET /v1/user

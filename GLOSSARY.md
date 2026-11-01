@@ -1,11 +1,11 @@
-# TrustLayer
+# Decrity
 
-TrustLayer is a Chrome extension that protects consumers from AI-specific threats (prompt injection, fake chatbots, data harvesting) when they use AI chat platforms.
+Decrity is a Chrome extension that protects consumers from AI-specific threats (prompt injection, fake chatbots, data harvesting) when they use AI chat platforms.
 
 ## Language
 
 **Platform**:
-One of the supported AI chat sites (ChatGPT, Gemini, Claude, Copilot) that TrustLayer watches. Identified by a `SupportedPlatform` id.
+One of the supported AI chat sites (ChatGPT, Gemini, Claude, Copilot) that Decrity watches. Identified by a `SupportedPlatform` id.
 _Avoid_: Site, target (when referring to a supported platform specifically)
 
 **Selector**:
@@ -25,9 +25,9 @@ The two scanning stages: Layer 1 is local heuristic pattern matching (always ava
 _Avoid_: Local scan / remote scan, heuristic layer / ML layer
 
 **Protection Gap**:
-The state where a platform's selector(s) match nothing, confirmed after the extension's observer-driven stability check, so TrustLayer cannot watch input on that platform until a fix ships. Distinct from the user turning protection off.
+The state where a platform's selector(s) match nothing, confirmed after the extension's observer-driven stability check, so Decrity cannot watch input on that platform until a fix ships. Distinct from the user turning protection off.
 _Avoid_: Broken selector, degraded mode, silent disablement, selector failure
 
 **Gap Report**:
-The minimal, content-free metadata (platform id, timestamp, extension version — never selector text or page content) TrustLayer sends to the server when a Protection Gap starts, so the team learns about it without a user filing a bug.
+The minimal, content-free metadata (platform id, timestamp, extension version — never selector text or page content) Decrity sends to the server when a Protection Gap starts, so the team learns about it without a user filing a bug.
 _Avoid_: Breakage telemetry, health ping, platform health check

@@ -1,5 +1,5 @@
 /**
- * TrustLayer Shared Package
+ * Decrity Shared Package
  * Shared types, constants, and utilities across all packages
  */
 

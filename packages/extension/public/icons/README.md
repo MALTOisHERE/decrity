@@ -14,4 +14,4 @@ For development, you can use placeholder icons or generate them using:
 - Online icon generators
 - AI image generation tools
 
-Recommended colors: Blue (#0ea5e9) for brand color
+Recommended colors: Teal (#2f6f78) for brand color

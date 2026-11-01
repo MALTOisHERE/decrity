@@ -1,5 +1,5 @@
 /**
- * Scan-related types for TrustLayer
+ * Scan-related types for Decrity
  */
 
 export type ScanVerdict = 'clean' | 'suspicious' | 'threat'

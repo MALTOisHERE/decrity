@@ -24,7 +24,7 @@ Have you considered any alternative solutions or features?
 
 ## Package/Component
 
-Which part of TrustLayer would this affect?
+Which part of Decrity would this affect?
 - [ ] Extension
 - [ ] API
 - [ ] ML Service

@@ -1,5 +1,5 @@
 /**
- * User-related types for TrustLayer
+ * User-related types for Decrity
  */
 
 export type SubscriptionTier = 'free' | 'premium'

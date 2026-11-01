@@ -1,16 +1,16 @@
 {
-  "name": "trustlayer",
+  "name": "decrity",
   "version": "1.0.0",
   "private": true,
   "description": "AI Security Firewall for Consumers - Monorepo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MALTOisHERE/TrustLayer.git"
+    "url": "https://github.com/MALTOisHERE/Decrity.git"
   },
   "bugs": {
-    "url": "https://github.com/MALTOisHERE/TrustLayer/issues"
+    "url": "https://github.com/MALTOisHERE/Decrity/issues"
   },
-  "homepage": "https://github.com/MALTOisHERE/TrustLayer#readme",
+  "homepage": "https://github.com/MALTOisHERE/Decrity#readme",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -19,9 +19,9 @@
     "format": "prettier --write \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"packages/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
-    "extension:dev": "pnpm --filter @trustlayer/extension dev",
-    "api:dev": "pnpm --filter @trustlayer/api dev",
-    "dashboard:dev": "pnpm --filter @trustlayer/dashboard dev",
+    "extension:dev": "pnpm --filter @decrity/extension dev",
+    "api:dev": "pnpm --filter @decrity/api dev",
+    "dashboard:dev": "pnpm --filter @decrity/dashboard dev",
     "ml:dev": "cd packages/ml-service && python -m uvicorn app.main:app --reload",
     "status": "echo 'See STATUS.md for current project status' && cat STATUS.md | head -30",
     "progress": "echo 'See PROGRESS.md for detailed progress tracking' && cat PROGRESS.md | grep -E '## v[0-9]' -A 5",

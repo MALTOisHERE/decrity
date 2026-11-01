@@ -1,15 +1,15 @@
-# TrustLayer
+# Decrity
 
 > AI Security Firewall for Consumers
 
-[![GitHub](https://img.shields.io/badge/GitHub-TrustLayer-blue?logo=github)](https://github.com/MALTOisHERE/TrustLayer)
+[![GitHub](https://img.shields.io/badge/GitHub-Decrity-blue?logo=github)](https://github.com/MALTOisHERE/Decrity)
 [![Version](https://img.shields.io/badge/version-0.1.0-green)](./PROGRESS.md)
 [![Status](https://img.shields.io/badge/status-in%20development-yellow)](./ROADMAP.md)
 [![License](https://img.shields.io/badge/license-proprietary-red)](./LICENSE)
 
-TrustLayer is a browser extension + web dashboard that acts as an AI interaction firewall for everyday consumers. It silently monitors, scans, and reports on AI tool usage — protecting users from prompt injection attacks, fake AI impersonation, and invisible data harvesting.
+Decrity is a browser extension + web dashboard that acts as an AI interaction firewall for everyday consumers. It silently monitors, scans, and reports on AI tool usage — protecting users from prompt injection attacks, fake AI impersonation, and invisible data harvesting.
 
-**Repository:** https://github.com/MALTOisHERE/TrustLayer
+**Repository:** https://github.com/MALTOisHERE/Decrity
 
 ## Architecture
 
@@ -95,7 +95,7 @@ docker-compose down -v
 pnpm build
 
 # Build specific package
-pnpm --filter @trustlayer/extension build
+pnpm --filter @decrity/extension build
 ```
 
 ## Documentation
@@ -164,9 +164,9 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 
 ### Quick Links
 
-- [Report a bug](https://github.com/MALTOisHERE/TrustLayer/issues/new?labels=bug)
-- [Request a feature](https://github.com/MALTOisHERE/TrustLayer/issues/new?labels=enhancement)
-- [View open issues](https://github.com/MALTOisHERE/TrustLayer/issues)
+- [Report a bug](https://github.com/MALTOisHERE/Decrity/issues/new?labels=bug)
+- [Request a feature](https://github.com/MALTOisHERE/Decrity/issues/new?labels=enhancement)
+- [View open issues](https://github.com/MALTOisHERE/Decrity/issues)
 
 ## License
 

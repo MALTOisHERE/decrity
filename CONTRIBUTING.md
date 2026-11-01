@@ -1,11 +1,11 @@
-# Contributing to TrustLayer
+# Contributing to Decrity
 
 ## Development Setup
 
 1. **Clone and install**
    ```bash
-   git clone https://github.com/MALTOisHERE/TrustLayer.git
-   cd TrustLayer
+   git clone https://github.com/MALTOisHERE/Decrity.git
+   cd Decrity
    pnpm install
    ```
 
@@ -55,7 +55,7 @@
 ### TypeScript/JavaScript
 
 - Use TypeScript strict mode
-- Import types from `@trustlayer/shared`
+- Import types from `@decrity/shared`
 - Run `pnpm lint` before committing
 - Run `pnpm format` to auto-fix formatting
 
@@ -90,7 +90,7 @@ Follow conventional commits:
 pnpm test
 
 # Test specific package
-pnpm --filter @trustlayer/extension test
+pnpm --filter @decrity/extension test
 ```
 
 ## Building
@@ -100,7 +100,7 @@ pnpm --filter @trustlayer/extension test
 pnpm build
 
 # Build specific package
-pnpm --filter @trustlayer/extension build
+pnpm --filter @decrity/extension build
 ```
 
 ## Important Notes

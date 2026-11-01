@@ -1,11 +1,11 @@
 /**
- * TrustLayer Extension Popup
+ * Decrity Extension Popup
  */
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import './styles.css'
-import { STORAGE_KEYS } from '@trustlayer/shared'
+import { STORAGE_KEYS, getPlatformFromUrl } from '@decrity/shared'
 
 interface Settings {
   protectionEnabled: boolean
@@ -20,10 +20,27 @@ function App() {
     notificationsEnabled: true,
   })
   const [loading, setLoading] = useState(true)
+  const [inProtectionGap, setInProtectionGap] = useState(false)
 
   useEffect(() => {
     loadSettings()
+    loadProtectionGapState()
   }, [])
+
+  const loadProtectionGapState = async () => {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+      const platform = tab?.url ? getPlatformFromUrl(tab.url) : null
+
+      const response = await chrome.runtime.sendMessage({
+        type: 'GET_PROTECTION_GAP_STATE',
+        payload: { platform },
+      })
+      setInProtectionGap(Boolean(response?.inGap))
+    } catch (error) {
+      console.error('Failed to load protection gap state:', error)
+    }
+  }
 
   const loadSettings = async () => {
     try {
@@ -63,15 +80,42 @@ function App() {
     <div className="popup">
       <header className="header">
         <div className="logo">
-          <div className="shield-icon">🛡️</div>
-          <h1>TrustLayer</h1>
+          <div className="shield-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
+              <path d="M12 2.5l7.5 3v6c0 5-3.2 8.3-7.5 10-4.3-1.7-7.5-5-7.5-10v-6l7.5-3z" />
+            </svg>
+          </div>
+          <h1>Decrity</h1>
         </div>
         <div className="status">
-          <span className={`status-badge ${settings.protectionEnabled ? 'active' : 'inactive'}`}>
-            {settings.protectionEnabled ? 'Protected' : 'Disabled'}
-          </span>
+          {inProtectionGap ? (
+            <span className="status-badge gap">
+              <span className="gap-mark">~</span>
+              Catching up
+            </span>
+          ) : (
+            <span className={`status-badge ${settings.protectionEnabled ? 'active' : 'inactive'}`}>
+              {settings.protectionEnabled ? 'Protected' : 'Disabled'}
+            </span>
+          )}
         </div>
       </header>
+
+      {inProtectionGap && (
+        <div className="gap-banner">
+          <span className="mark">~</span>
+          <p>
+            This site changed in a way we haven&rsquo;t caught up with yet. We&rsquo;re on it. Everything
+            else stays protected.
+            <button
+              className="link"
+              onClick={() => chrome.tabs.create({ url: 'https://decrity.app/help/protection-gap' })}
+            >
+              What happened?
+            </button>
+          </p>
+        </div>
+      )}
 
       <main className="content">
         <section className="settings">
@@ -123,7 +167,11 @@ function App() {
 
         <section className="info">
           <div className="info-card">
-            <div className="info-icon">✓</div>
+            <div className="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12l5 5L20 6" />
+              </svg>
+            </div>
             <div className="info-text">
               <strong>Active Protection</strong>
               <p>Monitoring ChatGPT, Gemini, Claude, and Copilot</p>
@@ -133,7 +181,7 @@ function App() {
       </main>
 
       <footer className="footer">
-        <button className="link-button" onClick={() => chrome.tabs.create({ url: 'https://trustlayer.app' })}>
+        <button className="link-button" onClick={() => chrome.tabs.create({ url: 'https://decrity.app' })}>
           View Dashboard
         </button>
       </footer>

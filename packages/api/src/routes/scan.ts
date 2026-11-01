@@ -4,7 +4,7 @@
  */
 
 import { FastifyInstance } from 'fastify'
-import { ScanAPI } from '@trustlayer/shared'
+import { ScanAPI } from '@decrity/shared'
 import { scanContent } from '../services/scanner.js'
 import { persistScanResult } from '../services/database.js'
 

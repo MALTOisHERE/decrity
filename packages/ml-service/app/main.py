@@ -1,5 +1,5 @@
 """
-TrustLayer ML Service
+Decrity ML Service
 FastAPI service for prompt injection classification
 """
 
@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="TrustLayer ML Service",
+    title="Decrity ML Service",
     description="Prompt injection detection using ML",
     version="1.0.0"
 )

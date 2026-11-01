@@ -11,8 +11,8 @@ export const PLATFORMS = {
   chatgpt: {
     id: 'chatgpt' as SupportedPlatform,
     name: 'ChatGPT',
-    url: 'https://chat.openai.com',
-    urlPattern: /^https:\/\/chat\.openai\.com/,
+    url: 'https://chatgpt.com',
+    urlPattern: /^https:\/\/(chat\.openai\.com|chatgpt\.com)/,
     icon: '🤖',
   },
   gemini: {

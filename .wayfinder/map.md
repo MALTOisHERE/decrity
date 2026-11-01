@@ -9,8 +9,8 @@ created: 2026-10-28
 
 A design spec, ready to hand to the extension team, defining:
 
-1. **Detection** — how TrustLayer notices a platform (ChatGPT, Gemini, Claude, or Copilot) has entered a **Protection Gap**: an observer-driven stability check against that platform's selector(s) in `packages/extension/src/content/platforms/*.ts`, re-arming on in-page SPA navigation (not just once at page load).
-2. **User experience** — while a platform is in a Protection Gap, TrustLayer pauses scanning on it, shows a new, distinct `GAP` badge state (not the existing unused `DISABLED` state), and the popup shows a plain-language note.
+1. **Detection** — how Decrity notices a platform (ChatGPT, Gemini, Claude, or Copilot) has entered a **Protection Gap**: an observer-driven stability check against that platform's selector(s) in `packages/extension/src/content/platforms/*.ts`, re-arming on in-page SPA navigation (not just once at page load).
+2. **User experience** — while a platform is in a Protection Gap, Decrity pauses scanning on it, shows a new, distinct `GAP` badge state (not the existing unused `DISABLED` state), and the popup shows a plain-language note.
 3. **Team notification** — a content-free **Gap Report** (platform id, timestamp, extension version only) goes to a new API endpoint, deduped client-side to at most once per platform per day.
 
 The fix for a real breakage still ships as a normal code change + Chrome Web Store release — this spec is about noticing and surfacing the break fast, not patching it without a release. See GLOSSARY.md for the Protection Gap / Gap Report terms.
@@ -27,7 +27,7 @@ The fix for a real breakage still ships as a normal code change + Chrome Web Sto
 
 - [001: Calibrate Protection Gap detection timing against the real platforms](tickets/001-calibrate-gap-detection-timing.md): debounce 800ms, max-wait 8s, re-arm on SPA navigation kept (defensive, not directly observed); calibrated from real DevTools probes on ChatGPT/Gemini/Claude (Copilot unmeasured, no test account).
 - [002: Design the GAP badge state and popup copy](tickets/002-gap-badge-and-popup-design.md): inline-banner layout (Variant A); teal `#2F6F78` badge/pill with a `~` mark, settings stay visible underneath; rejected a full-takeover variant as inconsistent with "silent disablement."
-- [003: Define the Gap Report payload and endpoint contract](tickets/003-gap-report-contract.md): `POST /v1/gap-report` (matches the `Gap Report` glossary term; an earlier draft name, `/v1/platform-health`, was rejected for clashing with GLOSSARY.md's own avoid-list); payload is `{ source, timestamp, extensionVersion }` only; no auth required (anonymous installs must still be able to report); client dedupes via one `chrome.storage.local` key (`trustlayer_gap_reports`, a per-platform object map) to at most once per platform per 24h.
+- [003: Define the Gap Report payload and endpoint contract](tickets/003-gap-report-contract.md): `POST /v1/gap-report` (matches the `Gap Report` glossary term; an earlier draft name, `/v1/platform-health`, was rejected for clashing with GLOSSARY.md's own avoid-list); payload is `{ source, timestamp, extensionVersion }` only; no auth required (anonymous installs must still be able to report); client dedupes via one `chrome.storage.local` key (`decrity_gap_reports`, a per-platform object map) to at most once per platform per 24h.
 
 - [004: Decide whether the privacy policy must disclose Gap Reports](tickets/004-privacy-policy-disclosure.md): yes, with its own named data-table row (not a vague "diagnostic data" sentence) — 30-day retention, shorter than the 90 days used for content hash/verdict/platform since a Gap Report has no per-user value once the team's been notified. Exact DOC.md table row and privacy-policy copy are written in the ticket; editing DOC.md and writing the privacy policy file itself are still follow-on work, not done here.
 

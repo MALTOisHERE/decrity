@@ -1,1 +1,1 @@
-"""TrustLayer ML Service"""
+"""Decrity ML Service"""

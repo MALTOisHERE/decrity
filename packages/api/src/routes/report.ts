@@ -4,7 +4,7 @@
  */
 
 import { FastifyInstance } from 'fastify'
-import { ReportAPI } from '@trustlayer/shared'
+import { ReportAPI } from '@decrity/shared'
 import { getScanHistory } from '../services/database.js'
 
 export async function reportRoute(server: FastifyInstance) {

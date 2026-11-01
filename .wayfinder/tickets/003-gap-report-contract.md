@@ -42,7 +42,7 @@ No content, no selector text, no page data — matches CLAUDE.md's no-content-st
 **Client-side dedupe** (`packages/extension`, following `STORAGE_KEYS` convention in `packages/shared/src/constants/index.ts`):
 
 - Storage area: `chrome.storage.local` (matches where `AUTH_TOKEN`/`USER_ID`/`SETTINGS` already live).
-- One new key, `GAP_REPORTS: 'trustlayer_gap_reports'`, holding a single object map rather than one key per platform — mirrors how `SETTINGS` already stores one JSON blob under one key:
+- One new key, `GAP_REPORTS: 'decrity_gap_reports'`, holding a single object map rather than one key per platform — mirrors how `SETTINGS` already stores one JSON blob under one key:
   ```typescript
   type GapReportLog = Partial<Record<SupportedPlatform, number>> // platform -> last-reported-at (ms epoch)
   ```

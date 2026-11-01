@@ -1,20 +1,20 @@
 /**
- * TrustLayer Content Script
+ * Decrity Content Script
  * Runs on AI platform pages, monitors input, and shows alerts
  */
 
-import { ScanRequest, ScanResponse, getPlatformFromUrl } from '@trustlayer/shared'
+import { ScanRequest, ScanResponse, getPlatformFromUrl } from '@decrity/shared'
 import { injectAlertBanner } from './injector'
 import { getPlatformHandler } from './platforms'
 
-console.log('TrustLayer content script loaded on', window.location.href)
+console.log('Decrity content script loaded on', window.location.href)
 
 const currentPlatform = getPlatformFromUrl(window.location.href)
 
 if (!currentPlatform) {
-  console.warn('TrustLayer: Unknown platform', window.location.href)
+  console.warn('Decrity: Unknown platform', window.location.href)
 } else {
-  console.log('TrustLayer: Monitoring', currentPlatform)
+  console.log('Decrity: Monitoring', currentPlatform)
   initializeMonitoring()
 }
 
@@ -46,8 +46,8 @@ function observeInputChanges(selector: string) {
     const inputElement = document.querySelector(selector) as HTMLTextAreaElement | HTMLInputElement
     if (inputElement) {
       // Add event listener if not already added
-      if (!inputElement.dataset.trustlayerMonitored) {
-        inputElement.dataset.trustlayerMonitored = 'true'
+      if (!inputElement.dataset.decrityMonitored) {
+        inputElement.dataset.decrityMonitored = 'true'
 
         // Monitor before submission
         const form = inputElement.closest('form')
@@ -123,7 +123,7 @@ async function handleInputSubmission(content: string, event?: Event) {
  */
 async function scanAndAlert(
   content: string,
-  blocking: boolean
+  _blocking: boolean
 ): Promise<ScanResponse | null> {
   if (!currentPlatform) return null
 

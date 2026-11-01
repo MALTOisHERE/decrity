@@ -3,9 +3,9 @@
  * Stores results by content hash to avoid redundant scans
  */
 
-import { ScanResponse, CachedScanResult, CACHE_CONFIG, hashContent } from '@trustlayer/shared'
+import { ScanResponse, CachedScanResult, CACHE_CONFIG, hashContent } from '@decrity/shared'
 
-const DB_NAME = 'TrustLayerCache'
+const DB_NAME = 'DecrityCache'
 const DB_VERSION = 1
 const STORE_NAME = 'scans'
 

@@ -26,11 +26,11 @@ Closes #(issue number)
 
 ## Packages Affected
 
-- [ ] `@trustlayer/shared`
-- [ ] `@trustlayer/extension`
-- [ ] `@trustlayer/api`
-- [ ] `@trustlayer/ml-service` (Python)
-- [ ] `@trustlayer/dashboard`
+- [ ] `@decrity/shared`
+- [ ] `@decrity/extension`
+- [ ] `@decrity/api`
+- [ ] `@decrity/ml-service` (Python)
+- [ ] `@decrity/dashboard`
 - [ ] Infrastructure (Docker, configs)
 
 ## Testing

@@ -1,5 +1,5 @@
 /**
- * Shared constants for TrustLayer
+ * Shared constants for Decrity
  */
 
 /**
@@ -41,6 +41,7 @@ export const BADGE_COLORS = {
   SUSPICIOUS: '#f59e0b', // amber
   THREAT: '#ef4444', // red
   DISABLED: '#6b7280', // gray
+  GAP: '#2F6F78', // deep teal — tool-health signal, never a content-danger or disabled color
 } as const
 
 /**
@@ -51,17 +52,19 @@ export const BADGE_TEXT = {
   SUSPICIOUS: '!',
   THREAT: '⚠',
   DISABLED: '○',
+  GAP: ' ', // deliberately blank: a bare teal dot on the toolbar, not a character someone has to decode
 } as const
 
 /**
  * Storage keys for chrome.storage
  */
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'trustlayer_auth_token',
-  USER_ID: 'trustlayer_user_id',
-  SETTINGS: 'trustlayer_settings',
-  PRIVACY_MODE: 'trustlayer_privacy_mode',
-  LAST_SYNC: 'trustlayer_last_sync',
+  AUTH_TOKEN: 'decrity_auth_token',
+  USER_ID: 'decrity_user_id',
+  SETTINGS: 'decrity_settings',
+  PRIVACY_MODE: 'decrity_privacy_mode',
+  LAST_SYNC: 'decrity_last_sync',
+  PROTECTION_GAP_STATE: 'decrity_gap_state',
 } as const
 
 /**

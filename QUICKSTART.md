@@ -1,6 +1,6 @@
-# TrustLayer Quick Start Guide
+# Decrity Quick Start Guide
 
-Get TrustLayer running locally in 5 minutes.
+Get Decrity running locally in 5 minutes.
 
 ## Prerequisites Check
 
@@ -21,8 +21,8 @@ npm install -g pnpm
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/MALTOisHERE/TrustLayer.git
-cd TrustLayer
+git clone https://github.com/MALTOisHERE/Decrity.git
+cd Decrity
 ```
 
 ### 2. Install Dependencies
@@ -82,7 +82,7 @@ This starts:
 ### Build the Extension
 
 ```bash
-pnpm --filter @trustlayer/extension build
+pnpm --filter @decrity/extension build
 ```
 
 ### Load in Chrome
@@ -90,15 +90,15 @@ pnpm --filter @trustlayer/extension build
 1. Open Chrome and go to `chrome://extensions/`
 2. Enable **Developer mode** (toggle in top-right)
 3. Click **Load unpacked**
-4. Navigate to `TrustLayer/packages/extension/dist`
+4. Navigate to `Decrity/packages/extension/dist`
 5. Click **Select Folder**
 
-The TrustLayer extension is now loaded!
+The Decrity extension is now loaded!
 
 ### Test the Extension
 
 1. Visit https://chat.openai.com (or any supported platform)
-2. Open the extension popup (click the TrustLayer icon)
+2. Open the extension popup (click the Decrity icon)
 3. Ensure "Protection" is enabled
 4. Try pasting this test prompt injection:
    ```
@@ -124,7 +124,7 @@ curl http://localhost:8000/health
 
 ### Check Dashboard
 
-Open http://localhost:5174 in your browser. You should see the TrustLayer dashboard.
+Open http://localhost:5174 in your browser. You should see the Decrity dashboard.
 
 ## Common Issues
 
@@ -148,7 +148,7 @@ cd packages/api && pnpm db:migrate && cd ../..
 
 ### Extension Not Loading
 
-1. Check that you built it: `pnpm --filter @trustlayer/extension build`
+1. Check that you built it: `pnpm --filter @decrity/extension build`
 2. Look for a `dist` folder in `packages/extension/`
 3. Check Chrome DevTools console for errors
 
@@ -187,7 +187,7 @@ docker-compose down
 
 ## Getting Help
 
-- **Issues**: https://github.com/MALTOisHERE/TrustLayer/issues
+- **Issues**: https://github.com/MALTOisHERE/Decrity/issues
 - **Documentation**: [DOC.md](./DOC.md)
 - **Contributing**: [CONTRIBUTING.md](./CONTRIBUTING.md)
 

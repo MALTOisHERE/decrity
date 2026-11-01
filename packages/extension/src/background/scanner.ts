@@ -9,7 +9,7 @@ import {
   STORAGE_KEYS,
   API_ENDPOINTS,
   hashContent,
-} from '@trustlayer/shared'
+} from '@decrity/shared'
 import { runHeuristicScan } from '../shared/heuristics'
 import { getAuthToken } from './auth'
 

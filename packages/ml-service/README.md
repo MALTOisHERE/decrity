@@ -1,4 +1,4 @@
-# TrustLayer ML Service
+# Decrity ML Service
 
 Python FastAPI service for prompt injection detection using ML.
 

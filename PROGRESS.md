@@ -1,4 +1,4 @@
-# TrustLayer Development Progress & Timeline
+# Decrity Development Progress & Timeline
 
 > **Last Updated:** 2026-03-29
 > **Current Version:** v0.1.0 (Foundation)
@@ -26,7 +26,7 @@
 #### ✅ Completed
 - [x] Monorepo setup (Turborepo + pnpm workspaces)
 - [x] TypeScript configuration (strict mode, shared tsconfig)
-- [x] Shared package (`@trustlayer/shared`)
+- [x] Shared package (`@decrity/shared`)
   - [x] Type definitions (scan, user, API contracts)
   - [x] Constants (platforms, endpoints, thresholds)
   - [x] Utilities (hashing, validation)

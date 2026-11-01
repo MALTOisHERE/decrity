@@ -1,4 +1,4 @@
-# TrustLayer Project Summary
+# Decrity Project Summary
 
 > **Created:** 2026-03-29
 > **Version:** 0.1.0
@@ -6,9 +6,9 @@
 
 ---
 
-## 🎯 What is TrustLayer?
+## 🎯 What is Decrity?
 
-**TrustLayer** is an AI Security Firewall for everyday consumers. It's a Chrome browser extension that protects users from prompt injection attacks, fake AI chatbots, and invisible data harvesting when using AI tools like ChatGPT, Gemini, Claude, and Copilot.
+**Decrity** is an AI Security Firewall for everyday consumers. It's a Chrome browser extension that protects users from prompt injection attacks, fake AI chatbots, and invisible data harvesting when using AI tools like ChatGPT, Gemini, Claude, and Copilot.
 
 ### The Problem
 - Consumers have no protection against AI-specific threats
@@ -33,11 +33,11 @@
 - Hot module reloading for all packages
 
 ✅ **5 Packages Created**
-1. `@trustlayer/shared` - Types, constants, utilities
-2. `@trustlayer/extension` - Chrome extension (Manifest V3)
-3. `@trustlayer/api` - Node.js/Fastify REST API
-4. `@trustlayer/ml-service` - Python/FastAPI ML classifier
-5. `@trustlayer/dashboard` - React web dashboard
+1. `@decrity/shared` - Types, constants, utilities
+2. `@decrity/extension` - Chrome extension (Manifest V3)
+3. `@decrity/api` - Node.js/Fastify REST API
+4. `@decrity/ml-service` - Python/FastAPI ML classifier
+5. `@decrity/dashboard` - React web dashboard
 
 ### Chrome Extension (Core Product)
 ✅ **Background Service Worker**
@@ -146,7 +146,7 @@
 ## 🗂️ Project Structure
 
 ```
-TrustLayer/
+Decrity/
 ├── packages/
 │   ├── shared/                      # Shared types & utilities
 │   │   ├── src/
@@ -413,9 +413,9 @@ TrustLayer/
 ## 🔗 Important Links
 
 ### Repository
-- **GitHub:** https://github.com/MALTOisHERE/TrustLayer
-- **Issues:** https://github.com/MALTOisHERE/TrustLayer/issues
-- **Pull Requests:** https://github.com/MALTOisHERE/TrustLayer/pulls
+- **GitHub:** https://github.com/MALTOisHERE/Decrity
+- **Issues:** https://github.com/MALTOisHERE/Decrity/issues
+- **Pull Requests:** https://github.com/MALTOisHERE/Decrity/pulls
 
 ### Documentation
 - [README.md](./README.md) - Start here
@@ -431,7 +431,7 @@ TrustLayer/
 ## 🙏 Credits
 
 **Developer:** Mohamed AIT OUAARAB
-**Repository:** https://github.com/MALTOisHERE/TrustLayer
+**Repository:** https://github.com/MALTOisHERE/Decrity
 **Started:** 2026-03-29
 **Version:** 0.1.0
 

@@ -1,4 +1,4 @@
-// Prisma schema for TrustLayer
+// Prisma schema for Decrity
 
 generator client {
   provider = "prisma-client-js"

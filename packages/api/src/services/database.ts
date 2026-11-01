@@ -4,7 +4,7 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { ScanResponse, SupportedPlatform, ThreatDetail, hashContent } from '@trustlayer/shared'
+import { ScanResponse, SupportedPlatform, ThreatDetail, hashContent } from '@decrity/shared'
 
 const prisma = new PrismaClient()
 

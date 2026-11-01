@@ -3,7 +3,7 @@
  * Calls the Python FastAPI ML service
  */
 
-import { ScanVerdict } from '@trustlayer/shared'
+import { ScanVerdict } from '@decrity/shared'
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000'
 
