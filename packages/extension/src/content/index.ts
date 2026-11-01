@@ -11,6 +11,7 @@ import { startProtectionGapDetection } from './gapDetector'
 console.log('Decrity content script loaded on', window.location.href)
 
 const currentPlatform = getPlatformFromUrl(window.location.href)
+let platformInProtectionGap = false
 
 if (!currentPlatform) {
   console.warn('Decrity: Unknown platform', window.location.href)
@@ -39,10 +40,12 @@ function initializeMonitoring() {
   }
 
   // Protection Gap detection (wayfinder ticket 001): notices when this
-  // platform's input selector stops matching and reports it to the
-  // badge/popup. Re-arms itself on in-page SPA navigation. Does not yet
-  // pause scanning itself (the map's destination calls for that; not built).
-  startProtectionGapDetection(currentPlatform, handler.getInputSelector())
+  // platform's input selector stops matching, reports it to the
+  // badge/popup, and pauses scanning below until it resolves. Re-arms
+  // itself on in-page SPA navigation.
+  startProtectionGapDetection(currentPlatform, handler.getInputSelector(), inGap => {
+    platformInProtectionGap = inGap
+  })
 }
 
 /**
@@ -133,6 +136,10 @@ async function scanAndAlert(
   _blocking: boolean
 ): Promise<ScanResponse | null> {
   if (!currentPlatform) return null
+
+  // Protection Gap: the input selector isn't reliably found right now, so
+  // there's nothing trustworthy to scan against. Pause rather than guess.
+  if (platformInProtectionGap) return null
 
   try {
     const request: ScanRequest = {

@@ -33,7 +33,11 @@ function reportGapState(platform: SupportedPlatform, inGap: boolean) {
  * A hard MAX_WAIT_MS ceiling declares a Protection Gap if nothing ever
  * settles-and-matches in time, regardless of ongoing mutation activity.
  */
-function runDetection(platform: SupportedPlatform, selector: string): DetectionHandle {
+function runDetection(
+  platform: SupportedPlatform,
+  selector: string,
+  onChange: (inGap: boolean) => void
+): DetectionHandle {
   let settled = false
   let debounceTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -44,6 +48,7 @@ function runDetection(platform: SupportedPlatform, selector: string): DetectionH
     clearTimeout(maxWaitTimer)
     observer.disconnect()
     reportGapState(platform, !matched)
+    onChange(!matched)
   }
 
   const check = () => {
@@ -88,9 +93,13 @@ function runDetection(platform: SupportedPlatform, selector: string): DetectionH
   }
 }
 
-function startOrRestart(platform: SupportedPlatform, selector: string) {
+function startOrRestart(
+  platform: SupportedPlatform,
+  selector: string,
+  onChange: (inGap: boolean) => void
+) {
   activeDetection?.cancel()
-  activeDetection = runDetection(platform, selector)
+  activeDetection = runDetection(platform, selector, onChange)
 }
 
 /**
@@ -98,11 +107,19 @@ function startOrRestart(platform: SupportedPlatform, selector: string) {
  * in-page SPA navigation (new chat, settings, etc.) — these platforms don't
  * do full page reloads for that, so a page-load-only check would miss a
  * selector break introduced after navigating within the same tab.
+ *
+ * `onChange` fires synchronously within this content script whenever the
+ * gap state resolves, so callers (e.g. pausing scanning) don't have to wait
+ * on a round trip through the background worker's stored state.
  */
-export function startProtectionGapDetection(platform: SupportedPlatform, selector: string) {
-  startOrRestart(platform, selector)
+export function startProtectionGapDetection(
+  platform: SupportedPlatform,
+  selector: string,
+  onChange: (inGap: boolean) => void
+) {
+  startOrRestart(platform, selector, onChange)
 
-  const rearm = () => startOrRestart(platform, selector)
+  const rearm = () => startOrRestart(platform, selector, onChange)
 
   const originalPushState = history.pushState.bind(history)
   history.pushState = function (...args: Parameters<typeof history.pushState>) {
