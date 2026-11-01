@@ -25,12 +25,17 @@ The fix for a real breakage still ships as a normal code change + Chrome Web Sto
 
 ## Decisions so far
 
-<!-- none yet — map just charted; destination scope itself (small: no remote config, no self-healing; observer-driven detection; distinct badge state; deduped Gap Report to a new endpoint) was settled during charting and is folded into the Destination above rather than listed as a ticket -->
+- [001: Calibrate Protection Gap detection timing against the real platforms](tickets/001-calibrate-gap-detection-timing.md): debounce 800ms, max-wait 8s, re-arm on SPA navigation kept (defensive, not directly observed); calibrated from real DevTools probes on ChatGPT/Gemini/Claude (Copilot unmeasured, no test account).
+- [002: Design the GAP badge state and popup copy](tickets/002-gap-badge-and-popup-design.md): inline-banner layout (Variant A); teal `#2F6F78` badge/pill with a `~` mark, settings stay visible underneath; rejected a full-takeover variant as inconsistent with "silent disablement."
+- [003: Define the Gap Report payload and endpoint contract](tickets/003-gap-report-contract.md): `POST /v1/gap-report` (matches the `Gap Report` glossary term; an earlier draft name, `/v1/platform-health`, was rejected for clashing with GLOSSARY.md's own avoid-list); payload is `{ source, timestamp, extensionVersion }` only; no auth required (anonymous installs must still be able to report); client dedupes via one `chrome.storage.local` key (`trustlayer_gap_reports`, a per-platform object map) to at most once per platform per 24h.
+
+- [004: Decide whether the privacy policy must disclose Gap Reports](tickets/004-privacy-policy-disclosure.md): yes, with its own named data-table row (not a vague "diagnostic data" sentence) — 30-day retention, shorter than the 90 days used for content hash/verdict/platform since a Gap Report has no per-user value once the team's been notified. Exact DOC.md table row and privacy-policy copy are written in the ticket; editing DOC.md and writing the privacy policy file itself are still follow-on work, not done here.
 
 ## Not yet specified
 
 - How to validate, before shipping, that Protection Gap detection and the degraded UX actually behave correctly (test/QA plan) — depends on how tickets 001 and 002 resolve.
 - Whether and how to update PROGRESS.md's "Platform Selectors Fragile" entry and ROADMAP.md's risk register once this spec is approved.
+- Actually applying ticket 004's resolution to DOC.md Section 10's data handling table and to the privacy policy once that file exists.
 
 ## Out of scope
 

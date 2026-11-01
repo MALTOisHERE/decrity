@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Protection Gap popup state, prototype</title>
+<style>
+/* THROWAWAY FILE (wayfinder ticket 002), not shipped.
+   Structure/markup lifted from the real popup/App.tsx + styles.css so the
+   three variants are judged against the actual popup chrome, not a vacuum. */
+:root {
+  --ink: #171B26;
+  --muted: #5B6072;
+  --line: #E3E5EE;
+  --paper: #F6F7FB;
+  --gap: #2F6F78;
+  --gap-tint: #E6F1F2;
+  --gap-ink: #1D4C54;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--paper);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 44px 16px 140px;
+  gap: 22px;
+}
+
+.proto-note { max-width: 500px; text-align: center; font-size: 13px; line-height: 1.6; color: var(--muted); }
+.proto-note b { color: var(--ink); font-weight: 600; }
+
+.popup { width: 320px; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(23,27,38,.08), 0 16px 32px rgba(23,27,38,.14); }
+
+.header { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
+.logo { display: flex; align-items: center; gap: 8px; }
+.shield { width: 18px; height: 18px; color: var(--ink); flex-shrink: 0; }
+.shield svg { width: 100%; height: 100%; }
+.logo h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 20px; font-size: 11.5px; font-weight: 600; background: var(--gap-tint); color: var(--gap-ink); }
+.pill .mark { width: 14px; height: 14px; border-radius: 50%; background: var(--gap); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+.pill .mark.pulse { animation: pulse 2.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .pill .mark.pulse { animation: none; } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+
+.content { padding: 16px; }
+.settings { display: flex; flex-direction: column; gap: 15px; }
+.setting-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.setting-info h3 { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 1px; }
+.setting-info p { font-size: 11.5px; color: var(--muted); }
+.toggle { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: #D7DAE3; transition: .2s; border-radius: 22px; }
+.toggle-slider:before { position: absolute; content: ''; height: 16px; width: 16px; left: 3px; top: 3px; background: white; transition: .2s; border-radius: 50%; }
+.toggle input:checked + .toggle-slider { background: var(--gap); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+
+.footer { padding: 11px 16px; border-top: 1px solid var(--line); }
+.link-button { width: 100%; padding: 8px; background: transparent; border: 1px solid var(--line); border-radius: 7px; font-size: 12.5px; font-weight: 500; color: #374151; cursor: pointer; }
+.link-button:hover { background: #FAFAFC; }
+
+/* --- Gap-state treatments --- */
+
+/* A: inline banner, settings stay fully usable below it */
+.gap-banner { margin: 12px 16px 0; padding: 11px 12px; background: var(--gap-tint); border-left: 2px solid var(--gap); border-radius: 0 8px 8px 0; display: flex; gap: 10px; align-items: flex-start; }
+.gap-banner .mark { margin-top: 1px; flex-shrink: 0; }
+.gap-banner p { font-size: 12px; color: var(--gap-ink); line-height: 1.5; }
+.gap-banner button.link { background: none; border: none; padding: 0; margin-left: 4px; color: var(--gap-ink); font-weight: 600; font-size: 12px; text-decoration: underline; cursor: pointer; }
+
+/* B: full takeover, single focus, settings hidden until dismissed */
+.gap-takeover { padding: 30px 24px 22px; text-align: center; }
+.gap-takeover .mark { width: 40px; height: 40px; font-size: 16px; margin: 0 auto 14px; }
+.gap-takeover h2 { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; margin-bottom: 7px; }
+.gap-takeover p { font-size: 12.5px; color: var(--muted); line-height: 1.55; max-width: 240px; margin: 0 auto 20px; }
+.gap-takeover button.primary { width: 100%; padding: 9px; background: var(--gap); color: white; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.gap-takeover button.primary:hover { background: #295F67; }
+
+/* C: collapsed row inside the settings list, quietest footprint */
+.gap-row { border: 1px solid var(--line); border-radius: 8px; padding: 10px 11px; cursor: pointer; }
+.gap-row-head { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 600; color: var(--gap-ink); }
+.gap-row-head .chev { margin-left: auto; color: var(--muted); font-size: 11px; transition: transform .15s; }
+.gap-row.open .gap-row-head .chev { transform: rotate(90deg); }
+.gap-row-body { display: none; font-size: 11.5px; color: var(--muted); line-height: 1.55; margin: 8px 0 0 23px; }
+.gap-row.open .gap-row-body { display: block; }
+
+/* Dev-tool switcher, deliberately neutral/dark so it never reads as part of the design being judged */
+.switcher { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #14151A; color: #F4F5F7; border-radius: 999px; padding: 7px 6px 7px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.4); font-size: 13px; z-index: 100; }
+.switcher button.arrow { background: rgba(255,255,255,.1); border: none; color: inherit; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 13px; }
+.switcher button.arrow:hover { background: rgba(255,255,255,.2); }
+.switcher .vlabel { min-width: 180px; text-align: center; }
+.switcher .vlabel b { display: block; font-size: 9.5px; letter-spacing: .05em; color: #9BA1AE; font-weight: 600; }
+button:focus-visible, .gap-row:focus-visible { outline: 2px solid var(--gap); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<p class="proto-note"><b>Protection Gap popup state, prototype for wayfinder ticket 002.</b><br>
+One mark (<code>~</code>), one accent (teal), reused across the toolbar badge and all three popups: a different shape from the existing check, bang, warning, and circle verdict glyphs, so it reads as a tool-health signal rather than a fifth verdict. Flip with the bar below or the left and right arrow keys.</p>
+
+<div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted);">
+  Toolbar badge (simulated: real <code>chrome.action</code> badges are a colour plus up to 4 characters, nothing fancier):
+  <span style="width:22px;height:22px;border-radius:5px;background:var(--gap);color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">~</span>
+</div>
+
+<div id="stage"></div>
+
+<div class="switcher">
+  <button class="arrow" onclick="cycle(-1)" aria-label="Previous variant">←</button>
+  <div class="vlabel"><b id="vkey">A</b><span id="vname">Inline banner</span></div>
+  <button class="arrow" onclick="cycle(1)" aria-label="Next variant">→</button>
+</div>
+
+<script>
+const variants = ['A', 'B', 'C'];
+const names = { A: 'Inline banner', B: 'Full takeover', C: 'Collapsed row' };
+let current = (new URLSearchParams(location.search).get('variant')) || 'A';
+if (!variants.includes(current)) current = 'A';
+
+const mark = (extra) => `<span class="mark${extra ? ' ' + extra : ''}">~</span>`;
+const shield = `<div class="shield"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 5-3.2 8.3-7.5 10-4.3-1.7-7.5-5-7.5-10v-6l7.5-3z"/></svg></div>`;
+
+const pill = () => `<span class="pill">${mark('pulse')}Catching up</span>`;
+
+function settingRows() {
+  return `
+    <div class="setting-item">
+      <div class="setting-info"><h3>Protection</h3><p>Monitor AI interactions for threats</p></div>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="setting-item">
+      <div class="setting-info"><h3>Privacy Mode</h3><p>Scan locally only, no data sent to cloud</p></div>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="setting-item">
+      <div class="setting-info"><h3>Notifications</h3><p>Show alerts when threats are detected</p></div>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+    </div>`;
+}
+
+function renderA() {
+  return `
+  <div class="popup">
+    <header class="header">
+      <div class="logo">${shield}<h1>TrustLayer</h1></div>
+      ${pill()}
+    </header>
+    <div class="gap-banner">
+      ${mark()}
+      <p>This site changed in a way we haven't caught up with yet. We're on it. Everything else stays protected.
+      <button class="link" onclick="alert('(prototype) would show more detail')">What happened?</button></p>
+    </div>
+    <main class="content"><section class="settings">${settingRows()}</section></main>
+    <footer class="footer"><button class="link-button">View Dashboard</button></footer>
+  </div>`;
+}
+
+function renderB() {
+  return `
+  <div class="popup">
+    <header class="header">
+      <div class="logo">${shield}<h1>TrustLayer</h1></div>
+      ${pill()}
+    </header>
+    <div class="gap-takeover">
+      ${mark()}
+      <h2>We're catching up with this site</h2>
+      <p>It changed in a way our checks haven't caught up with yet. We're on it. Everything else stays protected.</p>
+      <button class="primary" onclick="alert('(prototype) would return to the normal settings view')">Got it</button>
+    </div>
+  </div>`;
+}
+
+function renderC() {
+  return `
+  <div class="popup">
+    <header class="header">
+      <div class="logo">${shield}<h1>TrustLayer</h1></div>
+      ${pill()}
+    </header>
+    <main class="content">
+      <section class="settings">
+        <div class="gap-row" id="gapRow" tabindex="0" onclick="toggleRow()" onkeydown="if(event.key==='Enter')toggleRow()">
+          <div class="gap-row-head">${mark()}<span>Catching up on this site</span><span class="chev">▸</span></div>
+          <div class="gap-row-body">It changed in a way our checks haven't caught up with yet. We're on it. Everything else stays protected.</div>
+        </div>
+        ${settingRows()}
+      </section>
+    </main>
+    <footer class="footer"><button class="link-button">View Dashboard</button></footer>
+  </div>`;
+}
+
+function toggleRow() { document.getElementById('gapRow').classList.toggle('open'); }
+
+function render() {
+  document.getElementById('stage').innerHTML = { A: renderA, B: renderB, C: renderC }[current]();
+  document.getElementById('vkey').textContent = current;
+  document.getElementById('vname').textContent = names[current];
+  const params = new URLSearchParams(location.search);
+  params.set('variant', current);
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+function cycle(dir) {
+  current = variants[(variants.indexOf(current) + dir + variants.length) % variants.length];
+  render();
+}
+
+document.addEventListener('keydown', e => {
+  const t = document.activeElement;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (e.key === 'ArrowLeft') cycle(-1);
+  if (e.key === 'ArrowRight') cycle(1);
+});
+
+render();
+</script>
+</body>
+</html>
