@@ -530,6 +530,7 @@ No `<all_urls>` permission. No `webRequest` access to arbitrary sites.
 | Platform (e.g. ChatGPT)| Yes  | Postgres      | 90 days       |
 | User email           | Yes     | Postgres      | Until deletion|
 | Extension settings   | Yes     | chrome.storage.sync | Indefinite |
+| Gap Report (platform id, timestamp, extension version) | Yes | Postgres | 30 days |
 
 ### API security
 
