@@ -13,6 +13,7 @@ import {
 } from '@decrity/shared'
 import { scanContent } from './scanner'
 import { getCachedScan, cacheScanResult } from './cache'
+import { maybeSendGapReport } from './gapReport'
 
 console.log('Decrity background service worker initialized')
 
@@ -82,6 +83,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .then(() => {
         updateGapBadge(inGap, sender.tab?.id)
         sendResponse({ success: true })
+        if (inGap) {
+          // Fire-and-forget: the badge/popup already reflect the gap state
+          // without waiting on this, and maybeSendGapReport handles its own
+          // dedupe + error logging.
+          maybeSendGapReport(platform)
+        }
       })
       .catch(error => sendResponse({ error: error.message }))
     return true

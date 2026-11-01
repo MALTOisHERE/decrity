@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   USER_STATS: '/v1/user/stats',
   AUTH_LOGIN: '/v1/auth/login',
   AUTH_REGISTER: '/v1/auth/register',
+  GAP_REPORT: '/v1/gap-report',
 } as const
 
 /**
@@ -65,6 +66,7 @@ export const STORAGE_KEYS = {
   PRIVACY_MODE: 'decrity_privacy_mode',
   LAST_SYNC: 'decrity_last_sync',
   PROTECTION_GAP_STATE: 'decrity_gap_state',
+  GAP_REPORTS: 'decrity_gap_reports',
 } as const
 
 /**

@@ -67,7 +67,7 @@ async function runFullScan(request: ScanRequest): Promise<ScanResponse> {
 
   // If suspicious or threat, call API for ML classification
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/v1'
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
     const token = await getAuthToken()
 
     const contentHash = await hashContent(request.content)

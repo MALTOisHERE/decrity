@@ -30,6 +30,23 @@ export async function persistScanResult(
 }
 
 /**
+ * Persist a Gap Report to the database
+ */
+export async function persistGapReport(
+  platform: SupportedPlatform,
+  reportedAt: number,
+  extensionVersion: string
+): Promise<void> {
+  await prisma.gapReport.create({
+    data: {
+      platform,
+      reportedAt: new Date(reportedAt),
+      extensionVersion,
+    },
+  })
+}
+
+/**
  * Get scan history for a user
  */
 export async function getScanHistory(

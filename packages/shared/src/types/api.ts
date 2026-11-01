@@ -29,6 +29,23 @@ export namespace ScanAPI {
 }
 
 /**
+ * POST /v1/gap-report - Report that a platform's Protection Gap detection
+ * found its known selector(s) missing. No content, no selector text, no
+ * page data (see .wayfinder/tickets/003-gap-report-contract.md).
+ */
+export namespace GapReportAPI {
+  export interface Request {
+    source: SupportedPlatform
+    timestamp: number
+    extensionVersion: string
+  }
+
+  export interface Response {
+    received: boolean
+  }
+}
+
+/**
  * GET /v1/report - Get user's threat history
  */
 export namespace ReportAPI {
