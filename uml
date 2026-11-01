@@ -1,0 +1,67 @@
+#!/bin/sh
+# Launch uml-viewer against this project.
+# POSIX sh port of unclebob/uml-viewer's scripts/get-uml-viewer ./uml
+# launcher (that one is zsh-only; this machine has no zsh). Points at
+# the global uml-viewer checkout in ~/.local/share/ub-mode-tools instead
+# of cloning a second copy into this repo.
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname "$0")" && pwd)"
+cd "$ROOT"
+
+GLOBAL_UML_VIEWER="$HOME/.local/share/ub-mode-tools/uml-viewer"
+QUIL_VER="4.3.1563"
+DEPS="{:deps {uml-viewer/uml-viewer {:local/root \"$GLOBAL_UML_VIEWER\"} quil/quil {:mvn/version \"$QUIL_VER\"}}}"
+
+edn_path() {
+  name="$(basename "$ROOT")"
+  if [ -f "examples/${name}.edn" ]; then
+    echo "examples/${name}.edn"
+    return
+  fi
+  if [ -d examples ]; then
+    for f in examples/*.edn; do
+      [ -f "$f" ] || continue
+      case "$f" in *.policy.edn) continue ;; esac
+      echo "$f"
+      return
+    done
+  fi
+}
+
+LOG="uml-viewer-log.txt"
+
+launch_viewer() {
+  {
+    printf '----- %s starting uml-viewer' "$(date '+%Y-%m-%d %H:%M:%S')"
+    if [ "$#" -gt 0 ]; then printf ' %s' "$@"; fi
+    printf '\n'
+  } >> "$LOG"
+  nohup clojure -Sdeps "$DEPS" -M -m uml-viewer.main.uml-viewer "$@" >> "$LOG" 2>&1 < /dev/null &
+  disown
+  echo "UML viewer started (pid $!). Log: $LOG"
+}
+
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+  echo "usage: ./uml [--restart]" >&2
+  echo "  (no args)   fresh window; companion writes the diagram" >&2
+  echo "  --restart   new JVM, same companion; restores last view" >&2
+  echo "  The viewer detaches; exceptions go to $LOG." >&2
+  echo "  Note: this checkout has no tmux companion wired up, so a" >&2
+  echo "  fresh window will wait indefinitely for :display. Point it" >&2
+  echo "  at an examples/*.edn (e.g. the bundled library.edn in the" >&2
+  echo "  global uml-viewer checkout) to see an actual diagram." >&2
+  exit 0
+fi
+
+if [ "${1:-}" = "--restart" ]; then
+  edn="$(edn_path)"
+  if [ -n "$edn" ]; then
+    launch_viewer --restart "$edn"
+  else
+    launch_viewer --restart
+  fi
+  exit 0
+fi
+
+launch_viewer "$@"

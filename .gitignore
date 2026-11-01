@@ -64,3 +64,11 @@ secrets/
 
 # TypeScript
 *.tsbuildinfo
+
+# BEGIN UML-VIEWER
+.uml-viewer/
+uml-viewer-log.txt
+# END UML-VIEWER
+
+# ub-mode quality-gate tool output (crapper/dryer/mutator)
+.metrics/
