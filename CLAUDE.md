@@ -400,6 +400,7 @@ docker-compose logs -f ml-service
 - **QUICKSTART.md** - 5-minute setup
 - **ARCHITECTURE.md** - System design & data flow
 - **DOC.md** - Complete 40-page spec (read Section 10 for security!)
+- **DESIGN_SYSTEM.md** - UI conventions: shadcn/ui, color tokens, fonts, icons (read before any UI change)
 - **PROGRESS.md** - Task tracking
 - **ROADMAP.md** - Product timeline
 - **CONTRIBUTING.md** - Dev guidelines
@@ -422,6 +423,7 @@ See PROGRESS.md for detailed task list.
 - **Database Changes**: Review `packages/api/prisma/schema.prisma`
 - **Type Changes**: Update `packages/shared/src/types/*`
 - **Platform Selectors**: Verify on actual platform first
+- **Any UI work**: Read `DESIGN_SYSTEM.md` first, for the component library (shadcn/ui), color tokens, fonts, and icon conventions. Don't re-derive these or introduce a different approach.
 
 ---
 

@@ -1,7 +1,7 @@
 /**
  * POST /v1/gap-report
  * Report that a platform's Protection Gap detection found its known
- * selector(s) missing. No auth required — anonymous installs (common in
+ * selector(s) missing. No auth required: anonymous installs (common in
  * Privacy Mode) must still be able to report a gap (ticket 003).
  */
 

@@ -1,0 +1,39 @@
+/**
+ * Styles for the alert banner, bundled separately from the popup's CSS and
+ * injected into a Shadow DOM root (see injector.tsx) so it never leaks into,
+ * or is overridden by, the host AI platform's own styles.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:host {
+  all: initial;
+}
+
+/* Same tokens as packages/extension/src/popup/styles.css and
+   packages/dashboard/src/index.css, see DESIGN_SYSTEM.md. Duplicated here
+   (rather than imported) because this bundle is isolated inside a Shadow
+   DOM root and can't rely on the page's own stylesheets. */
+:host {
+  --background: 0 0% 100%;
+  --foreground: 221 39% 11%;
+  --primary: 187 44% 33%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 185 32% 93%;
+  --secondary-foreground: 189 49% 22%;
+  --muted: 210 20% 98%;
+  --muted-foreground: 220 9% 46%;
+  --accent: 185 32% 93%;
+  --accent-foreground: 189 49% 22%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 187 44% 33%;
+  --radius: 0.5rem;
+}
+
+.decrity-banner-root {
+  font-family: 'Decrity Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}

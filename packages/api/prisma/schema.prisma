@@ -56,7 +56,7 @@ model GapReport {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
 
-  // No content, no selector text — platform id, timestamp, extension version only
+  // No content, no selector text: platform id, timestamp, extension version only
   // (.wayfinder/tickets/003-gap-report-contract.md). 30-day retention per
   // .wayfinder/tickets/004-privacy-policy-disclosure.md; not enforced by any
   // cleanup job yet, matching ScanResult's RETENTION constants today.

@@ -13,28 +13,24 @@ export const PLATFORMS = {
     name: 'ChatGPT',
     url: 'https://chatgpt.com',
     urlPattern: /^https:\/\/(chat\.openai\.com|chatgpt\.com)/,
-    icon: '🤖',
   },
   gemini: {
     id: 'gemini' as SupportedPlatform,
     name: 'Google Gemini',
     url: 'https://gemini.google.com',
     urlPattern: /^https:\/\/gemini\.google\.com/,
-    icon: '✨',
   },
   claude: {
     id: 'claude' as SupportedPlatform,
     name: 'Claude',
     url: 'https://claude.ai',
     urlPattern: /^https:\/\/claude\.ai/,
-    icon: '🧠',
   },
   copilot: {
     id: 'copilot' as SupportedPlatform,
     name: 'Microsoft Copilot',
     url: 'https://copilot.microsoft.com',
     urlPattern: /^https:\/\/copilot\.microsoft\.com/,
-    icon: '💡',
   },
 } as const
 

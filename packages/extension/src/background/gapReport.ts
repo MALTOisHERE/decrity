@@ -1,7 +1,7 @@
 /**
  * Gap Report sending (wayfinder ticket 003).
  *
- * Sends a content-free report (platform id, timestamp, extension version —
+ * Sends a content-free report (platform id, timestamp, extension version,
  * nothing else) when a platform enters a Protection Gap, deduped client-side
  * to at most once per platform per 24h via chrome.storage.local. No auth
  * required: anonymous installs (common in Privacy Mode) must still be able

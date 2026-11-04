@@ -6,6 +6,11 @@ import { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import './styles.css'
 import { STORAGE_KEYS, getPlatformFromUrl } from '@decrity/shared'
+import { Switch } from '@/components/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface Settings {
   protectionEnabled: boolean
@@ -70,120 +75,113 @@ function App() {
 
   if (loading) {
     return (
-      <div className="popup">
-        <div className="loading">Loading...</div>
-      </div>
+      <div className="w-80 bg-background py-10 text-center text-sm text-muted-foreground">Loading...</div>
     )
   }
 
   return (
-    <div className="popup">
-      <header className="header">
-        <div className="logo">
-          <div className="shield-icon">
+    <div className="w-80 bg-background">
+      <header className="flex items-center justify-between px-4 py-4 border-b">
+        <div className="flex items-center gap-2">
+          <span className="w-5 h-5 text-foreground">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
               <path d="M12 2.5l7.5 3v6c0 5-3.2 8.3-7.5 10-4.3-1.7-7.5-5-7.5-10v-6l7.5-3z" />
             </svg>
-          </div>
-          <h1>Decrity</h1>
+          </span>
+          <h1 className="text-[18px] font-semibold text-foreground">Decrity</h1>
         </div>
-        <div className="status">
+        <div>
           {inProtectionGap ? (
-            <span className="status-badge gap">
-              <span className="gap-mark">~</span>
+            <Badge variant="outline" className="bg-accent text-accent-foreground gap-1.5">
+              <span className="w-3.5 h-3.5 rounded-full bg-primary text-primary-foreground text-[9px] font-bold inline-flex items-center justify-center">
+                ~
+              </span>
               Catching up
-            </span>
+            </Badge>
           ) : (
-            <span className={`status-badge ${settings.protectionEnabled ? 'active' : 'inactive'}`}>
+            <Badge variant={settings.protectionEnabled ? 'success' : 'outline'}>
               {settings.protectionEnabled ? 'Protected' : 'Disabled'}
-            </span>
+            </Badge>
           )}
         </div>
       </header>
 
       {inProtectionGap && (
-        <div className="gap-banner">
-          <span className="mark">~</span>
-          <p>
-            This site changed in a way we haven&rsquo;t caught up with yet. We&rsquo;re on it. Everything
-            else stays protected.
-            <button
-              className="link"
-              onClick={() => chrome.tabs.create({ url: 'https://decrity.app/help/protection-gap' })}
-            >
-              What happened?
-            </button>
-          </p>
+        <div className="px-4 pt-3">
+          <Alert variant="info">
+            <AlertDescription>
+              This site changed in a way we haven&rsquo;t caught up with yet. We&rsquo;re on it. Everything
+              else stays protected.{' '}
+              <button
+                className="font-semibold underline underline-offset-2"
+                onClick={() => chrome.tabs.create({ url: 'https://decrity.app/help/protection-gap' })}
+              >
+                What happened?
+              </button>
+            </AlertDescription>
+          </Alert>
         </div>
       )}
 
-      <main className="content">
-        <section className="settings">
-          <div className="setting-item">
-            <div className="setting-info">
-              <h3>Protection</h3>
-              <p>Monitor AI interactions for threats</p>
+      <main className="px-4 py-4">
+        <section className="flex flex-col gap-4 mb-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-medium text-foreground mb-0.5">Protection</h3>
+              <p className="text-xs text-muted-foreground">Monitor AI interactions for threats</p>
             </div>
-            <label className="toggle">
-              <input
-                type="checkbox"
-                checked={settings.protectionEnabled}
-                onChange={e => updateSetting('protectionEnabled', e.target.checked)}
-              />
-              <span className="toggle-slider"></span>
-            </label>
+            <Switch
+              checked={settings.protectionEnabled}
+              onCheckedChange={checked => updateSetting('protectionEnabled', checked)}
+            />
           </div>
 
-          <div className="setting-item">
-            <div className="setting-info">
-              <h3>Privacy Mode</h3>
-              <p>Scan locally only, no data sent to cloud</p>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-medium text-foreground mb-0.5">Privacy Mode</h3>
+              <p className="text-xs text-muted-foreground">Scan locally only, no data sent to cloud</p>
             </div>
-            <label className="toggle">
-              <input
-                type="checkbox"
-                checked={settings.privacyMode}
-                onChange={e => updateSetting('privacyMode', e.target.checked)}
-              />
-              <span className="toggle-slider"></span>
-            </label>
+            <Switch
+              checked={settings.privacyMode}
+              onCheckedChange={checked => updateSetting('privacyMode', checked)}
+            />
           </div>
 
-          <div className="setting-item">
-            <div className="setting-info">
-              <h3>Notifications</h3>
-              <p>Show alerts when threats are detected</p>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-medium text-foreground mb-0.5">Notifications</h3>
+              <p className="text-xs text-muted-foreground">Show alerts when threats are detected</p>
             </div>
-            <label className="toggle">
-              <input
-                type="checkbox"
-                checked={settings.notificationsEnabled}
-                onChange={e => updateSetting('notificationsEnabled', e.target.checked)}
-              />
-              <span className="toggle-slider"></span>
-            </label>
+            <Switch
+              checked={settings.notificationsEnabled}
+              onCheckedChange={checked => updateSetting('notificationsEnabled', checked)}
+            />
           </div>
         </section>
 
-        <section className="info">
-          <div className="info-card">
-            <div className="info-icon">
+        <Card className="bg-muted border-none shadow-none">
+          <CardContent className="p-3 flex gap-3">
+            <span className="w-[18px] h-[18px] text-green-600 flex-shrink-0 mt-0.5">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 12l5 5L20 6" />
               </svg>
+            </span>
+            <div>
+              <strong className="block text-[13px] font-medium text-foreground mb-0.5">Active Protection</strong>
+              <p className="text-xs text-muted-foreground">Monitoring ChatGPT, Gemini, Claude, and Copilot</p>
             </div>
-            <div className="info-text">
-              <strong>Active Protection</strong>
-              <p>Monitoring ChatGPT, Gemini, Claude, and Copilot</p>
-            </div>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
       </main>
 
-      <footer className="footer">
-        <button className="link-button" onClick={() => chrome.tabs.create({ url: 'https://decrity.app' })}>
+      <footer className="px-4 py-3 border-t">
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => chrome.tabs.create({ url: 'https://decrity.app' })}
+        >
           View Dashboard
-        </button>
+        </Button>
       </footer>
     </div>
   )

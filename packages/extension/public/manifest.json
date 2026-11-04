@@ -51,7 +51,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["src/content/injector.ts"],
+      "resources": ["src/content/injector.tsx", "fonts/*"],
       "matches": [
         "https://chat.openai.com/*",
         "https://chatgpt.com/*",
