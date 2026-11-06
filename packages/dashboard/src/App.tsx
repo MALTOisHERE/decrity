@@ -2,27 +2,52 @@
  * Decrity Dashboard App
  */
 
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, NavLink } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import History from './pages/History'
+import { cn } from '@/lib/utils'
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    'text-sm font-medium px-1 py-0.5 border-b-2 transition-colors',
+    isActive
+      ? 'text-foreground border-primary'
+      : 'text-muted-foreground border-transparent hover:text-foreground'
+  )
 
 function App() {
   return (
-    <div className="min-h-screen bg-muted/40">
-      <header className="bg-card border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-2">
-            <span className="w-6 h-6 text-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
-                <path d="M12 2.5l7.5 3v6c0 5-3.2 8.3-7.5 10-4.3-1.7-7.5-5-7.5-10v-6l7.5-3z" />
-              </svg>
-            </span>
-            <h1 className="text-xl font-semibold text-foreground">Decrity</h1>
-          </div>
+    <div className="min-h-screen bg-background">
+      <header className="border-b">
+        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+          <span
+            className="h-10 bg-primary"
+            style={{
+              aspectRatio: '5246 / 2283',
+              maskImage: 'url(/brand/wordmark.png)',
+              maskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              maskPosition: 'left center',
+              WebkitMaskImage: 'url(/brand/wordmark.png)',
+              WebkitMaskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'left center',
+            }}
+            role="img"
+            aria-label="Decrity"
+          />
+          <nav className="flex items-center gap-6">
+            <NavLink to="/" end className={navLinkClass}>
+              Dashboard
+            </NavLink>
+            <NavLink to="/history" className={navLinkClass}>
+              History
+            </NavLink>
+          </nav>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-6 py-10">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/history" element={<History />} />

@@ -6,6 +6,7 @@
 import {
   ScanRequest,
   ScanResponse,
+  ScanAPI,
   STORAGE_KEYS,
   API_ENDPOINTS,
   hashContent,
@@ -72,17 +73,24 @@ async function runFullScan(request: ScanRequest): Promise<ScanResponse> {
 
     const contentHash = await hashContent(request.content)
 
+    const body: ScanAPI.Request & { contentHash: string } = {
+      content: request.content,
+      source: request.source,
+      contentHash,
+      heuristic: {
+        verdict: heuristicResult.verdict,
+        score: heuristicResult.score,
+        reason: heuristicResult.reason,
+      },
+    }
+
     const response = await fetch(`${apiUrl}${API_ENDPOINTS.SCAN}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
       },
-      body: JSON.stringify({
-        content: request.content,
-        source: request.source,
-        contentHash,
-      }),
+      body: JSON.stringify(body),
     })
 
     if (!response.ok) {

@@ -82,14 +82,22 @@ function App() {
   return (
     <div className="w-80 bg-background">
       <header className="flex items-center justify-between px-4 py-4 border-b">
-        <div className="flex items-center gap-2">
-          <span className="w-5 h-5 text-foreground">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round">
-              <path d="M12 2.5l7.5 3v6c0 5-3.2 8.3-7.5 10-4.3-1.7-7.5-5-7.5-10v-6l7.5-3z" />
-            </svg>
-          </span>
-          <h1 className="text-[18px] font-semibold text-foreground">Decrity</h1>
-        </div>
+        <span
+          className="h-7 bg-primary"
+          style={{
+            aspectRatio: '5246 / 2283',
+            maskImage: 'url(/brand/wordmark.png)',
+            maskSize: 'contain',
+            maskRepeat: 'no-repeat',
+            maskPosition: 'left center',
+            WebkitMaskImage: 'url(/brand/wordmark.png)',
+            WebkitMaskSize: 'contain',
+            WebkitMaskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'left center',
+          }}
+          role="img"
+          aria-label="Decrity"
+        />
         <div>
           {inProtectionGap ? (
             <Badge variant="outline" className="bg-accent text-accent-foreground gap-1.5">

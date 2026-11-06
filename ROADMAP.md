@@ -103,10 +103,10 @@ A high-level overview of Decrity's development journey.
 - [ ] Achieve >90% accuracy
 
 ### Dashboard
-- [ ] Connect to API
+- [x] Connect to API: done locally only, no deployed backend or real accounts yet
 - [ ] User authentication
-- [ ] Threat history display
-- [ ] Charts and analytics
+- [x] Threat history display: paginated, working locally
+- [x] Charts and analytics: a verdict breakdown exists (plain bars, not a full analytics suite)
 
 ### Premium Features
 - [ ] Stripe integration
@@ -311,9 +311,9 @@ A high-level overview of Decrity's development journey.
 ### Critical Risks
 
 1. **Platform UI Changes** 🔴
-   - **Risk:** AI platforms change DOM frequently
+   - **Risk:** AI platforms change DOM frequently. Confirmed real, not just theoretical: a hidden SSR fallback element on claude.ai was found silently breaking scanning (2026-11-06).
    - **Impact:** Extension breaks
-   - **Mitigation:** Resilient selectors, monitoring system, quick update process
+   - **Mitigation:** Protection Gap detection ships in the extension (pauses scanning and notifies the user when a platform's selector stops matching, reports it so the team knows without a user filing a bug). A manual QA procedure (`.wayfinder/tickets/005-protection-gap-qa-plan.md`) must pass on all 4 platforms before any release; not yet run against ChatGPT, Gemini, or Copilot.
 
 2. **False Positives** 🟡
    - **Risk:** Users distrust due to false alarms

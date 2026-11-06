@@ -29,13 +29,16 @@ The fix for a real breakage still ships as a normal code change + Chrome Web Sto
 - [002: Design the GAP badge state and popup copy](tickets/002-gap-badge-and-popup-design.md): inline-banner layout (Variant A); teal `#2F6F78` badge/pill with a `~` mark, settings stay visible underneath; rejected a full-takeover variant as inconsistent with "silent disablement."
 - [003: Define the Gap Report payload and endpoint contract](tickets/003-gap-report-contract.md): `POST /v1/gap-report` (matches the `Gap Report` glossary term; an earlier draft name, `/v1/platform-health`, was rejected for clashing with GLOSSARY.md's own avoid-list); payload is `{ source, timestamp, extensionVersion }` only; no auth required (anonymous installs must still be able to report); client dedupes via one `chrome.storage.local` key (`decrity_gap_reports`, a per-platform object map) to at most once per platform per 24h.
 
-- [004: Decide whether the privacy policy must disclose Gap Reports](tickets/004-privacy-policy-disclosure.md): yes, with its own named data-table row (not a vague "diagnostic data" sentence) — 30-day retention, shorter than the 90 days used for content hash/verdict/platform since a Gap Report has no per-user value once the team's been notified. Exact DOC.md table row and privacy-policy copy are written in the ticket; editing DOC.md and writing the privacy policy file itself are still follow-on work, not done here.
+- [004: Decide whether the privacy policy must disclose Gap Reports](tickets/004-privacy-policy-disclosure.md): yes, with its own named data-table row (not a vague "diagnostic data" sentence), 30-day retention, shorter than the 90 days used for content hash/verdict/platform since a Gap Report has no per-user value once the team's been notified. Exact DOC.md table row and privacy-policy copy are written in the ticket; editing DOC.md and writing the privacy policy file itself are still follow-on work, not done here. **Applied 2026-11-01**: DOC.md Section 10's table and the new `PRIVACY.md` (first draft, not legally reviewed).
+
+Tickets 001-004 have all been implemented and shipped (`56107d5`, `68cceca`, `5fc6d12`, `b1a5191`, `c13d6bc`).
+
+- [005: Define the manual QA/test plan for Protection Gap detection and the degraded UX](tickets/005-protection-gap-qa-plan.md): a per-platform DevTools checklist and simulation script (selector sanity, false-positive check, gap simulation, scan-pause verification, dedupe check). All 4 platforms must pass it before any Chrome Web Store release, no shipping with an unvalidated-platform caveat, superseding ticket 001's Copilot timing caveat going forward. Not yet run against ChatGPT, Gemini, or Copilot; only Claude.ai has been tested so far (this session, informally, which is what surfaced the selector bug that led to this ticket).
 
 ## Not yet specified
 
-- How to validate, before shipping, that Protection Gap detection and the degraded UX actually behave correctly (test/QA plan) — depends on how tickets 001 and 002 resolve.
-- Whether and how to update PROGRESS.md's "Platform Selectors Fragile" entry and ROADMAP.md's risk register once this spec is approved.
-- Actually applying ticket 004's resolution to DOC.md Section 10's data handling table and to the privacy policy once that file exists.
+- Actually running ticket 005's procedure against ChatGPT, Gemini, and Copilot.
+- Whether and how to update PROGRESS.md's "Platform Selectors Fragile" entry and ROADMAP.md's risk register now that this spec has shipped.
 
 ## Out of scope
 

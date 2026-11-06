@@ -2,7 +2,7 @@
  * API request/response types for Decrity
  */
 
-import { ScanResponse, ThreatDetail, SupportedPlatform } from './scan'
+import { ScanResponse, ScanVerdict, ThreatDetail, SupportedPlatform } from './scan'
 import { User, UserSettings, UserStats } from './user'
 
 /**
@@ -23,6 +23,17 @@ export namespace ScanAPI {
   export interface Request {
     content: string
     source: SupportedPlatform
+    /**
+     * The extension's own Layer 1 result, computed locally before this
+     * request was made. Lets the API fail safe to this instead of a
+     * hardcoded 'clean' if Layer 2 (the ML service) is unreachable, rather
+     * than silently discarding a result the extension already flagged.
+     */
+    heuristic?: {
+      verdict: ScanVerdict
+      score: number
+      reason: string
+    }
   }
 
   export interface Response extends ScanResponse {}
@@ -83,7 +94,13 @@ export namespace UserAPI {
  * GET /v1/user/stats - Get user statistics
  */
 export namespace StatsAPI {
-  export interface Response extends UserStats {}
+  export interface Response extends UserStats {
+    verdictBreakdown: {
+      clean: number
+      suspicious: number
+      threat: number
+    }
+  }
 }
 
 /**

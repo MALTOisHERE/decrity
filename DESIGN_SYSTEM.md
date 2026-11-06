@@ -57,6 +57,37 @@ Threat-severity colors (suspicious = amber, threat = red) are a **separate, inte
 
 **Poppins**, self-hosted (never a Google Fonts CDN link, see CLAUDE.md's privacy rationale). Weights 400/500/600/700, woff2 only. Font files live in `packages/extension/public/fonts/` and `packages/dashboard/public/fonts/`, wired via `@font-face` in each package's main CSS file. The content-script banner instead references the font via `chrome.runtime.getURL('fonts/poppins-<weight>.woff2')`, with `fonts/*` listed in its `web_accessible_resources` entry in `manifest.json`, since it can't reach a same-origin stylesheet. Never fetch from Google Fonts.
 
+## Logo
+
+Real brand assets (not a placeholder), supplied 2026-11-06: a square **mark** (the geometric "D" shape with a diamond cutout) and a horizontal **wordmark** (mark + "ecrity" lockup spelling "Decrity", with a sparkle accent). Source files live at `packages/extension/public/brand/mark.png`, `packages/extension/public/brand/wordmark.png`, and the same two files under `packages/dashboard/public/brand/`. Both are kept as the original black-on-transparent PNGs, not pre-recolored, so the brand color can change later without touching the asset again.
+
+**Always recolor via CSS, never bake a color into a new export**, unless the target genuinely can't run CSS (see below):
+
+```tsx
+<span
+  className="w-5 h-5 bg-primary"
+  style={{
+    maskImage: 'url(/brand/mark.png)',
+    maskSize: 'contain',
+    maskRepeat: 'no-repeat',
+    maskPosition: 'center',
+    WebkitMaskImage: 'url(/brand/mark.png)',
+    WebkitMaskSize: 'contain',
+    WebkitMaskRepeat: 'no-repeat',
+    WebkitMaskPosition: 'center',
+  }}
+/>
+```
+
+The `bg-primary` (or any other `bg-*`/`text-*`-backed color) is what actually paints the logo; swap that class to change its color anywhere it's used, no new asset needed.
+
+### Where each one goes
+
+- **Mark** (square): only where there's genuinely no room for the full wordmark, or the slot is literally square (the Chrome extension's manifest icon files, `packages/extension/public/icons/icon-{16,32,48,128}.png`, and the dashboard's favicon, `packages/dashboard/public/favicon.png`).
+- **Wordmark** (mark + "Decrity" text, one lockup): the default for any header, in both the extension popup and the dashboard. Replaces a separate icon + live text label entirely, don't pair it with a redundant "Decrity" heading next to it. Sized by height with `aspectRatio: '5246 / 2283'` (the asset is cropped tight to its content, not the original canvas size) so width follows automatically.
+
+**Exception, pre-colored raster exports**: Chrome's manifest icon files and the dashboard favicon can't run CSS (they're read directly by the browser chrome, not rendered inside a page), so those are real teal (`#2f6f78`) exports, not mask-based. If the brand color ever changes, regenerate those specific files from the original black source; everything else (anywhere `mask-image` is used) updates itself by changing a class.
+
 ## Icons
 
 **Never emoji in shipped UI.** Use inline SVG (simple outline style: `fill="none" stroke="currentColor" strokeWidth="1.6-2"`) for brand/one-off icons like the shield logo, or `lucide-react` for anything else once shadcn is set up in that package. The one legitimate exception is `BADGE_TEXT` in `packages/shared/src/constants/index.ts` (checkmark, exclamation mark, warning triangle, circle), that's Chrome's toolbar badge API, which only accepts short text strings, not SVG. Those are monochrome functional glyphs, not decorative emoji, and are fine as-is.

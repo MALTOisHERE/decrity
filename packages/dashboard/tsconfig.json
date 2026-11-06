@@ -6,11 +6,11 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "types": ["vite/client"],
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@decrity/shared": ["../shared/src/index.ts"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],

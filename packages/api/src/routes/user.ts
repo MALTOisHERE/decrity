@@ -5,7 +5,8 @@
  */
 
 import { FastifyInstance } from 'fastify'
-import { UserAPI } from '@decrity/shared'
+import { UserAPI, StatsAPI } from '@decrity/shared'
+import { getUserStats } from '../services/database.js'
 
 export async function userRoute(server: FastifyInstance) {
   // GET /v1/user
@@ -30,5 +31,23 @@ export async function userRoute(server: FastifyInstance) {
         message: 'User accounts not yet implemented',
       },
     })
+  })
+
+  // GET /v1/user/stats
+  server.get('/user/stats', async (_request, reply) => {
+    try {
+      // TODO: real auth (v1.5), see report.ts's matching null-userId note
+      const stats = await getUserStats(null)
+      const response: StatsAPI.Response = stats
+      return response
+    } catch (error) {
+      server.log.error({ err: error }, 'Failed to fetch user stats')
+      return reply.status(500).send({
+        error: {
+          code: 'STATS_FAILED',
+          message: 'Failed to fetch statistics',
+        },
+      })
+    }
   })
 }

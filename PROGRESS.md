@@ -1,6 +1,6 @@
 # Decrity Development Progress & Timeline
 
-> **Last Updated:** 2026-03-29
+> **Last Updated:** 2026-11-06
 > **Current Version:** v0.1.0 (Foundation)
 > **Next Milestone:** v1.0.0 (MVP Launch)
 
@@ -97,21 +97,23 @@
 ### 🚧 In Progress
 - [ ] **Extension Polish** (Week 1-2)
   - [ ] Design and add extension icons (16, 32, 48, 128px)
-    - Create shield-based icon design
+    - Placeholder icons exist now (brand teal, functional, unblock loading), but no final shield-based design yet
     - Export in all required sizes
     - Update manifest.json references
   - [ ] Test Layer 1 heuristics with real injection examples
-  - [ ] Refine alert banner styling
+  - [x] Refine alert banner styling: rebuilt on shadcn/ui (React + Alert component), mounted inside a Shadow DOM root so it's isolated from each host platform's own styles/React instance; see DESIGN_SYSTEM.md
   - [ ] Add dismissal persistence
   - [ ] Implement notification system
 
+- [x] **Protection Gap detection + Gap Report** (not originally scoped here, added via `.wayfinder/` tickets 001-004): when a platform's selector(s) stop matching, the extension pauses scanning on it, shows a distinct badge/popup state, and sends a content-free report to the API (`POST /v1/gap-report`, deduped client-side to once per platform per day). Shipped.
+
 - [ ] **Platform Testing** (Week 2)
   - [ ] Test on ChatGPT (test various UI states)
-  - [ ] Test on Gemini
-  - [ ] Test on Claude
-  - [ ] Test on Copilot
+  - [x] Test on Gemini: informal testing passed (selector sanity, gap detection, scan pipeline) once the ML service container was actually running; surfaced the separate "API fails open to clean" issue above, unrelated to Gemini specifically
+  - [x] Test on Claude: informal testing found and fixed a real bug (`claude.ts`'s selector was matching a hidden SSR fallback element ahead of the real composer, silently breaking scanning)
+  - [ ] Test on Copilot: not tested (sign-in required, skipped). Worth checking when it is tested: `https://copilot.microsoft.com` auto-redirected to `https://copilot.com` for a signed-out visitor (2026-11-06), a domain Decrity's manifest doesn't cover at all. Unconfirmed whether the authenticated app also lives there, but this is the same class of issue as the chat.openai.com to chatgpt.com migration found and fixed earlier.
   - [ ] Document selector updates needed
-  - [ ] Create selector update mechanism
+  - [x] Create selector update mechanism: not automated, but `.wayfinder/tickets/005-protection-gap-qa-plan.md` defines the manual per-platform QA procedure (and a reusable DevTools script) that must pass on all 4 platforms before any release
 
 ### 📋 Todo
 - [ ] **Extension Features** (Week 3-4)
@@ -131,7 +133,7 @@
 
 - [ ] **Documentation** (Week 7)
   - [ ] User guide
-  - [ ] Privacy policy
+  - [ ] Privacy policy: first draft exists (`PRIVACY.md`), matches DOC.md Section 10's data handling table, but not legally reviewed and not ready to publish or link from the Chrome Web Store listing
   - [ ] Terms of service
   - [ ] Chrome Web Store listing copy
   - [ ] Screenshots and demo video
@@ -194,10 +196,10 @@
 
 ### Dashboard Integration
 - [ ] **API Integration**
-  - [ ] Connect dashboard to API
-  - [ ] Implement authentication flow
-  - [ ] Fetch threat history
-  - [ ] Display user statistics
+  - [x] Connect dashboard to API: done locally only (no deployed backend). Added `GET /v1/user/stats` (didn't exist before) and fixed `GET /v1/report`, which had always silently returned empty due to a userId mismatch between what scans were persisted with and what history was queried by, plus a missing query-string schema that made Prisma reject the `limit`/`offset` params.
+  - [ ] Implement authentication flow: still not implemented; all local testing uses `userId: null` (no accounts exist yet)
+  - [x] Fetch threat history: working locally, paginated, on the History page
+  - [x] Display user statistics: working locally, on the Dashboard page (total scans, threats caught, streak, verdict breakdown)
   - [ ] Real-time updates (optional)
 
 - [ ] **Dashboard Features**
@@ -206,7 +208,7 @@
   - [ ] Threat history with filtering
   - [ ] Data export (CSV/JSON)
   - [ ] Weekly report email generation
-  - [ ] Charts and visualizations (Recharts)
+  - [x] Charts and visualizations: a verdict breakdown is shown on the Dashboard page, deliberately as plain inline bars rather than a boxed Recharts widget (see DESIGN_SYSTEM.md); Recharts itself is still a dependency but unused for now
 
 ### Extension Updates
 - [ ] **API Integration**
@@ -302,9 +304,9 @@
    - Owner: Design team
 
 2. **Platform Selectors Fragile**
-   - Status: 🟡 Will break with UI updates
+   - Status: 🟡 Confirmed real, not just theoretical: a hidden SSR fallback element on claude.ai was silently matching before the real composer (found and fixed 2026-11-06)
    - Risk: AI platforms frequently change DOM
-   - Mitigation: Create selector update monitoring system
+   - Mitigation: Protection Gap detection now ships in the extension (pauses scanning and notifies the user when a platform's selector stops matching), and `.wayfinder/tickets/005-protection-gap-qa-plan.md` defines a manual QA procedure that must pass on all 4 platforms before a release. Not yet run against ChatGPT, Gemini, or Copilot.
    - Priority: Medium
    - Owner: Extension team
 
@@ -319,6 +321,12 @@
    - Status: 🟡 Expected for v0.1
    - Blocker for: Dashboard integration
    - Priority: Medium (v1.5)
+   - Owner: Backend team
+
+5. **API fails open to "clean" when the ML service is down**
+   - Status: ✅ Fixed 2026-11-06
+   - Was: `packages/api/src/services/scanner.ts`'s `scanContent()` caught any ML service connection failure and returned a hardcoded `{ verdict: 'clean', score: 0 }`, discarding the result entirely. Since the extension's own `runFullScan()` trusted whatever the API returned once the request succeeded, a reachable-but-ML-down API silently cleared a genuinely suspicious or threatening paste for every user with Privacy Mode off, with no visible signal that detection degraded.
+   - Fix: the extension now sends its own Layer 1 heuristic result along with every `/v1/scan` request (`ScanAPI.Request.heuristic`, see `packages/shared/src/types/api.ts`). When the ML service is unreachable, the API now returns that heuristic result instead of a hardcoded clean. If no heuristic was sent at all (a future caller that skips Layer 1), it fails safe to `suspicious` with a plain-language reason, never silently clean. Verified live: stopped the ML service, confirmed a `suspicious` scan correctly returned `suspicious` (not `clean`), both with and without a heuristic in the request.
    - Owner: Backend team
 
 ### Technical Debt
