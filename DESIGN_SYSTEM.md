@@ -2,9 +2,12 @@
 
 Reference for how UI is built across this repo. Read this before adding or changing any UI. Don't re-derive these decisions from scratch, and don't introduce a different approach in a new corner of the codebase.
 
-## Tooling: when doing design work, use the `frontend-design` skill
+## Tooling: when doing design work, use the right design skill
 
-For any new screen, page, or visual redesign (not a small tweak to existing UI), invoke the `frontend-design` skill first for the design-planning process (color/type/layout tokens, critique against generic-AI-design defaults). Then apply the result through this document's component/token system, not a one-off style.
+For any new screen, page, or visual redesign (not a small tweak to existing UI), invoke a design-planning skill first (color/type/layout tokens, critique against generic-AI-design defaults). Then apply the result through this document's component/token system, not a one-off style.
+
+- **`interface-design`** — use for all dashboard and extension-popup work (product UI: dashboards, settings, data views). This is the default for anything in `packages/dashboard` or `packages/extension/src/popup`.
+- **`frontend-design`** — use for marketing/landing-page work instead (e.g. the planned `decrity.app` landing page). Not for product UI.
 
 ## Component library: shadcn/ui
 
@@ -87,6 +90,10 @@ The `bg-primary` (or any other `bg-*`/`text-*`-backed color) is what actually pa
 - **Wordmark** (mark + "Decrity" text, one lockup): the default for any header, in both the extension popup and the dashboard. Replaces a separate icon + live text label entirely, don't pair it with a redundant "Decrity" heading next to it. Sized by height with `aspectRatio: '5246 / 2283'` (the asset is cropped tight to its content, not the original canvas size) so width follows automatically.
 
 **Exception, pre-colored raster exports**: Chrome's manifest icon files and the dashboard favicon can't run CSS (they're read directly by the browser chrome, not rendered inside a page), so those are real teal (`#2f6f78`) exports, not mask-based. If the brand color ever changes, regenerate those specific files from the original black source; everything else (anywhere `mask-image` is used) updates itself by changing a class.
+
+### Third-party platform logos (landing page only)
+
+`packages/landing/src/components/icons.tsx` has inline `currentColor` SVGs for ChatGPT (OpenAI), Gemini, Claude, and Copilot, used in the "Works inside" row to show real platform compatibility, not implied endorsement. Sourced from [lobehub/lobe-icons](https://github.com/lobehub/lobe-icons) (MIT licensed, built for exactly this use case); raw source files kept at `packages/landing/public/brand/platforms/*.svg` for provenance. These are third-party marks, not Decrity brand assets: don't move them into the shared brand convention above, and don't recolor them to anything but a neutral foreground/muted tone (no brand-teal recolor, since that would misrepresent them as Decrity's own).
 
 ## Icons
 

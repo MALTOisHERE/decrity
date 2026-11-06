@@ -22,6 +22,7 @@
     "extension:dev": "pnpm --filter @decrity/extension dev",
     "api:dev": "pnpm --filter @decrity/api dev",
     "dashboard:dev": "pnpm --filter @decrity/dashboard dev",
+    "landing:dev": "pnpm --filter @decrity/landing dev",
     "ml:dev": "cd packages/ml-service && python -m uvicorn app.main:app --reload",
     "status": "echo 'See STATUS.md for current project status' && cat STATUS.md | head -30",
     "progress": "echo 'See PROGRESS.md for detailed progress tracking' && cat PROGRESS.md | grep -E '## v[0-9]' -A 5",
