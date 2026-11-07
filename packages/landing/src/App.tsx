@@ -132,7 +132,7 @@ function ScrambleText({ text, className }: { text: string; className?: string })
 function Wordmark({ className = 'h-6' }: { className?: string }) {
   return (
     <span
-      className={`${className} bg-foreground inline-block`}
+      className={`${className} bg-foreground transition-colors duration-200 group-hover:bg-primary inline-block`}
       style={{
         aspectRatio: '5246 / 2283',
         maskImage: 'url(/brand/wordmark.png)',
@@ -386,7 +386,13 @@ function HeroSection() {
         }}
       />
       <header className="relative mx-auto mt-6 flex w-fit items-center gap-6 rounded-full border border-border bg-card/50 px-6 py-3 backdrop-blur-xl">
-        <Wordmark />
+        <a
+          href="/"
+          aria-label="Decrity, back to top"
+          className="group inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Wordmark />
+        </a>
         <nav aria-label="Primary">
           <a href="#waitlist">
             <Button variant="outline" size="sm" className="button-sm">
