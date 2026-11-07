@@ -66,6 +66,21 @@ export namespace GapReportAPI {
 }
 
 /**
+ * POST /v1/waitlist - Join the pre-launch waitlist (landing page). Only an
+ * email is stored, nothing else; sending the "it's live" email is a manual
+ * step for now, not automated by this endpoint.
+ */
+export namespace WaitlistAPI {
+  export interface Request {
+    email: string
+  }
+
+  export interface Response {
+    joined: boolean
+  }
+}
+
+/**
  * GET /v1/report - Get user's threat history
  */
 export namespace ReportAPI {

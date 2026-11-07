@@ -3,9 +3,14 @@ name: Deploy to VPS
 # Separate from docker-build.yml on purpose: building and deploying are two
 # distinct actions, not one chained pipeline. This one never builds
 # anything, it only pulls whatever's currently tagged :latest on GHCR (from
-# the most recent successful build workflow run) and restarts the VPS
-# containers. Manual trigger only (no push trigger), so a build succeeding
+# the most recent successful build workflow run), restarts the VPS
+# containers, and applies any pending Prisma migrations against the VPS
+# database. Manual trigger only (no push trigger), so a build succeeding
 # never auto-deploys.
+#
+# "prisma migrate deploy" only applies migrations that haven't run yet
+# (tracked in the database's own _prisma_migrations table), so running it
+# on every deploy is safe even when this release has no schema change.
 
 on:
   workflow_dispatch:
@@ -24,4 +29,5 @@ jobs:
             cd /var/www/decrity
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml exec -T api pnpm exec prisma migrate deploy
             docker compose -f docker-compose.prod.yml ps

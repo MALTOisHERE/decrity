@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Lock, ShieldAlert, ShieldCheck, User } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { Toaster } from '@/components/ui/sonner'
 import { OpenAIIcon, GeminiIcon, ClaudeIcon, CopilotIcon } from '@/components/icons'
 
 function useReveal<T extends HTMLElement>() {
@@ -284,18 +286,36 @@ function ValueRow({
 
 function WaitlistForm() {
   const [email, setEmail] = useState('')
-  const [joined, setJoined] = useState(false)
-
-  if (joined) {
-    return <p className="body-1 text-accent">You're on the list. We'll email you the day Decrity ships.</p>
-  }
+  const [submitting, setSubmitting] = useState(false)
 
   return (
     <form
       className="flex w-full max-w-md flex-col gap-3 sm:flex-row"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault()
-        if (email.trim()) setJoined(true)
+        const trimmed = email.trim()
+        if (!trimmed || submitting) return
+
+        setSubmitting(true)
+
+        try {
+          const res = await fetch('/v1/waitlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: trimmed }),
+          })
+          if (!res.ok) throw new Error('request failed')
+          toast.success("You're on the list", {
+            description: "Your email is stored securely. We'll send one message, the day Decrity ships.",
+          })
+          setEmail('')
+        } catch {
+          toast.error("Couldn't save that", {
+            description: 'Try again in a moment.',
+          })
+        } finally {
+          setSubmitting(false)
+        }
       }}
     >
       <input
@@ -307,8 +327,8 @@ function WaitlistForm() {
         aria-label="Email address"
         className="h-11 flex-1 rounded-md border border-input bg-background px-4 body-6 text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       />
-      <Button type="submit" size="lg" className="button-md shrink-0">
-        Join the waitlist
+      <Button type="submit" size="lg" className="button-md shrink-0" disabled={submitting}>
+        {submitting ? 'Joining...' : 'Join the waitlist'}
       </Button>
     </form>
   )
@@ -541,6 +561,8 @@ export default function App() {
         <Wordmark className="h-5 opacity-70" />
         <p className="caption-5 text-muted-foreground">© 2026 Decrity</p>
       </footer>
+
+      <Toaster />
     </div>
   )
 }

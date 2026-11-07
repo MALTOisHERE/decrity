@@ -11,6 +11,7 @@ import { scanRoute } from './routes/scan.js'
 import { reportRoute } from './routes/report.js'
 import { userRoute } from './routes/user.js'
 import { gapReportRoute } from './routes/gapReport.js'
+import { waitlistRoute } from './routes/waitlist.js'
 
 const PORT = parseInt(process.env.API_PORT || '3000')
 const HOST = process.env.API_HOST || '0.0.0.0'
@@ -48,6 +49,7 @@ await server.register(scanRoute, { prefix: '/v1' })
 await server.register(reportRoute, { prefix: '/v1' })
 await server.register(userRoute, { prefix: '/v1' })
 await server.register(gapReportRoute, { prefix: '/v1' })
+await server.register(waitlistRoute, { prefix: '/v1' })
 
 // Start server
 try {

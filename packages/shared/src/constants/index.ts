@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
   AUTH_LOGIN: '/v1/auth/login',
   AUTH_REGISTER: '/v1/auth/register',
   GAP_REPORT: '/v1/gap-report',
+  WAITLIST: '/v1/waitlist',
 } as const
 
 /**

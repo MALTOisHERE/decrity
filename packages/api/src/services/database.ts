@@ -48,6 +48,19 @@ export async function persistGapReport(
 }
 
 /**
+ * Record a waitlist signup. Upsert, not create: re-submitting the same
+ * email (e.g. a double-click) is a no-op success, not a unique-constraint
+ * error the route would have to special-case.
+ */
+export async function persistWaitlistSignup(email: string): Promise<void> {
+  await prisma.waitlistSignup.upsert({
+    where: { email },
+    update: {},
+    create: { email },
+  })
+}
+
+/**
  * Get scan history for a user
  */
 export async function getScanHistory(
