@@ -29,5 +29,5 @@ The state where a platform's selector(s) match nothing, confirmed after the exte
 _Avoid_: Broken selector, degraded mode, silent disablement, selector failure
 
 **Gap Report**:
-The minimal, content-free metadata (platform id, timestamp, extension version — never selector text or page content) Decrity sends to the server when a Protection Gap starts, so the team learns about it without a user filing a bug.
+The minimal, content-free metadata (platform id, timestamp, extension version, never selector text or page content) Decrity sends to the server when a Protection Gap starts, so the team learns about it without a user filing a bug.
 _Avoid_: Breakage telemetry, health ping, platform health check

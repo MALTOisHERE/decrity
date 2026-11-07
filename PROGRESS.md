@@ -10,20 +10,20 @@
 
 | Milestone | Status | Completion | Target Date |
 |-----------|--------|------------|-------------|
-| **v0.1** - Foundation & Architecture | ✅ Complete | 100% | 2026-03-29 |
-| **v1.0** - MVP (Minimum Viable Product) | 🚧 In Progress | 35% | Month 1-3 |
-| **v1.5** - Backend & Dashboard Integration | 📋 Planned | 0% | Month 4-6 |
-| **v2.0** - Full Feature Set | 📋 Planned | 0% | Month 7-12 |
+| **v0.1** - Foundation & Architecture | Complete | 100% | 2026-03-29 |
+| **v1.0** - MVP (Minimum Viable Product) | In Progress | 35% | Month 1-3 |
+| **v1.5** - Backend & Dashboard Integration | Planned | 0% | Month 4-6 |
+| **v2.0** - Full Feature Set | Planned | 0% | Month 7-12 |
 
 ---
 
 ## Version History
 
-### v0.1.0 - Foundation ✅ (2026-03-29)
+### v0.1.0 - Foundation (Complete, 2026-03-29)
 
 **Goal:** Establish complete project architecture and development infrastructure
 
-#### ✅ Completed
+#### Completed
 - [x] Monorepo setup (Turborepo + pnpm workspaces)
 - [x] TypeScript configuration (strict mode, shared tsconfig)
 - [x] Shared package (`@decrity/shared`)
@@ -67,11 +67,11 @@
   - [x] QUICKSTART.md (5-minute setup guide)
   - [x] ARCHITECTURE.md (system diagrams)
   - [x] CONTRIBUTING.md (dev guidelines)
-  - [x] DOC.md (complete spec - already existed)
+  - [x] DOC.md (complete spec, already existed)
   - [x] LICENSE
   - [x] GitHub issue/PR templates
 
-#### 📊 Metrics
+#### Metrics
 - **Total Files Created:** 80+
 - **Lines of Code:** ~5,000
 - **Packages:** 5 (shared, extension, api, ml-service, dashboard)
@@ -80,21 +80,21 @@
 
 ---
 
-## v1.0 - MVP (Minimum Viable Product) 🚧
+## v1.0 - MVP (Minimum Viable Product) (In Progress)
 
 **Goal:** Launch functional Chrome extension with local threat detection
 
 **Target:** Month 1-3
 **Progress:** 35% Complete
 
-### ✅ Completed (Foundation from v0.1)
+### Completed (Foundation from v0.1)
 - [x] Extension architecture
 - [x] Layer 1 heuristic detection
 - [x] Platform handlers
 - [x] Alert system
 - [x] Privacy mode
 
-### 🚧 In Progress
+### In Progress
 - [ ] **Extension Polish** (Week 1-2)
   - [ ] Design and add extension icons (16, 32, 48, 128px)
     - Placeholder icons exist now (brand teal, functional, unblock loading), but no final shield-based design yet
@@ -109,13 +109,13 @@
 
 - [ ] **Platform Testing** (Week 2)
   - [ ] Test on ChatGPT (test various UI states)
-  - [x] Test on Gemini: informal testing passed (selector sanity, gap detection, scan pipeline) once the ML service container was actually running; surfaced the separate "API fails open to clean" issue above, unrelated to Gemini specifically
+  - [x] Test on Gemini: informal testing passed (selector sanity, gap detection, scan pipeline) once the ML service container was actually running; surfaced the separate "API fails open to clean" issue below, unrelated to Gemini specifically
   - [x] Test on Claude: informal testing found and fixed a real bug (`claude.ts`'s selector was matching a hidden SSR fallback element ahead of the real composer, silently breaking scanning)
   - [ ] Test on Copilot: not tested (sign-in required, skipped). Worth checking when it is tested: `https://copilot.microsoft.com` auto-redirected to `https://copilot.com` for a signed-out visitor (2026-11-06), a domain Decrity's manifest doesn't cover at all. Unconfirmed whether the authenticated app also lives there, but this is the same class of issue as the chat.openai.com to chatgpt.com migration found and fixed earlier.
   - [ ] Document selector updates needed
   - [x] Create selector update mechanism: not automated, but `.wayfinder/tickets/005-protection-gap-qa-plan.md` defines the manual per-platform QA procedure (and a reusable DevTools script) that must pass on all 4 platforms before any release
 
-### 📋 Todo
+### Todo
 - [ ] **Extension Features** (Week 3-4)
   - [ ] Add onboarding flow (3-step interactive demo)
   - [ ] Settings persistence improvements
@@ -145,7 +145,7 @@
   - [ ] Set up analytics (PostHog)
   - [ ] Monitor initial users
 
-### 🎯 Success Criteria for v1.0
+### Success Criteria for v1.0
 - [ ] Extension loads without errors on all 4 platforms
 - [ ] Layer 1 detection works offline
 - [ ] False positive rate < 5%
@@ -156,7 +156,7 @@
 
 ---
 
-## v1.5 - Backend & Dashboard 📋
+## v1.5 - Backend & Dashboard (Planned)
 
 **Goal:** Full-stack integration with ML classification and user accounts
 
@@ -229,7 +229,7 @@
   - [ ] Build Firefox-specific bundle
   - [ ] Submit to Firefox Add-ons
 
-### 🎯 Success Criteria for v1.5
+### Success Criteria for v1.5
 - [ ] ML classifier accuracy > 90%
 - [ ] False positive rate < 2%
 - [ ] API uptime > 99.5%
@@ -239,7 +239,7 @@
 
 ---
 
-## v2.0 - Full Feature Set 📋
+## v2.0 - Full Feature Set (Planned)
 
 **Goal:** Complete vision from DOC.md with all three pillars
 
@@ -284,7 +284,7 @@
 - [ ] Threat intelligence feed
 - [ ] Integration with security tools
 
-### 🎯 Success Criteria for v2.0
+### Success Criteria for v2.0
 - [ ] All three pillars functional
 - [ ] 10,000+ active users
 - [ ] Premium conversion rate > 5%
@@ -298,33 +298,33 @@
 
 ### Current Issues
 1. **Extension Icons Missing**
-   - Status: 🔴 Blocking v1.0
+   - Status: Blocker, blocking v1.0
    - Need: 16x16, 32x32, 48x48, 128x128 PNG files
    - Priority: High
    - Owner: Design team
 
 2. **Platform Selectors Fragile**
-   - Status: 🟡 Confirmed real, not just theoretical: a hidden SSR fallback element on claude.ai was silently matching before the real composer (found and fixed 2026-11-06)
+   - Status: Warning, confirmed real, not just theoretical: a hidden SSR fallback element on claude.ai was silently matching before the real composer (found and fixed 2026-11-06)
    - Risk: AI platforms frequently change DOM
    - Mitigation: Protection Gap detection now ships in the extension (pauses scanning and notifies the user when a platform's selector stops matching), and `.wayfinder/tickets/005-protection-gap-qa-plan.md` defines a manual QA procedure that must pass on all 4 platforms before a release. Not yet run against ChatGPT, Gemini, or Copilot.
    - Priority: Medium
    - Owner: Extension team
 
 3. **ML Model Not Trained**
-   - Status: 🟡 Expected for v0.1
+   - Status: Warning, expected for v0.1
    - Blocker for: v1.5 full ML classification
    - Need: Training dataset (1000+ labeled examples)
    - Priority: Medium (v1.5)
    - Owner: ML team
 
 4. **No User Authentication**
-   - Status: 🟡 Expected for v0.1
+   - Status: Warning, expected for v0.1
    - Blocker for: Dashboard integration
    - Priority: Medium (v1.5)
    - Owner: Backend team
 
 5. **API fails open to "clean" when the ML service is down**
-   - Status: ✅ Fixed 2026-11-06
+   - Status: Fixed 2026-11-06
    - Was: `packages/api/src/services/scanner.ts`'s `scanContent()` caught any ML service connection failure and returned a hardcoded `{ verdict: 'clean', score: 0 }`, discarding the result entirely. Since the extension's own `runFullScan()` trusted whatever the API returned once the request succeeded, a reachable-but-ML-down API silently cleared a genuinely suspicious or threatening paste for every user with Privacy Mode off, with no visible signal that detection degraded.
    - Fix: the extension now sends its own Layer 1 heuristic result along with every `/v1/scan` request (`ScanAPI.Request.heuristic`, see `packages/shared/src/types/api.ts`). When the ML service is unreachable, the API now returns that heuristic result instead of a hardcoded clean. If no heuristic was sent at all (a future caller that skips Layer 1), it fails safe to `suspicious` with a plain-language reason, never silently clean. Verified live: stopped the ML service, confirmed a `suspicious` scan correctly returned `suspicious` (not `clean`), both with and without a heuristic in the request.
    - Owner: Backend team
@@ -386,13 +386,13 @@ Month 7-12: v2.0 Full Feature Set
 ## How to Update This Document
 
 ### When Completing a Task
-1. Move item from "📋 Todo" to "✅ Completed"
+1. Move item from "Todo" to "Completed"
 2. Update progress percentage
 3. Update "Last Updated" date at top
 4. Commit with message: `docs: mark [task] as complete`
 
 ### When Adding New Tasks
-1. Add to appropriate version section under "📋 Todo"
+1. Add to appropriate version section under "Todo"
 2. Assign priority (High/Medium/Low)
 3. Assign owner/team if known
 4. Update "Last Updated" date
@@ -400,7 +400,7 @@ Month 7-12: v2.0 Full Feature Set
 
 ### When Encountering Blockers
 1. Add to "Known Issues & Blockers" section
-2. Mark with appropriate status emoji (🔴 🟡 🟢)
+2. Mark with appropriate status (Blocker/Warning/OK)
 3. Document mitigation plan
 4. Assign owner
 5. Reference in relevant version section
@@ -436,9 +436,9 @@ pnpm run progress-report  # (TODO: create script)
 ---
 
 **Legend:**
-- ✅ Complete
-- 🚧 In Progress
-- 📋 Planned
-- 🔴 Blocker
-- 🟡 Warning
-- 🟢 OK
+- Complete: done
+- In Progress: actively being worked on
+- Planned: not started yet
+- Blocker: blocking another milestone
+- Warning: known risk or caveat
+- OK: no concerns

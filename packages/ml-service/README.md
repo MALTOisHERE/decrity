@@ -1,53 +1,41 @@
 # Decrity ML Service
 
-Python FastAPI service for prompt injection detection using ML.
+Python/FastAPI service for prompt injection detection.
 
 ## Setup
 
 ```bash
-# Create virtual environment
 python -m venv .venv
 
-# Activate (Windows)
+# activate (Windows)
 .venv\Scripts\activate
-
-# Activate (Unix/Mac)
+# activate (Unix/Mac)
 source .venv/bin/activate
 
-# Install dependencies
 pip install -r requirements.txt
 ```
 
 ## Development
 
 ```bash
-# Run with auto-reload
 python -m uvicorn app.main:app --reload --port 8000
-
-# Or use the convenience script
-python app/main.py
 ```
 
-## API Endpoints
+## Docker
 
-- `GET /health` - Health check
-- `POST /classify` - Classify content for prompt injection
-
-## Model Training
-
-The ML classifier uses DistilBERT fine-tuned on prompt injection examples.
-
-Training data should be placed in `data/training/` with format:
-```json
-[
-  {"text": "...", "label": 0},  // 0 = clean
-  {"text": "...", "label": 1}   // 1 = injection
-]
+```bash
+docker build -t decrity-ml-service .
 ```
 
-TODO: Add training script in v1.5
+In practice this runs as part of the full stack; see the root [`docker-compose.yml`](../../docker-compose.yml) for local development or [DEPLOY.md](../../DEPLOY.md) for production.
 
-## Current Status
+## API endpoints
 
-v1.0 uses heuristic-based detection. ML classifier is a placeholder.
-Full ML implementation planned for v1.5.
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/health` | Health check |
+| `POST` | `/classify` | Classify content for prompt injection |
+
+## Current status
+
+The classifier (`app/classifier.py`) is a placeholder: it returns a fixed score rather than running real inference. `torch`/`transformers`/`scikit-learn` were removed from `requirements.txt` since nothing imports them yet (they were adding ~2GB to every Docker build for no benefit); add them back there when real model loading is implemented. See that file's own comments for the planned DistilBERT approach.

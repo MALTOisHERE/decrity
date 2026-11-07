@@ -191,4 +191,4 @@ docker-compose down
 - **Documentation**: [DOC.md](./DOC.md)
 - **Contributing**: [CONTRIBUTING.md](./CONTRIBUTING.md)
 
-Happy coding! 🛡️
+Happy coding!

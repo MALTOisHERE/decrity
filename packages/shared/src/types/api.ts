@@ -1,6 +1,15 @@
 /**
  * API request/response types for Decrity
+ *
+ * Each endpoint gets its own namespace (ScanAPI, ReportAPI, etc.) grouping
+ * its Request/Response types under one qualified name, e.g. `ScanAPI.Request`,
+ * used consistently at every call site across the api/extension/dashboard
+ * packages. These namespaces contain only type/interface declarations, so
+ * they compile to zero runtime JavaScript; @typescript-eslint/no-namespace
+ * (from eslint:recommended) is disabled file-wide since its concern is
+ * namespaces used as a runtime module system, not this pattern.
  */
+/* eslint-disable @typescript-eslint/no-namespace */
 
 import { ScanResponse, ScanVerdict, ThreatDetail, SupportedPlatform } from './scan'
 import { User, UserSettings, UserStats } from './user'

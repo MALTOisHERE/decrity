@@ -60,7 +60,7 @@ pnpm format          # Format all code
 pnpm format:check    # Check formatting
 ```
 
-**No automated tests exist yet.** The root `pnpm test` script (`turbo run test`) is wired up, but no package defines a `test` script, so it's a no-op. Don't assume a test suite exists when verifying changes — rely on `pnpm lint`, `pnpm build`, and manual testing (see Testing Requirements below) instead.
+**No automated tests exist yet.** The root `pnpm test` script (`turbo run test`) is wired up, but no package defines a `test` script, so it's a no-op. Don't assume a test suite exists when verifying changes; rely on `pnpm lint`, `pnpm build`, and manual testing (see Testing Requirements below) instead.
 
 ### Docker Management
 ```bash

@@ -1,58 +1,57 @@
 # @decrity/extension
 
-Decrity Chrome Extension - AI Security Firewall for consumers.
+Decrity Chrome extension: an AI security firewall for consumers.
 
 ## Features
 
-- **Real-time protection** - Monitors AI interactions on ChatGPT, Gemini, Claude, and Copilot
-- **Layer 1 Heuristics** - Local pattern-based prompt injection detection
-- **Layer 2 ML** - Cloud-based ML classifier (when privacy mode is off)
-- **Privacy Mode** - All scanning happens locally, no data sent to cloud
-- **Non-blocking alerts** - User-friendly warnings in plain language
+- **Real-time protection**: monitors AI interactions on ChatGPT, Gemini, Claude, and Copilot
+- **Layer 1 heuristics**: local pattern-based prompt injection detection, works offline
+- **Layer 2 ML**: cloud-based classifier, only runs when Privacy Mode is off
+- **Privacy Mode**: on by default; all scanning happens locally, no data sent to the cloud
+- **Protection Gap detection**: notices when a platform's UI changes in a way the extension hasn't caught up with yet, pauses scanning on that platform, and reports it (no content, just platform id/timestamp/version) so the team can fix it fast; see `GLOSSARY.md`
+- **Non-blocking alerts**: plain-language warnings, rendered via shadcn/ui inside an isolated Shadow DOM root so they never collide with the host page's own styles or React instance
 
 ## Development
 
 ```bash
-# Install dependencies (from root)
+# from the repo root
 pnpm install
-
-# Start development server with hot reload
-pnpm dev
-
-# Build extension for production
-pnpm build
-
-# The built extension will be in dist/
+pnpm extension:dev     # dev server, hot reload
+pnpm --filter @decrity/extension build
+# the built extension will be in packages/extension/dist/
 ```
 
 ## Loading in Chrome
 
-1. Build the extension: `pnpm build`
+1. Build the extension: `pnpm --filter @decrity/extension build`
 2. Open Chrome and go to `chrome://extensions/`
 3. Enable "Developer mode"
 4. Click "Load unpacked"
 5. Select the `dist` folder
 
-## Project Structure
+## Project structure
 
 ```
 src/
-├── background/       # Service worker (scan coordination, caching, API client)
-├── content/          # Content scripts (DOM monitoring, alerts)
-│   └── platforms/    # Platform-specific selectors
-├── popup/            # Extension popup UI (React)
-└── shared/           # Shared utilities (heuristics scanner)
+├── background/       # Service worker: scan coordination, caching, API client, gap reports
+├── content/          # Content scripts: DOM monitoring, alert banner, gap detection
+│   └── platforms/    # Platform-specific selectors (ChatGPT, Gemini, Claude, Copilot)
+├── popup/            # Extension popup UI (React, shadcn/ui)
+├── components/ui/    # shadcn/ui components, owned source (see root DESIGN_SYSTEM.md)
+├── lib/               # cn() class-merging helper
+└── shared/           # Layer 1 heuristics scanner (must stay offline-capable)
 ```
 
-## Key Files
+## Key files
 
-- `manifest.json` - Extension manifest (Manifest V3)
-- `background/index.ts` - Service worker entry point
-- `content/index.ts` - Content script entry point
-- `popup/App.tsx` - Popup React app
+- `public/manifest.json`: extension manifest (Manifest V3)
+- `background/index.ts`: service worker entry point
+- `content/index.ts`: content script entry point
+- `content/injector.tsx`: alert banner, mounted inside a Shadow DOM root
+- `popup/App.tsx`: popup React app
 
 ## Notes
 
-- Icon files need to be added to `public/icons/` (16x16, 32x32, 48x48, 128x128 PNG)
-- Platform selectors in `content/platforms/*.ts` may need updates as AI platforms change their UI
-- The extension runs in Privacy Mode by default (Layer 1 heuristics only)
+- Platform selectors in `content/platforms/*.ts` are fragile by nature and may need updates as AI platforms change their UI; verify against the live platform before changing one
+- The extension runs in Privacy Mode by default (Layer 1 heuristics only, no network calls)
+- See the root [DESIGN_SYSTEM.md](../../DESIGN_SYSTEM.md) for UI/component conventions this package follows

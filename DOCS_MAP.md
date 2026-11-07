@@ -4,7 +4,7 @@
 
 ---
 
-## 📍 Where Do I Start?
+## Where Do I Start?
 
 ```
          Are you...
@@ -19,7 +19,7 @@
 
 ---
 
-## 🗂️ Documentation Structure
+## Documentation Structure
 
 ### Level 1: Overview (Start Here)
 ```
@@ -109,7 +109,7 @@
 
 ---
 
-## 🎯 Documentation by Purpose
+## Documentation by Purpose
 
 ### "I want to understand the project"
 1. Start: **README.md**
@@ -138,7 +138,7 @@
 
 ---
 
-## 📊 Documentation Flowchart
+## Documentation Flowchart
 
 ```
                     START
@@ -173,7 +173,7 @@
 
 ---
 
-## 📚 Documentation Details
+## Documentation Details
 
 | File | Pages | Words | Purpose | Update Frequency |
 |------|-------|-------|---------|------------------|
@@ -192,32 +192,32 @@
 
 ---
 
-## 🎨 Visual Documentation Types
+## Documentation Types
 
 ### Quick Reference (Glance-able)
-- STATUS.md - Status badges and metrics
-- README.md - Badges and links
+- STATUS.md: status badges and metrics
+- README.md: badges and links
 
 ### Task-Oriented (Action-able)
-- QUICKSTART.md - Step-by-step setup
-- CONTRIBUTING.md - Development workflow
-- Templates - Bug reports, PRs
+- QUICKSTART.md: step-by-step setup
+- CONTRIBUTING.md: development workflow
+- Templates: bug reports, PRs
 
 ### Planning (Strategic)
-- ROADMAP.md - Timeline and milestones
-- PROGRESS.md - Detailed task lists
+- ROADMAP.md: timeline and milestones
+- PROGRESS.md: detailed task lists
 
 ### Historical (Retrospective)
-- CHANGELOG.md - What changed when
-- PROJECT_SUMMARY.md - What we built
+- CHANGELOG.md: what changed when
+- PROJECT_SUMMARY.md: what we built
 
 ### Technical (Reference)
-- ARCHITECTURE.md - How it works
-- DOC.md - Why we built it this way
+- ARCHITECTURE.md: how it works
+- DOC.md: why we built it this way
 
 ---
 
-## 🔄 Documentation Workflow
+## Documentation Workflow
 
 ### Daily
 - Update STATUS.md when major progress happens
@@ -241,7 +241,7 @@
 
 ---
 
-## 📖 Reading Time Estimates
+## Reading Time Estimates
 
 | Document | Quick Skim | Full Read | Deep Study |
 |----------|-----------|-----------|------------|
@@ -260,27 +260,27 @@
 
 ---
 
-## 💡 Documentation Best Practices
+## Documentation Best Practices
 
 ### For Writers
-1. ✅ Update date at top of file
-2. ✅ Use clear headings and structure
-3. ✅ Include examples and diagrams
-4. ✅ Write for your audience
-5. ✅ Keep it DRY (Don't Repeat Yourself)
-6. ✅ Link between related docs
-7. ✅ Use emojis sparingly but helpfully
+1. Update date at top of file
+2. Use clear headings and structure
+3. Include examples and diagrams
+4. Write for your audience
+5. Keep it DRY (Don't Repeat Yourself)
+6. Link between related docs
+7. Avoid decorative emoji; prefer clear headings and plain text
 
 ### For Readers
-1. ✅ Start with README
-2. ✅ Use the search function (Ctrl+F)
-3. ✅ Follow the links
-4. ✅ Check "Last Updated" dates
-5. ✅ Read what you need, not everything
+1. Start with README
+2. Use the search function (Ctrl+F)
+3. Follow the links
+4. Check "Last Updated" dates
+5. Read what you need, not everything
 
 ---
 
-## 🔗 Quick Links Matrix
+## Quick Links Matrix
 
 |  | Overview | Setup | Track | Build | Plan |
 |---|---|---|---|---|---|
@@ -299,7 +299,7 @@
 
 ---
 
-## 📞 Need Help?
+## Need Help?
 
 ### Finding Information
 1. Check this map for the right document

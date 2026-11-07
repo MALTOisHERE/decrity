@@ -1,168 +1,109 @@
-# Decrity
+<p align="center">
+  <img src="packages/extension/public/brand/wordmark.png" alt="Decrity" width="360">
+</p>
 
-> AI Security Firewall for Consumers
+<p align="center"><strong>AI Security Firewall for Consumers</strong></p>
 
-[![GitHub](https://img.shields.io/badge/GitHub-Decrity-blue?logo=github)](https://github.com/MALTOisHERE/Decrity)
-[![Version](https://img.shields.io/badge/version-0.1.0-green)](./PROGRESS.md)
-[![Status](https://img.shields.io/badge/status-in%20development-yellow)](./ROADMAP.md)
-[![License](https://img.shields.io/badge/license-proprietary-red)](./LICENSE)
+<p align="center">
+  <a href="https://github.com/MALTOisHERE/Decrity"><img src="https://img.shields.io/badge/GitHub-Decrity-blue?logo=github" alt="GitHub"></a>
+  <a href="./PROGRESS.md"><img src="https://img.shields.io/badge/version-0.1.0-green" alt="Version"></a>
+  <a href="./ROADMAP.md"><img src="https://img.shields.io/badge/status-in%20development-yellow" alt="Status"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-proprietary-red" alt="License"></a>
+</p>
 
-Decrity is a browser extension + web dashboard that acts as an AI interaction firewall for everyday consumers. It silently monitors, scans, and reports on AI tool usage — protecting users from prompt injection attacks, fake AI impersonation, and invisible data harvesting.
+Decrity is a browser extension and web dashboard that acts as an AI interaction firewall for everyday consumers. It monitors, scans, and reports on AI tool usage, protecting users from prompt injection attacks, fake AI impersonation, and invisible data harvesting.
 
 **Repository:** https://github.com/MALTOisHERE/Decrity
 
-## Architecture
+## Packages
 
-This is a **monorepo** managed with **Turborepo** and **pnpm workspaces**.
+A monorepo managed with Turborepo and pnpm workspaces.
 
-### Packages
+| Package | Description |
+|---|---|
+| [`extension`](./packages/extension) | Chrome extension (TypeScript, React, Vite, CRXJS) |
+| [`api`](./packages/api) | Backend API (Node.js, Fastify, Prisma, PostgreSQL) |
+| [`ml-service`](./packages/ml-service) | ML detection service (Python, FastAPI) |
+| [`dashboard`](./packages/dashboard) | Web dashboard (React, Vite, TanStack Query, shadcn/ui) |
+| [`landing`](./packages/landing) | Marketing landing page (React, Vite, shadcn/ui) |
+| [`shared`](./packages/shared) | Shared TypeScript types, constants, and utilities |
 
-```
-packages/
-├── extension/      Chrome extension (TypeScript, React, Vite, CRXJS)
-├── api/            Backend API (Node.js, Fastify, Prisma, PostgreSQL)
-├── ml-service/     ML detection service (Python, FastAPI, HuggingFace)
-├── dashboard/      Web dashboard (React, Vite, TanStack Query)
-└── shared/         Shared TypeScript types and utilities
-```
+## Getting started
 
-## Quick Start
-
-**New to the project?** See [QUICKSTART.md](./QUICKSTART.md) for a 5-minute setup guide.
+New to the project? See [QUICKSTART.md](./QUICKSTART.md) for a 5-minute setup guide.
 
 ### Prerequisites
 
 - Node.js >= 20.0.0
 - pnpm >= 8.0.0
 - Python >= 3.11
-- Docker & Docker Compose
+- Docker and Docker Compose
 
-### Installation
+### Install
 
 ```bash
-# Install dependencies for all packages
 pnpm install
-
-# Set up environment variables
 cp .env.example .env
-# Edit .env with your configuration
+# edit .env with your own values
 
-# Start infrastructure services (Postgres, Redis, ML service)
-docker-compose up -d
+docker-compose up -d    # Postgres, Redis, ML service
 
-# Set up database
 cd packages/api
 pnpm db:migrate
 pnpm db:generate
 cd ../..
 ```
 
-### Development
+### Develop
 
 ```bash
-# Run all TypeScript packages in development mode
-pnpm dev
+pnpm dev               # all TypeScript packages, in parallel
 
-# Or run specific packages
-pnpm extension:dev   # Chrome extension with hot reload
-pnpm api:dev         # Backend API server
-pnpm dashboard:dev   # Web dashboard
+# or individually:
+pnpm extension:dev     # Chrome extension, hot reload
+pnpm api:dev           # backend API
+pnpm dashboard:dev     # web dashboard
+pnpm landing:dev       # marketing landing page
 
-# ML service runs in Docker (already started above)
-# View logs: docker-compose logs -f ml-service
-```
-
-### Docker Services
-
-```bash
-# Start services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-
-# Reset everything (including data)
-docker-compose down -v
+# ML service runs in Docker (started above); tail its logs with:
+docker-compose logs -f ml-service
 ```
 
 ### Build
 
 ```bash
-# Build all packages
-pnpm build
-
-# Build specific package
-pnpm --filter @decrity/extension build
+pnpm build                                 # all packages
+pnpm --filter @decrity/extension build     # a single package
 ```
+
+### Quality checks
+
+```bash
+pnpm lint
+pnpm format
+```
+
+## Deployment
+
+Each service (api, ml-service, dashboard, landing) builds as its own Docker image and ships to a VPS through dedicated, manually-triggered GitHub Actions workflows (`docker-build.yml`, `docker-deploy.yml`), separate from the `ci.yml` workflow that runs lint/build/test on every push. See [DEPLOY.md](./DEPLOY.md) for the full setup and the deploy flow.
 
 ## Documentation
 
-### 🚀 Getting Started
-- **[QUICKSTART.md](./QUICKSTART.md)** - Get started in 5 minutes
-- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Development guidelines and workflow
-
-### 📊 Project Tracking
-- **[PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md)** - Complete project overview (start here!)
-- **[STATUS.md](./STATUS.md)** - Quick status dashboard
-- **[ROADMAP.md](./ROADMAP.md)** - Product roadmap and release schedule
-- **[PROGRESS.md](./PROGRESS.md)** - Detailed progress tracking with timeline
-- **[CHANGELOG.md](./CHANGELOG.md)** - Version history and release notes
-
-### 🏗️ Technical Documentation
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture and data flow diagrams
-- **[DOC.md](./DOC.md)** - Complete project specification (40+ pages)
-
-### Key Documentation Sections
-
-- [Architecture Overview](./DOC.md#5-architecture)
-- [Tech Stack](./DOC.md#6-tech-stack)
-- [Feature Specification](./DOC.md#7-feature-specification-v10)
-- [Security & Privacy](./DOC.md#10-security--privacy-principles)
-- [Roadmap](./DOC.md#12-roadmap)
-
-## Project Status
-
-**Current Version:** [v0.1.0](./CHANGELOG.md) (Foundation)
-**Next Milestone:** [v1.0.0](./ROADMAP.md) (MVP Launch)
-**Progress:** 35% towards v1.0
-
-### ✅ What's Done (v0.1)
-
-✅ Monorepo architecture (Turborepo + pnpm)
-✅ Chrome extension with Manifest V3
-✅ Layer 1 heuristic detection (local, privacy-first)
-✅ Backend API (Node.js/Fastify)
-✅ ML service scaffolding (Python/FastAPI)
-✅ Web dashboard (React)
-✅ Docker Compose dev environment
-✅ Complete documentation suite
-
-### 🚧 What's Next (v1.0)
-
-- [ ] Extension icons and branding
-- [ ] Platform testing (ChatGPT, Gemini, Claude, Copilot)
-- [ ] Onboarding flow
-- [ ] QA and performance testing
-- [ ] Chrome Web Store submission
-
-### 📋 Future (v1.5+)
-
-- ML model training and deployment
-- User authentication system
-- Dashboard API integration
-- Premium subscriptions
-- Firefox support
-
-See [ROADMAP.md](./ROADMAP.md) for full timeline and [PROGRESS.md](./PROGRESS.md) for detailed tracking.
+- [QUICKSTART.md](./QUICKSTART.md): setup in 5 minutes
+- [CONTRIBUTING.md](./CONTRIBUTING.md): development guidelines and workflow
+- [ARCHITECTURE.md](./ARCHITECTURE.md): system architecture and data flow
+- [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md): UI conventions, components, color tokens, brand assets
+- [DOC.md](./DOC.md): complete project specification
+- [DEPLOY.md](./DEPLOY.md): VPS deployment and CI/CD
+- [GLOSSARY.md](./GLOSSARY.md): project terminology
+- [STATUS.md](./STATUS.md): current status at a glance
+- [ROADMAP.md](./ROADMAP.md): product roadmap and release schedule
+- [PROGRESS.md](./PROGRESS.md): detailed progress tracking
+- [CHANGELOG.md](./CHANGELOG.md): version history and release notes
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-### Quick Links
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 - [Report a bug](https://github.com/MALTOisHERE/Decrity/issues/new?labels=bug)
 - [Request a feature](https://github.com/MALTOisHERE/Decrity/issues/new?labels=enhancement)
@@ -170,6 +111,4 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 
 ## License
 
-Proprietary - All rights reserved
-
-See [LICENSE](./LICENSE) for details.
+Proprietary, all rights reserved. See [LICENSE](./LICENSE) for details.

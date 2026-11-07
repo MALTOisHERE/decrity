@@ -6,8 +6,8 @@ Reference for how UI is built across this repo. Read this before adding or chang
 
 For any new screen, page, or visual redesign (not a small tweak to existing UI), invoke a design-planning skill first (color/type/layout tokens, critique against generic-AI-design defaults). Then apply the result through this document's component/token system, not a one-off style.
 
-- **`interface-design`** — use for all dashboard and extension-popup work (product UI: dashboards, settings, data views). This is the default for anything in `packages/dashboard` or `packages/extension/src/popup`.
-- **`frontend-design`** — use for marketing/landing-page work instead (e.g. the planned `decrity.app` landing page). Not for product UI.
+- **`interface-design`**: use for all dashboard and extension-popup work (product UI: dashboards, settings, data views). This is the default for anything in `packages/dashboard` or `packages/extension/src/popup`.
+- **`frontend-design`**: use for marketing/landing-page work instead (e.g. the planned `decrity.app` landing page). Not for product UI.
 
 ## Component library: shadcn/ui
 

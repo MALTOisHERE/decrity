@@ -7,55 +7,55 @@ Quick overview of project health and progress.
 
 ---
 
-## 📊 Current Status
+## Current Status
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| **Version** | v0.1.0 | ✅ Released |
-| **Next Milestone** | v1.0 MVP | 🚧 35% |
-| **Target Date** | Month 1-3 | ⏱️ On Track |
-| **Health** | Excellent | 🟢 |
+| **Version** | v0.1.0 | Released |
+| **Next Milestone** | v1.0 MVP | 35% (in progress) |
+| **Target Date** | Month 1-3 | On Track |
+| **Health** | Excellent | |
 
 ---
 
-## 🎯 Version Progress
+## Version Progress
 
 ### v0.1 - Foundation
 ```
 ████████████████████ 100%
 ```
-**Status:** ✅ Complete (2026-03-29)
+**Status:** Complete (2026-03-29)
 
 ### v1.0 - MVP
 ```
 ███████░░░░░░░░░░░░░ 35%
 ```
-**Status:** 🚧 In Progress
-- ✅ Architecture complete
-- 🚧 Extension polish needed
-- 📋 Platform testing pending
-- 📋 Chrome Web Store submission
+**Status:** In Progress
+- Done: Architecture complete
+- In progress: Extension polish needed
+- Planned: Platform testing pending
+- Planned: Chrome Web Store submission
 
 ### v1.5 - Backend Integration
 ```
 ░░░░░░░░░░░░░░░░░░░░ 0%
 ```
-**Status:** 📋 Planned (Month 4-6)
+**Status:** Planned (Month 4-6)
 
 ### v2.0 - Full Features
 ```
 ░░░░░░░░░░░░░░░░░░░░ 0%
 ```
-**Status:** 📋 Planned (Month 7-12)
+**Status:** Planned (Month 7-12)
 
 ---
 
-## 🔥 Active Priorities
+## Active Priorities
 
 ### This Week
-1. 🎨 Design extension icons (16, 32, 48, 128px)
-2. 🧪 Test heuristic detection on real examples
-3. 🔍 Test platform integrations (ChatGPT first)
+1. Design extension icons (16, 32, 48, 128px)
+2. Test heuristic detection on real examples
+3. Test platform integrations (ChatGPT first)
 
 ### This Month (v1.0)
 1. Polish extension UI and alerts
@@ -66,40 +66,40 @@ Quick overview of project health and progress.
 
 ---
 
-## 📦 Package Status
+## Package Status
 
 | Package | Version | Build | Tests | Status |
 |---------|---------|-------|-------|--------|
-| shared | 1.0.0 | ✅ | ❌ | 🟢 Stable |
-| extension | 1.0.0 | ✅ | ❌ | 🟡 Dev |
-| api | 1.0.0 | ✅ | ❌ | 🟡 Dev |
-| ml-service | 1.0.0 | ✅ | ❌ | 🟡 Dev |
-| dashboard | 1.0.0 | ✅ | ❌ | 🟡 Dev |
+| shared | 1.0.0 | Yes | No | Stable |
+| extension | 1.0.0 | Yes | No | Dev |
+| api | 1.0.0 | Yes | No | Dev |
+| ml-service | 1.0.0 | Yes | No | Dev |
+| dashboard | 1.0.0 | Yes | No | Dev |
 
 **Legend:**
-- 🟢 Stable (production-ready)
-- 🟡 Development (functional but needs work)
-- 🔴 Broken (needs immediate attention)
+- Stable: production-ready
+- Dev: functional but needs work
+- Broken: needs immediate attention
 
 ---
 
-## 🚨 Blockers & Issues
+## Blockers & Issues
 
-### Critical (🔴 Must Fix)
+### Critical (must fix)
 1. **Extension Icons Missing**
    - Blocking Chrome Web Store submission
    - Need: 16x16, 32x32, 48x48, 128x128 PNG
    - Owner: Design team
    - ETA: Week 1
 
-### High Priority (🟡 Should Fix)
+### High Priority (should fix)
 2. **Platform Selectors Fragile**
    - Risk: Breaks when AI platforms update UI
    - Mitigation: Resilient selectors + monitoring
    - Owner: Extension team
    - ETA: v1.0
 
-### Medium Priority (🟢 Can Wait)
+### Medium Priority (can wait)
 3. **ML Model Not Trained**
    - Expected for v0.1
    - Needed for: v1.5
@@ -114,7 +114,7 @@ Quick overview of project health and progress.
 
 ---
 
-## 📈 Metrics
+## Metrics
 
 ### Development Activity
 | Metric | Count |
@@ -144,13 +144,13 @@ Quick overview of project health and progress.
 
 ---
 
-## 🔄 Recent Activity
+## Recent Activity
 
 ### This Week (2026-03-29)
-- ✅ Complete monorepo architecture
-- ✅ All 5 packages scaffolded
-- ✅ Documentation suite created
-- ✅ Development environment ready
+- Complete monorepo architecture
+- All 5 packages scaffolded
+- Documentation suite created
+- Development environment ready
 
 ### Last Week
 - Initial project setup
@@ -162,46 +162,46 @@ Quick overview of project health and progress.
 
 ---
 
-## 🎯 Milestone Timeline
+## Milestone Timeline
 
 ```
 ┌─────────────┐
-│   v0.1      │ ✅ DONE (Week 0)
+│   v0.1      │ DONE (Week 0)
 │ Foundation  │
 └─────────────┘
       │
       ▼
 ┌─────────────┐
-│   v1.0      │ 🚧 IN PROGRESS (Week 1-8)
+│   v1.0      │ IN PROGRESS (Week 1-8)
 │     MVP     │ ████████░░░░░░░░░░░░ 35%
 └─────────────┘
       │
       ▼
 ┌─────────────┐
-│   v1.5      │ 📋 PLANNED (Month 4-6)
+│   v1.5      │ PLANNED (Month 4-6)
 │  Backend    │ ░░░░░░░░░░░░░░░░░░░░ 0%
 └─────────────┘
       │
       ▼
 ┌─────────────┐
-│   v2.0      │ 📋 PLANNED (Month 7-12)
+│   v2.0      │ PLANNED (Month 7-12)
 │   Full      │ ░░░░░░░░░░░░░░░░░░░░ 0%
 └─────────────┘
 ```
 
 ---
 
-## 📚 Quick Links
+## Quick Links
 
 ### Documentation
-- [ROADMAP.md](./ROADMAP.md) - Product roadmap
-- [PROGRESS.md](./PROGRESS.md) - Detailed progress tracking
-- [CHANGELOG.md](./CHANGELOG.md) - Version history
-- [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical architecture
-- [QUICKSTART.md](./QUICKSTART.md) - Setup guide
+- [ROADMAP.md](./ROADMAP.md): product roadmap
+- [PROGRESS.md](./PROGRESS.md): detailed progress tracking
+- [CHANGELOG.md](./CHANGELOG.md): version history
+- [ARCHITECTURE.md](./ARCHITECTURE.md): technical architecture
+- [QUICKSTART.md](./QUICKSTART.md): setup guide
 
 ### Development
-- [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
+- [CONTRIBUTING.md](./CONTRIBUTING.md): how to contribute
 - [GitHub Issues](https://github.com/MALTOisHERE/Decrity/issues)
 - [Pull Requests](https://github.com/MALTOisHERE/Decrity/pulls)
 
@@ -212,7 +212,7 @@ Quick overview of project health and progress.
 
 ---
 
-## 🎮 Quick Commands
+## Quick Commands
 
 ```bash
 # Check project health
@@ -230,7 +230,7 @@ pnpm lint && pnpm build && pnpm test
 
 ---
 
-## 🏆 Goals
+## Goals
 
 ### Short Term (Week 1-2)
 - [ ] Extension icons designed
@@ -249,12 +249,12 @@ pnpm lint && pnpm build && pnpm test
 
 ---
 
-## 💬 Team Status
+## Team Status
 
 ### Current Focus
-- Architecture foundation ✅
-- Extension development 🚧
-- Documentation ✅
+- Architecture foundation: done
+- Extension development: in progress
+- Documentation: done
 
 ### Capacity
 - Solo developer: 100% dedicated

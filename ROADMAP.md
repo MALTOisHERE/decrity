@@ -6,7 +6,7 @@ A high-level overview of Decrity's development journey.
 
 ---
 
-## 🗺️ Roadmap Overview
+## Roadmap Overview
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
@@ -15,25 +15,25 @@ A high-level overview of Decrity's development journey.
 │             │     │             │     │   + ML      │     │  Features   │
 └─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
    2026-03-29          Month 1-3          Month 4-6           Month 7-12
-    ✅ DONE           🚧 IN PROGRESS      📋 PLANNED          📋 PLANNED
+      DONE            IN PROGRESS           PLANNED             PLANNED
 ```
 
 ---
 
-## v0.1 - Foundation ✅
+## v0.1 - Foundation (Done)
 
 **Status:** Complete (2026-03-29)
 **Duration:** Initial setup
 
 ### What We Built
-✅ Complete monorepo architecture
-✅ Chrome extension scaffold (Manifest V3)
-✅ Backend API (Node.js/Fastify)
-✅ ML service (Python/FastAPI)
-✅ Web dashboard (React)
-✅ Local heuristic detection (Layer 1)
-✅ Docker development environment
-✅ Full documentation suite
+- Complete monorepo architecture
+- Chrome extension scaffold (Manifest V3)
+- Backend API (Node.js/Fastify)
+- ML service (Python/FastAPI)
+- Web dashboard (React)
+- Local heuristic detection (Layer 1)
+- Docker development environment
+- Full documentation suite
 
 ### Key Deliverables
 - 5 packages in monorepo
@@ -43,7 +43,7 @@ A high-level overview of Decrity's development journey.
 
 ---
 
-## v1.0 - MVP Launch 🚧
+## v1.0 - MVP Launch (In Progress)
 
 **Status:** In Progress (35% complete)
 **Target:** Month 1-3
@@ -78,13 +78,13 @@ A high-level overview of Decrity's development journey.
 - [ ] Analytics setup
 
 ### Success Metrics
-🎯 100+ installs in first week
-🎯 False positive rate < 5%
-🎯 Works on all 4 platforms
+- 100+ installs in first week
+- False positive rate < 5%
+- Works on all 4 platforms
 
 ---
 
-## v1.5 - Backend Integration 📋
+## v1.5 - Backend Integration (Planned)
 
 **Status:** Planned
 **Target:** Month 4-6
@@ -117,14 +117,14 @@ A high-level overview of Decrity's development journey.
 - [ ] Firefox extension port
 
 ### Success Metrics
-🎯 1,000+ total installs
-🎯 ML accuracy > 90%
-🎯 API uptime > 99.5%
-🎯 3% premium conversion
+- 1,000+ total installs
+- ML accuracy > 90%
+- API uptime > 99.5%
+- 3% premium conversion
 
 ---
 
-## v2.0 - Full Feature Set 📋
+## v2.0 - Full Feature Set (Planned)
 
 **Status:** Planned
 **Target:** Month 7-12
@@ -159,10 +159,10 @@ A high-level overview of Decrity's development journey.
 - [ ] Security tool integrations
 
 ### Success Metrics
-🎯 10,000+ active users
-🎯 5% premium conversion
-🎯 B2B partnerships signed
-🎯 Press coverage
+- 10,000+ active users
+- 5% premium conversion
+- B2B partnerships signed
+- Press coverage
 
 ---
 
@@ -171,36 +171,32 @@ A high-level overview of Decrity's development journey.
 | Feature | v1.0 | v1.5 | v2.0 |
 |---------|------|------|------|
 | **Core Protection** |
-| Layer 1 Heuristics | ✅ | ✅ | ✅ |
-| Layer 2 ML | ❌ | ✅ | ✅ |
-| Privacy Mode | ✅ | ✅ | ✅ |
-| Real-time Alerts | ✅ | ✅ | ✅ |
+| Layer 1 Heuristics | Yes | Yes | Yes |
+| Layer 2 ML | No | Yes | Yes |
+| Privacy Mode | Yes | Yes | Yes |
+| Real-time Alerts | Yes | Yes | Yes |
 | **Platforms** |
-| ChatGPT | ✅ | ✅ | ✅ |
-| Gemini | ✅ | ✅ | ✅ |
-| Claude | ✅ | ✅ | ✅ |
-| Copilot | ✅ | ✅ | ✅ |
+| ChatGPT | Yes | Yes | Yes |
+| Gemini | Yes | Yes | Yes |
+| Claude | Yes | Yes | Yes |
+| Copilot | Yes | Yes | Yes |
 | **User Features** |
-| Settings | ✅ | ✅ | ✅ |
-| User Accounts | ❌ | ✅ | ✅ |
-| Dashboard | Basic | ✅ | ✅ |
-| Threat History | ❌ | ✅ | ✅ |
-| Weekly Reports | ❌ | ✅ | ✅ |
+| Settings | Yes | Yes | Yes |
+| User Accounts | No | Yes | Yes |
+| Dashboard | Basic | Yes | Yes |
+| Threat History | No | Yes | Yes |
+| Weekly Reports | No | Yes | Yes |
 | **Advanced** |
-| AI Identity Verify | ❌ | ❌ | ✅ |
-| Data Watchdog | ❌ | ❌ | ✅ |
-| Mobile Apps | ❌ | ❌ | ✅ |
-| Enterprise | ❌ | ❌ | ✅ |
-
-**Legend:**
-- ✅ Included
-- ❌ Not included
+| AI Identity Verify | No | No | Yes |
+| Data Watchdog | No | No | Yes |
+| Mobile Apps | No | No | Yes |
+| Enterprise | No | No | Yes |
 
 ---
 
 ## Technology Evolution
 
-### Current Stack (v0.1 → v1.0)
+### Current Stack (v0.1 -> v1.0)
 - **Extension:** TypeScript, React, Vite, CRXJS
 - **Backend:** Node.js, Fastify, Prisma
 - **ML:** Python, FastAPI (heuristics only)
@@ -228,24 +224,24 @@ A high-level overview of Decrity's development journey.
 
 | Version | Start Date | Target Date | Duration | Status |
 |---------|-----------|-------------|----------|--------|
-| v0.1 | 2026-03-29 | 2026-03-29 | 1 day | ✅ Complete |
-| v1.0 | 2026-03-29 | ~2026-06 | 2-3 months | 🚧 In Progress |
-| v1.5 | ~2026-06 | ~2026-09 | 3 months | 📋 Planned |
-| v2.0 | ~2026-09 | ~2027-03 | 6 months | 📋 Planned |
+| v0.1 | 2026-03-29 | 2026-03-29 | 1 day | Complete |
+| v1.0 | 2026-03-29 | ~2026-06 | 2-3 months | In Progress |
+| v1.5 | ~2026-06 | ~2026-09 | 3 months | Planned |
+| v2.0 | ~2026-09 | ~2027-03 | 6 months | Planned |
 
 ---
 
 ## Success Criteria by Version
 
-### v1.0 Launch Criteria ✅
-- ✅ Extension loads without errors
-- ✅ Layer 1 detection functional
-- ✅ Privacy mode works offline
-- ✅ Alert system displays correctly
-- 🚧 Chrome Web Store approved
-- 🚧 100+ installs
+### v1.0 Launch Criteria
+- Done: Extension loads without errors
+- Done: Layer 1 detection functional
+- Done: Privacy mode works offline
+- Done: Alert system displays correctly
+- Pending: Chrome Web Store approved
+- Pending: 100+ installs
 
-### v1.5 Launch Criteria ✅
+### v1.5 Launch Criteria
 - ML model trained and deployed
 - API deployed to production
 - User authentication working
@@ -253,7 +249,7 @@ A high-level overview of Decrity's development journey.
 - Premium subscriptions functional
 - 1,000+ total installs
 
-### v2.0 Launch Criteria ✅
+### v2.0 Launch Criteria
 - All three pillars complete
 - Mobile apps in app stores
 - B2B partnerships signed
@@ -310,22 +306,22 @@ A high-level overview of Decrity's development journey.
 
 ### Critical Risks
 
-1. **Platform UI Changes** 🔴
+1. **Platform UI Changes** (Critical)
    - **Risk:** AI platforms change DOM frequently. Confirmed real, not just theoretical: a hidden SSR fallback element on claude.ai was found silently breaking scanning (2026-11-06).
    - **Impact:** Extension breaks
    - **Mitigation:** Protection Gap detection ships in the extension (pauses scanning and notifies the user when a platform's selector stops matching, reports it so the team knows without a user filing a bug). A manual QA procedure (`.wayfinder/tickets/005-protection-gap-qa-plan.md`) must pass on all 4 platforms before any release; not yet run against ChatGPT, Gemini, or Copilot.
 
-2. **False Positives** 🟡
+2. **False Positives** (Moderate)
    - **Risk:** Users distrust due to false alarms
    - **Impact:** Uninstalls, bad reviews
    - **Mitigation:** Conservative thresholds, ML refinement, user feedback loop
 
-3. **Chrome Web Store Rejection** 🟡
+3. **Chrome Web Store Rejection** (Moderate)
    - **Risk:** Store policy compliance issues
    - **Impact:** Launch delay
    - **Mitigation:** Review policies early, clear privacy policy, minimal permissions
 
-4. **ML Model Performance** 🟡
+4. **ML Model Performance** (Moderate)
    - **Risk:** Insufficient training data or poor accuracy
    - **Impact:** v1.5 delay
    - **Mitigation:** Multiple data sources, synthetic generation, early testing
@@ -335,10 +331,10 @@ A high-level overview of Decrity's development journey.
 ## Community & Feedback
 
 ### Feedback Channels
-- 🐛 [GitHub Issues](https://github.com/MALTOisHERE/Decrity/issues)
-- 💬 Discussions (TBD)
-- 📧 Email: feedback@decrity.app (TBD)
-- 🐦 Twitter: @decrity (TBD)
+- [GitHub Issues](https://github.com/MALTOisHERE/Decrity/issues)
+- Discussions (TBD)
+- Email: feedback@decrity.app (TBD)
+- Twitter: @decrity (TBD)
 
 ### How to Contribute
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for developer guidelines.
@@ -347,10 +343,10 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for developer guidelines.
 
 ## Related Documents
 
-- **Detailed Progress:** [PROGRESS.md](./PROGRESS.md) - Task-level tracking
-- **Architecture:** [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical architecture
-- **Quick Start:** [QUICKSTART.md](./QUICKSTART.md) - Setup guide
-- **Full Spec:** [DOC.md](./DOC.md) - Complete documentation
+- **Detailed Progress:** [PROGRESS.md](./PROGRESS.md), task-level tracking
+- **Architecture:** [ARCHITECTURE.md](./ARCHITECTURE.md), technical architecture
+- **Quick Start:** [QUICKSTART.md](./QUICKSTART.md), setup guide
+- **Full Spec:** [DOC.md](./DOC.md), complete documentation
 
 ---
 

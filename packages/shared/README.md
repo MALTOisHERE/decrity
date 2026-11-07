@@ -1,6 +1,6 @@
 # @decrity/shared
 
-Shared TypeScript types, constants, and utilities for Decrity packages.
+Shared TypeScript types, constants, and utilities used across Decrity's packages.
 
 ## Usage
 
@@ -12,7 +12,7 @@ import {
   PLATFORMS,
   API_ENDPOINTS,
   hashContent,
-  isValidPlatform
+  isValidPlatform,
 } from '@decrity/shared'
 ```
 
@@ -20,28 +20,25 @@ import {
 
 ### Types
 
-- **Scan types** (`scan.ts`) - Scan requests, responses, verdicts, threat details
-- **User types** (`user.ts`) - User accounts, settings, statistics
-- **API types** (`api.ts`) - Request/response interfaces for all API endpoints
+- **Scan types** (`scan.ts`): scan requests, responses, verdicts, threat details
+- **User types** (`user.ts`): user accounts, settings, statistics
+- **API types** (`api.ts`): request/response interfaces for every API endpoint
 
 ### Constants
 
-- **Platforms** (`platforms.ts`) - AI platform URLs, patterns, metadata
-- **General** (`index.ts`) - API endpoints, thresholds, cache config, storage keys
+- **Platforms** (`platforms.ts`): AI platform URLs and URL-matching patterns
+- **General** (`index.ts`): API endpoints, threat thresholds, cache config, badge colors, storage keys, rate limits
 
 ### Utils
 
-- **Hash** (`hash.ts`) - Content hashing for deduplication
-- **Validation** (`validation.ts`) - Type guards and content validators
-
-## Building
-
-```bash
-pnpm build
-```
+- **Hash** (`hash.ts`): content hashing for deduplication
+- **Validation** (`validation.ts`): type guards and content validators
 
 ## Development
 
 ```bash
-pnpm dev
+pnpm --filter @decrity/shared build
+pnpm --filter @decrity/shared dev     # watch mode
 ```
+
+If you're changing a type or constant used by other packages, build this package first; see the root [CLAUDE.md](../../CLAUDE.md)'s "Build Order" note.

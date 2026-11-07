@@ -2,11 +2,11 @@
 
 > **Created:** 2026-03-29
 > **Version:** 0.1.0
-> **Status:** Foundation Complete ✅
+> **Status:** Foundation Complete
 
 ---
 
-## 🎯 What is Decrity?
+## What is Decrity?
 
 **Decrity** is an AI Security Firewall for everyday consumers. It's a Chrome browser extension that protects users from prompt injection attacks, fake AI chatbots, and invisible data harvesting when using AI tools like ChatGPT, Gemini, Claude, and Copilot.
 
@@ -23,16 +23,17 @@
 
 ---
 
-## 📦 What's Been Built (v0.1)
+## What's Been Built (v0.1)
 
 ### Architecture
-✅ **Monorepo Setup**
+
+**Monorepo Setup**
 - Turborepo for build orchestration
 - pnpm workspaces for package management
 - Shared TypeScript types across all packages
 - Hot module reloading for all packages
 
-✅ **5 Packages Created**
+**5 Packages Created**
 1. `@decrity/shared` - Types, constants, utilities
 2. `@decrity/extension` - Chrome extension (Manifest V3)
 3. `@decrity/api` - Node.js/Fastify REST API
@@ -40,38 +41,40 @@
 5. `@decrity/dashboard` - React web dashboard
 
 ### Chrome Extension (Core Product)
-✅ **Background Service Worker**
+
+**Background Service Worker**
 - Scan orchestration
 - IndexedDB caching (1-hour TTL)
 - Badge icon management
 - API client with fallback
 
-✅ **Content Scripts**
+**Content Scripts**
 - Platform-specific handlers (ChatGPT, Gemini, Claude, Copilot)
 - DOM monitoring with MutationObserver
 - Input interception (paste, upload, submit)
 - Alert banner injection
 
-✅ **Layer 1 Detection (Local)**
+**Layer 1 Detection (Local)**
 - 17+ regex patterns for injection attacks
 - Hidden content detection
 - Repetition pattern analysis
 - Obfuscation detection
 - Zero-API mode (Privacy Mode)
 
-✅ **User Interface**
+**User Interface**
 - React-based popup with settings
 - Alert banners with plain-language warnings
 - Non-blocking threat notifications
 - Privacy Mode toggle (default ON)
 
 ### Backend API
-✅ **REST Endpoints**
+
+**REST Endpoints**
 - `POST /v1/scan` - Content scanning
 - `GET /v1/report` - Threat history
 - `GET /v1/user` - User profile (scaffold)
 
-✅ **Infrastructure**
+**Infrastructure**
 - Prisma ORM with PostgreSQL
 - JWT authentication scaffold
 - Rate limiting (60 req/min)
@@ -79,36 +82,39 @@
 - ML service HTTP client
 
 ### ML Service
-✅ **Detection Layers**
+
+**Detection Layers**
 - Layer 1: Heuristic patterns (fast, <10ms)
 - Layer 2: ML classifier placeholder (for v1.5)
 - Combined scoring system
 - Plain-language explanations
 
-✅ **Deployment**
+**Deployment**
 - FastAPI async server
 - Docker containerization
 - Health check endpoints
 
 ### Web Dashboard
-✅ **Pages**
+
+**Pages**
 - Dashboard overview
 - Threat history
 - Settings (planned)
 
-✅ **Tech Stack**
+**Tech Stack**
 - React + Vite
 - React Router
 - TanStack Query
 - Tailwind CSS
 
 ### Development Environment
-✅ **Docker Compose**
+
+**Docker Compose**
 - PostgreSQL 15
 - Redis 7
 - ML service container
 
-✅ **Developer Experience**
+**Developer Experience**
 - ESLint + Prettier
 - TypeScript strict mode
 - Hot reload for all services
@@ -116,7 +122,7 @@
 
 ---
 
-## 📚 Documentation Created
+## Documentation Created
 
 ### User Documentation
 1. **[README.md](./README.md)** - Project overview with badges
@@ -143,7 +149,7 @@
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 Decrity/
@@ -230,7 +236,7 @@ Decrity/
 
 ---
 
-## 📊 Statistics
+## Statistics
 
 ### Code Metrics
 - **Total Files:** 80+
@@ -252,39 +258,39 @@ Decrity/
 
 ---
 
-## 🔑 Key Features
+## Key Features
 
-### Privacy-First Design ✅
-- ✅ Privacy Mode enabled by default
-- ✅ No content storage (only SHA-256 hashes)
-- ✅ Local Layer 1 works offline
-- ✅ Minimal browser permissions
-- ✅ Plain-language UI (no jargon)
+### Privacy-First Design
+- Privacy Mode enabled by default
+- No content storage (only SHA-256 hashes)
+- Local Layer 1 works offline
+- Minimal browser permissions
+- Plain-language UI (no jargon)
 
-### Detection Capabilities ✅
-- ✅ Instruction override detection
-- ✅ Role manipulation detection
-- ✅ System prompt injection
-- ✅ Data exfiltration attempts
-- ✅ Hidden content detection
-- ✅ Obfuscation patterns
+### Detection Capabilities
+- Instruction override detection
+- Role manipulation detection
+- System prompt injection
+- Data exfiltration attempts
+- Hidden content detection
+- Obfuscation patterns
 
-### Platform Support ✅
-- ✅ ChatGPT (chat.openai.com)
-- ✅ Gemini (gemini.google.com)
-- ✅ Claude (claude.ai)
-- ✅ Copilot (copilot.microsoft.com)
+### Platform Support
+- ChatGPT (chat.openai.com)
+- Gemini (gemini.google.com)
+- Claude (claude.ai)
+- Copilot (copilot.microsoft.com)
 
-### User Experience ✅
-- ✅ Non-blocking alerts
-- ✅ Plain-language warnings
-- ✅ One-click settings toggle
-- ✅ Badge icon status
-- ✅ Privacy Mode toggle
+### User Experience
+- Non-blocking alerts
+- Plain-language warnings
+- One-click settings toggle
+- Badge icon status
+- Privacy Mode toggle
 
 ---
 
-## 🚀 What's Next (v1.0)
+## What's Next (v1.0)
 
 ### Week 1-2: Polish
 - [ ] Design extension icons (4 sizes)
@@ -320,29 +326,29 @@ Decrity/
 
 ---
 
-## 🎯 Success Criteria
+## Success Criteria
 
-### Technical Goals ✅
-- ✅ Monorepo architecture
-- ✅ Type-safe across all packages
-- ✅ Privacy-first by design
-- ✅ Modular & maintainable
-- ✅ Well-documented
+### Technical Goals (Done)
+- Monorepo architecture
+- Type-safe across all packages
+- Privacy-first by design
+- Modular & maintainable
+- Well-documented
 
-### v1.0 Goals 🚧
+### v1.0 Goals (In Progress)
 - [ ] Chrome Web Store approval
 - [ ] 100+ installs
 - [ ] <5% false positive rate
 - [ ] Works on all 4 platforms
 - [ ] User feedback collected
 
-### v1.5 Goals 📋
+### v1.5 Goals (Planned)
 - ML accuracy >90%
 - 1,000+ installs
 - Premium features launched
 - Dashboard integration
 
-### v2.0 Goals 📋
+### v2.0 Goals (Planned)
 - 10,000+ active users
 - All three pillars complete
 - B2B partnerships signed
@@ -350,7 +356,7 @@ Decrity/
 
 ---
 
-## 🛠️ Tech Stack Summary
+## Tech Stack Summary
 
 ### Frontend
 - **Extension:** TypeScript, React, Vite, CRXJS, Tailwind
@@ -367,10 +373,10 @@ Decrity/
 
 ---
 
-## 📈 Timeline
+## Timeline
 
 ```
-2026-03-29: v0.1 Foundation Complete ✅
+2026-03-29: v0.1 Foundation Complete
 │
 ├─ Week 1-2:  Extension polish
 ├─ Week 3-4:  Platform testing
@@ -383,16 +389,16 @@ Decrity/
 
 ---
 
-## 🎓 Lessons & Best Practices
+## Lessons & Best Practices
 
-### What Went Well ✅
+### What Went Well
 1. **Monorepo Setup** - Turborepo + pnpm = excellent DX
 2. **Type Safety** - Shared package prevents type drift
 3. **Privacy-First** - Layer 1 local detection works great
 4. **Documentation** - Comprehensive docs from day 1
 5. **Modularity** - Each service independently deployable
 
-### Best Practices Implemented ✅
+### Best Practices Implemented
 1. Strict TypeScript configuration
 2. No content storage policy
 3. Plain-language user interface
@@ -401,7 +407,7 @@ Decrity/
 6. Git-based workflow
 7. Docker for reproducibility
 
-### Future Improvements 📋
+### Future Improvements
 1. Add unit tests (v1.0)
 2. Add E2E tests (v1.0)
 3. CI/CD pipeline (v1.0)
@@ -410,7 +416,7 @@ Decrity/
 
 ---
 
-## 🔗 Important Links
+## Important Links
 
 ### Repository
 - **GitHub:** https://github.com/MALTOisHERE/Decrity
@@ -428,7 +434,7 @@ Decrity/
 
 ---
 
-## 🙏 Credits
+## Credits
 
 **Developer:** Mohamed AIT OUAARAB
 **Repository:** https://github.com/MALTOisHERE/Decrity
