@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="packages/extension/public/brand/wordmark.png" alt="Decrity" width="360">
+  <img src=".github/assets/wordmark.png" alt="Decrity" width="360">
 </p>
 
 <p align="center"><strong>AI Security Firewall for Consumers</strong></p>
