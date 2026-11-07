@@ -75,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ROADMAP.md` - Product roadmap and timeline
 - `PROGRESS.md` - Detailed progress tracking
 - `CHANGELOG.md` - This file
-- `LICENSE` - Proprietary license
+- `LICENSE` - GNU AGPLv3
 - `DOC.md` - Complete specification (pre-existing)
 
 #### Features Implemented

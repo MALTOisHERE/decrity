@@ -142,7 +142,7 @@
 11. **[PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md)** - This file
 
 ### Legal & Process
-12. **[LICENSE](./LICENSE)** - Proprietary license
+12. **[LICENSE](./LICENSE)** - GNU AGPLv3
 13. **[.github/ISSUE_TEMPLATE/](./github/ISSUE_TEMPLATE/)** - Bug & feature templates
 14. **[.github/pull_request_template.md](./.github/pull_request_template.md)** - PR template
 15. **[.github/templates/weekly-update.md](./.github/templates/weekly-update.md)** - Weekly update template

@@ -8,7 +8,7 @@
   <a href="https://github.com/MALTOisHERE/Decrity"><img src="https://img.shields.io/badge/GitHub-Decrity-blue?logo=github" alt="GitHub"></a>
   <a href="./PROGRESS.md"><img src="https://img.shields.io/badge/version-0.1.0-green" alt="Version"></a>
   <a href="./ROADMAP.md"><img src="https://img.shields.io/badge/status-in%20development-yellow" alt="Status"></a>
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-proprietary-red" alt="License"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License"></a>
 </p>
 
 Decrity is a browser extension and web dashboard that acts as an AI interaction firewall for everyday consumers. It monitors, scans, and reports on AI tool usage, protecting users from prompt injection attacks, fake AI impersonation, and invisible data harvesting.
@@ -111,4 +111,4 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
 ## License
 
-Proprietary, all rights reserved. See [LICENSE](./LICENSE) for details.
+GNU AGPLv3. See [LICENSE](./LICENSE) for details.
