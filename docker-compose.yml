@@ -7,10 +7,10 @@ services:
     container_name: decrity-postgres
     environment:
       POSTGRES_USER: decrity
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: decrity
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -19,12 +19,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Redis Cache
+  # Redis Cache (not yet wired into the API; provisioned ahead of that work)
   redis:
     image: redis:7-alpine
     container_name: decrity-redis
     ports:
-      - '6379:6379'
+      - '127.0.0.1:6379:6379'
     volumes:
       - redis_data:/data
     healthcheck:
@@ -40,7 +40,7 @@ services:
       dockerfile: Dockerfile
     container_name: decrity-ml
     ports:
-      - '8000:8000'
+      - '127.0.0.1:8000:8000'
     environment:
       - LOG_LEVEL=info
     healthcheck:
@@ -51,26 +51,65 @@ services:
       start_period: 40s
 
   # API Service (Node.js/Fastify)
-  # Note: Run separately with pnpm dev for hot reload during development
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: ./packages/api/Dockerfile
-  #   container_name: decrity-api
-  #   ports:
-  #     - '3000:3000'
-  #   environment:
-  #     - DATABASE_URL=postgresql://decrity:password@postgres:5432/decrity?schema=public
-  #     - REDIS_URL=redis://redis:6379
-  #     - ML_SERVICE_URL=http://ml-service:8000
-  #     - NODE_ENV=development
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #     ml-service:
-  #       condition: service_healthy
+  api:
+    build:
+      context: .
+      dockerfile: ./packages/api/Dockerfile
+    container_name: decrity-api
+    ports:
+      - '127.0.0.1:3000:3000'
+    environment:
+      - NODE_ENV=production
+      - API_PORT=3000
+      - API_HOST=0.0.0.0
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DATABASE_URL=postgresql://decrity:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/decrity?schema=public
+      - REDIS_URL=redis://redis:6379
+      - ML_SERVICE_URL=http://ml-service:8000
+      - JWT_SECRET=${JWT_SECRET:?set JWT_SECRET in .env}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - RATE_LIMIT_MAX=${RATE_LIMIT_MAX:-60}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW:-60000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+    healthcheck:
+      # 127.0.0.1, not localhost: localhost resolves to ::1 (IPv6) first
+      # inside this container, and the server only binds IPv4 (0.0.0.0), so
+      # wget to "localhost" gets connection-refused even though the server
+      # is actually up (found 2026-11-07).
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # Dashboard (React SPA, served as a static build via nginx)
+  dashboard:
+    build:
+      context: .
+      dockerfile: ./packages/dashboard/Dockerfile
+      args:
+        VITE_DASHBOARD_API_URL: ${VITE_DASHBOARD_API_URL:-http://localhost:3000}
+    container_name: decrity-dashboard
+    ports:
+      - '127.0.0.1:3002:80'
+
+  # Marketing landing page (static build via nginx). The only service
+  # exposed publicly through nginx/Cloudflare for now, see DESIGN_SYSTEM.md
+  # and the deployment notes; every other service above stays bound to
+  # 127.0.0.1, not reachable from outside this host.
+  landing:
+    build:
+      context: .
+      dockerfile: ./packages/landing/Dockerfile
+    container_name: decrity-landing
+    ports:
+      - '127.0.0.1:3003:80'
 
 volumes:
   postgres_data:

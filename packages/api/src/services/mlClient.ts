@@ -27,8 +27,7 @@ export async function callMLService(content: string): Promise<MLResponse> {
       throw new Error(`ML service returned ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return (await response.json()) as MLResponse
   } catch (error) {
     console.error('ML service call failed:', error)
     throw error

@@ -3,7 +3,7 @@
  * Orchestrates Layer 1 (heuristics) and Layer 2 (ML) detection
  */
 
-import { ScanResponse, ScanVerdict, SupportedPlatform, hashContent } from '@decrity/shared'
+import { ScanResponse, ScanVerdict } from '@decrity/shared'
 import { callMLService } from './mlClient.js'
 
 interface HeuristicResult {
@@ -12,15 +12,9 @@ interface HeuristicResult {
   reason: string
 }
 
-export async function scanContent(
-  content: string,
-  source: SupportedPlatform,
-  heuristic?: HeuristicResult
-): Promise<ScanResponse> {
+export async function scanContent(content: string, heuristic?: HeuristicResult): Promise<ScanResponse> {
   // For v1.0, we primarily rely on ML service
   // The extension handles Layer 1 locally
-
-  const contentHash = await hashContent(content)
 
   try {
     // Call ML service for classification

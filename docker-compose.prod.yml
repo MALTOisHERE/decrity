@@ -1,0 +1,112 @@
+name: decrity
+
+# VPS deployment compose file. Every service here is `image:`, never
+# `build:` — images are built and pushed to GHCR by
+# .github/workflows/docker-build.yml, so deploying/updating on the VPS is
+# just `docker compose -f docker-compose.prod.yml pull && ... up -d`, never
+# a source checkout or a build. See docker-compose.yml for the local dev
+# version (which does build from source) and DEPLOY.md for the full
+# VPS setup.
+#
+# Only `landing` is meant to get a public nginx route for now (see
+# DEPLOY.md). Every service is still bound to 127.0.0.1 only, not 0.0.0.0,
+# so nothing here is reachable from outside this host regardless of what
+# nginx does — matching this VPS's existing blink/app/monitor convention.
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: decrity-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: decrity
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: decrity
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U decrity']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: decrity-redis
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ml-service:
+    image: ghcr.io/maltoishere/decrity-ml-service:latest
+    container_name: decrity-ml
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:8000:8000'
+    environment:
+      - LOG_LEVEL=info
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  api:
+    image: ghcr.io/maltoishere/decrity-api:latest
+    container_name: decrity-api
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3000:3000'
+    environment:
+      - NODE_ENV=production
+      - API_PORT=3000
+      - API_HOST=0.0.0.0
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DATABASE_URL=postgresql://decrity:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/decrity?schema=public
+      - REDIS_URL=redis://redis:6379
+      - ML_SERVICE_URL=http://ml-service:8000
+      - JWT_SECRET=${JWT_SECRET:?set JWT_SECRET in .env}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - RATE_LIMIT_MAX=${RATE_LIMIT_MAX:-60}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW:-60000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  dashboard:
+    image: ghcr.io/maltoishere/decrity-dashboard:latest
+    container_name: decrity-dashboard
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3002:80'
+
+  landing:
+    image: ghcr.io/maltoishere/decrity-landing:latest
+    container_name: decrity-landing
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3003:80'
+
+volumes:
+  postgres_data:
+  redis_data:

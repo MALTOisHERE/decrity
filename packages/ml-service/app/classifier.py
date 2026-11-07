@@ -18,7 +18,10 @@ class PromptInjectionClassifier:
     def __init__(self, model_path: str = None):
         """Initialize classifier"""
         logger.info("Initializing PromptInjectionClassifier")
-        # TODO: Load fine-tuned model
+        # TODO: Load fine-tuned model. torch/transformers/scikit-learn were
+        # removed from requirements.txt since nothing used them yet (2026-11-07,
+        # unused heavy deps were making every Docker build re-download ~2GB).
+        # Add them back there when this is actually implemented.
         # from transformers import AutoTokenizer, AutoModelForSequenceClassification
         # self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         # self.model = AutoModelForSequenceClassification.from_pretrained(model_path)

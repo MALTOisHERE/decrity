@@ -1,7 +1,14 @@
 // Prisma schema for Decrity
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // "native" covers local dev on Windows/Mac/glibc-Linux. The musl target
+  // is needed for the Alpine-based Docker image (packages/api/Dockerfile);
+  // without it Prisma generates an openssl-1.1 engine binary that crashes
+  // at runtime ("Error loading shared library libssl.so.1.1"), since
+  // modern Alpine (node:20-alpine) ships OpenSSL 3.x only, found 2026-11-07
+  // the first time the API ran in its own container.
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {

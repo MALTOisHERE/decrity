@@ -4,7 +4,7 @@
  */
 
 import { PrismaClient } from '@prisma/client'
-import { ScanResponse, SupportedPlatform, ThreatDetail, hashContent } from '@decrity/shared'
+import { ScanResponse, SupportedPlatform, ThreatDetail } from '@decrity/shared'
 
 const prisma = new PrismaClient()
 
@@ -14,11 +14,12 @@ const prisma = new PrismaClient()
 export async function persistScanResult(
   result: ScanResponse,
   platform: SupportedPlatform,
+  contentHash: string,
   userId?: string
 ): Promise<void> {
   await prisma.scanResult.create({
     data: {
-      contentHash: crypto.randomUUID(), // Placeholder - should use actual hash
+      contentHash,
       verdict: result.verdict,
       score: result.score,
       reason: result.reason || '',

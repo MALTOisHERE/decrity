@@ -1,0 +1,79 @@
+name: Build and push Docker images
+
+# Builds all 4 service images here and pushes them to GHCR. The VPS only
+# ever pulls these pre-built images (see docker-compose.prod.yml) and never
+# builds from source itself, so deploying there costs no CPU/disk beyond
+# downloading the finished image layers.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/api/**'
+      - 'packages/ml-service/**'
+      - 'packages/dashboard/**'
+      - 'packages/landing/**'
+      - 'packages/shared/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/docker-build.yml'
+  workflow_dispatch:
+
+env:
+  IMAGE_PREFIX: ghcr.io/maltoishere/decrity
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - name: api
+            context: .
+            dockerfile: packages/api/Dockerfile
+            build-args: ''
+          - name: ml-service
+            context: packages/ml-service
+            dockerfile: packages/ml-service/Dockerfile
+            build-args: ''
+          - name: dashboard
+            context: .
+            dockerfile: packages/dashboard/Dockerfile
+            # Not publicly exposed yet (see DEPLOY.md), so this doesn't need
+            # to be a real reachable URL right now. Update this once the
+            # dashboard gets its own public domain, and re-run this
+            # workflow (workflow_dispatch) to rebuild with the real value,
+            # since it's baked into the JS bundle at build time.
+            build-args: VITE_DASHBOARD_API_URL=https://api.decrity.malto.icu
+          - name: landing
+            context: .
+            dockerfile: packages/landing/Dockerfile
+            build-args: ''
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push ${{ matrix.name }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          build-args: ${{ matrix.build-args }}
+          tags: |
+            ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:latest
+            ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}

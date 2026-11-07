@@ -10,7 +10,7 @@ import { getUserStats } from '../services/database.js'
 
 export async function userRoute(server: FastifyInstance) {
   // GET /v1/user
-  server.get('/user', async (request, reply) => {
+  server.get('/user', async (_request, reply) => {
     // TODO: Implement user retrieval
     return reply.status(501).send({
       error: {
@@ -23,7 +23,7 @@ export async function userRoute(server: FastifyInstance) {
   // PATCH /v1/user
   server.patch<{
     Body: UserAPI.UpdateRequest
-  }>('/user', async (request, reply) => {
+  }>('/user', async (_request, reply) => {
     // TODO: Implement user settings update
     return reply.status(501).send({
       error: {
