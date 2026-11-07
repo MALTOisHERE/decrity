@@ -1,0 +1,27 @@
+name: Deploy to VPS
+
+# Separate from docker-build.yml on purpose: building and deploying are two
+# distinct actions, not one chained pipeline. This one never builds
+# anything, it only pulls whatever's currently tagged :latest on GHCR (from
+# the most recent successful build workflow run) and restarts the VPS
+# containers. Manual trigger only (no push trigger), so a build succeeding
+# never auto-deploys.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull and restart on the VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /var/www/decrity
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml ps

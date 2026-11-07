@@ -1,22 +1,11 @@
 name: Build and push Docker images
 
-# Builds all 4 service images here and pushes them to GHCR. The VPS only
-# ever pulls these pre-built images (see docker-compose.prod.yml) and never
-# builds from source itself, so deploying there costs no CPU/disk beyond
-# downloading the finished image layers.
+# Builds all 4 service images here and pushes them to GHCR. Manual trigger
+# only: pushing code runs ci.yml (lint/build/test), not this. Deploying the
+# images to the VPS is also a separate, deliberate, manually-triggered step
+# (see docker-deploy.yml and DEPLOY.md).
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'packages/api/**'
-      - 'packages/ml-service/**'
-      - 'packages/dashboard/**'
-      - 'packages/landing/**'
-      - 'packages/shared/**'
-      - 'pnpm-lock.yaml'
-      - 'pnpm-workspace.yaml'
-      - '.github/workflows/docker-build.yml'
   workflow_dispatch:
 
 env:

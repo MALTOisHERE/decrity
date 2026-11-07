@@ -1,112 +1,49 @@
 # Deploying Decrity to the VPS
 
-How the production deployment works, and the exact steps to set it up or update it. Read `docker-compose.prod.yml`'s own header comment first; this document is the step-by-step that goes with it.
+How the production deployment works. Read `docker-compose.prod.yml`'s own header comment too.
 
 ## How it works
 
-1. `.github/workflows/docker-build.yml` builds all 4 service images (api, ml-service, dashboard, landing) on every push to `main` that touches them, and pushes them to GHCR (`ghcr.io/maltoishere/decrity-*`).
-2. The VPS never builds anything. It only pulls the pre-built images and runs them via `docker-compose.prod.yml`.
-3. nginx (already running on the VPS for `app`/`blink`/`monitor`) gets one more subdomain, `decrity.malto.icu`, routed to the `landing` container only. Every other service (api, dashboard, postgres, redis, ml-service) stays bound to `127.0.0.1`, not reachable from outside the host, until they're deliberately exposed later.
+Three separate GitHub Actions workflows, each doing one thing, not a single chained pipeline:
+
+1. **`.github/workflows/ci.yml`**: lint, build (type-check), test. This is the only one that runs automatically, on every push and PR.
+2. **`.github/workflows/docker-build.yml`**: builds all 4 service images (api, ml-service, dashboard, landing) and pushes them to GHCR (`ghcr.io/maltoishere/decrity-*`). Manual trigger only (Actions tab -> this workflow -> "Run workflow"); pushing code does not build or push images by itself.
+3. **`.github/workflows/docker-deploy.yml`**: SSHes into the VPS as the `deploy` user (a dedicated key, scoped to just that user, not root) and runs `docker compose -f docker-compose.prod.yml pull && up -d` in `/var/www/decrity`. Also manual trigger only, and never chained after a build finishes. The VPS never builds anything itself, and there's no source checkout or sync step: it only ever pulls whatever's currently tagged `:latest` on GHCR.
+
+nginx (already running on the VPS for `app`/`blink`/`monitor`) routes one more subdomain, `decrity.malto.icu`, to the `landing` container. Every other service (api, dashboard, postgres, redis, ml-service) stays bound to `127.0.0.1`, not reachable from outside the host, until deliberately exposed later.
 
 This matches the VPS's existing convention for `blink`: Docker containers reverse-proxied through nginx, one shared `malto.icu` origin TLS cert (Cloudflare in front), `/var/www/<app>` owned by the `deploy` user.
 
-## One-time setup
+## One-time setup (done, 2026-11-07)
 
-### 1. Make the GHCR images pullable
+- GHCR packages: made public (no secrets baked into any image; all config comes from environment variables at container runtime).
+- `/var/www/decrity/` created on the VPS, owned by `deploy`, holding `docker-compose.prod.yml` and a `deploy`-owned `.env` (`chmod 600`) with freshly generated `POSTGRES_PASSWORD`/`JWT_SECRET` (not the local-dev values from this repo's own `.env`).
+- nginx: `decrity.malto.icu` block appended to `/etc/nginx/sites-enabled/malto` (backup of the pre-edit file at `/etc/nginx/backups/`), routing to `127.0.0.1:3003` (`landing`). Validated with `nginx -t` and reloaded before confirming `blink`/`app` still responded normally.
+- GitHub Actions deploy access: a dedicated ed25519 keypair (not the root VPS key used for manual admin work) was generated, its public half added to `deploy@`'s `authorized_keys`, and the private half stored as the `VPS_SSH_KEY` repo secret, alongside `VPS_HOST` and `VPS_USER=deploy`.
 
-The first push to `main` creates 4 private packages under `github.com/MALTOisHERE?tab=packages`. Either:
+## Still pending (your action, not automatable from here)
 
-- **Make them public** (simplest, recommended since no secrets are baked into any image; all of them read config from environment variables at runtime): for each of the 4 packages, Package settings -> Change visibility -> Public.
-- **Or keep them private** and have the VPS authenticate: create a GitHub personal access token (classic) with the `read:packages` scope, then on the VPS: `echo <token> | docker login ghcr.io -u <your-github-username> --password-stdin`.
+**Cloudflare DNS record**: add an `A` record, `decrity` -> `178.104.224.137`, proxied (orange cloud), matching how `blink`/`app`/`monitor` are already set up. Nothing else works end-to-end from the public internet until this exists.
 
-### 2. Create the deploy directory on the VPS
+## Deploying
+
+1. When you want new images built, run `docker-build.yml` manually: Actions tab -> "Build and push Docker images" -> "Run workflow". Check the run for status and the per-image summary (status, image reference, tag, digest).
+2. When you're ready to actually put those images live, separately run `docker-deploy.yml`: Actions tab -> "Deploy to VPS" -> "Run workflow". That's it, no local command needed.
+
+`pull` fetches whatever's newly tagged `:latest` for each image; `up -d` recreates only the containers whose image actually changed, leaving the rest running undisturbed.
+
+If you'd rather run it by hand instead of through Actions, the equivalent manual command is:
 
 ```bash
 ssh -i "C:\Users\Mohamed AIT OUAARAB\.ssh\id_ed25519_hetzner" root@178.104.224.137
-mkdir -p /var/www/decrity
-chown deploy:deploy /var/www/decrity
-```
-
-Copy `docker-compose.prod.yml` there (as the `deploy` user, or `scp` it from this machine):
-
-```bash
-scp -i "C:\Users\Mohamed AIT OUAARAB\.ssh\id_ed25519_hetzner" docker-compose.prod.yml deploy@178.104.224.137:/var/www/decrity/
-```
-
-### 3. Create `/var/www/decrity/.env` on the VPS
-
-Root-owned, never committed, generated fresh (don't reuse the local-dev `.env` from this repo):
-
-```bash
-POSTGRES_PASSWORD=<generate a real random value>
-JWT_SECRET=<generate a real random value, e.g. openssl rand -hex 32>
-JWT_EXPIRES_IN=7d
-LOG_LEVEL=info
-RATE_LIMIT_MAX=60
-RATE_LIMIT_WINDOW=60000
-```
-
-### 4. Add the nginx server block
-
-Append to `/etc/nginx/sites-enabled/malto` (matching the existing `blink`/`app`/`monitor` blocks exactly, see that file for the pattern):
-
-```nginx
-server {
-    listen 80;
-    server_name decrity.malto.icu;
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name decrity.malto.icu;
-
-    ssl_certificate     /etc/nginx/ssl/malto-icu-origin.pem;
-    ssl_certificate_key /etc/nginx/ssl/malto-icu-origin.key;
-
-    location / {
-        proxy_pass http://127.0.0.1:3003;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
-    }
-}
-```
-
-Then:
-
-```bash
-nginx -t && systemctl reload nginx
-```
-
-### 5. Add the Cloudflare DNS record
-
-This is a Cloudflare account action, not something done from the VPS or this repo: add an `A` record, `decrity` -> `178.104.224.137`, proxied (orange cloud), matching how `blink`/`app`/`monitor` are already set up.
-
-### 6. First deploy
-
-```bash
 cd /var/www/decrity
 docker compose -f docker-compose.prod.yml pull
 docker compose -f docker-compose.prod.yml up -d
-docker compose -f docker-compose.prod.yml ps   # confirm all 6 services healthy
+docker compose -f docker-compose.prod.yml ps
 ```
-
-## Updating after a change
-
-Nothing to sync. Once a change is merged to `main` and the GitHub Actions run finishes (check the Actions tab), on the VPS:
-
-```bash
-cd /var/www/decrity
-docker compose -f docker-compose.prod.yml pull
-docker compose -f docker-compose.prod.yml up -d
-```
-
-This re-pulls whichever images changed and recreates only those containers.
 
 ## Not done yet
 
-- Only `landing` has a public nginx route. `api`/`dashboard` stay internal until there's a real plan for exposing them (auth, rate limiting review, a real domain for the dashboard instead of the `VITE_DASHBOARD_API_URL` placeholder baked in at build time).
+- Only `landing` has a public nginx route. `api`/`dashboard` stay internal until there's a real plan for exposing them (auth, rate limiting review, a real public URL for the dashboard instead of the placeholder `VITE_DASHBOARD_API_URL` baked in at build time).
 - Domain is `decrity.malto.icu` for now; move to a dedicated domain once one is bought, per the earlier handoff notes.
-- No automated redeploy-on-push yet (the step above is manual); worth adding once the manual flow has been run a few times successfully.
+- No rollback tooling yet: each image is also tagged with its git SHA (visible in the build summary), so a manual rollback is possible by editing `docker-compose.prod.yml`'s tag and re-running `deploy`, but nothing automates this yet.
