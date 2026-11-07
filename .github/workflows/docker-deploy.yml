@@ -8,12 +8,30 @@ name: Deploy to VPS
 # database. Manual trigger only (no push trigger), so a build succeeding
 # never auto-deploys.
 #
-# "prisma migrate deploy" only applies migrations that haven't run yet
-# (tracked in the database's own _prisma_migrations table), so running it
-# on every deploy is safe even when this release has no schema change.
+# The "service" input lets you redeploy just one container instead of all 4,
+# matching docker-build.yml's own per-service input, e.g. only the landing
+# image changed, no need to also pull/restart api, ml-service, and
+# dashboard. postgres/redis aren't offered here: they're off-the-shelf
+# images, not something this repo builds or versions.
+#
+# "prisma migrate deploy" runs every time regardless of which service was
+# selected: it only applies migrations that haven't run yet (tracked in the
+# database's own _prisma_migrations table), so it's a safe no-op when this
+# release has no schema change or didn't touch the api service at all.
 
 on:
   workflow_dispatch:
+    inputs:
+      service:
+        description: 'Which service to deploy'
+        type: choice
+        options:
+          - all
+          - api
+          - ml-service
+          - dashboard
+          - landing
+        default: all
 
 jobs:
   deploy:
@@ -27,7 +45,9 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /var/www/decrity
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d
+            SERVICE="${{ inputs.service }}"
+            if [ "$SERVICE" = "all" ]; then SERVICE=""; fi
+            docker compose -f docker-compose.prod.yml pull $SERVICE
+            docker compose -f docker-compose.prod.yml up -d $SERVICE
             docker compose -f docker-compose.prod.yml exec -T api pnpm exec prisma migrate deploy
             docker compose -f docker-compose.prod.yml ps
