@@ -66,6 +66,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push ${{ matrix.name }}
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: ${{ matrix.context }}
@@ -77,3 +78,16 @@ jobs:
             ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:${{ github.sha }}
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+      - name: Add to build summary
+        if: always()
+        run: |
+          {
+            echo "## ${{ matrix.name }}"
+            echo "- Status: ${{ steps.build.outcome }}"
+            echo "- Image: \`${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:latest\`"
+            echo "- Tag: \`${{ env.IMAGE_PREFIX }}-${{ matrix.name }}:${{ github.sha }}\`"
+            if [ "${{ steps.build.outcome }}" = "success" ]; then
+              echo "- Digest: \`${{ steps.build.outputs.digest }}\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

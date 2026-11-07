@@ -1,7 +1,7 @@
 name: decrity
 
 # VPS deployment compose file. Every service here is `image:`, never
-# `build:` — images are built and pushed to GHCR by
+# `build:`: images are built and pushed to GHCR by
 # .github/workflows/docker-build.yml, so deploying/updating on the VPS is
 # just `docker compose -f docker-compose.prod.yml pull && ... up -d`, never
 # a source checkout or a build. See docker-compose.yml for the local dev
@@ -11,7 +11,7 @@ name: decrity
 # Only `landing` is meant to get a public nginx route for now (see
 # DEPLOY.md). Every service is still bound to 127.0.0.1 only, not 0.0.0.0,
 # so nothing here is reachable from outside this host regardless of what
-# nginx does — matching this VPS's existing blink/app/monitor convention.
+# nginx does, matching this VPS's existing blink/app/monitor convention.
 
 services:
   postgres:
