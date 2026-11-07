@@ -24,6 +24,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # api's tsc build type-checks against @prisma/client's generated
+      # types (e.g. prisma.scanResult.findMany()'s return type), which only
+      # exist after this runs. Without it, those call sites type as `any`
+      # instead of failing to resolve at all, so this doesn't show up as a
+      # missing-types error, just implicit-any ones on the same lines.
+      - name: Generate Prisma client
+        run: pnpm --filter @decrity/api exec prisma generate
+
       - name: Lint
         run: pnpm lint
 
