@@ -13,7 +13,7 @@
 
 Decrity is a browser extension and web dashboard that acts as an AI interaction firewall for everyday consumers. It monitors, scans, and reports on AI tool usage, protecting users from prompt injection attacks, fake AI impersonation, and invisible data harvesting.
 
-**Repository:** https://github.com/MALTOisHERE/Decrity
+**Repository:** https://github.com/MALTOisHERE/decrity
 
 ## Packages
 
