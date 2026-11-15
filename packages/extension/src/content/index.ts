@@ -3,7 +3,7 @@
  * Runs on AI platform pages, monitors input, and shows alerts
  */
 
-import { ScanRequest, ScanResponse, getPlatformFromUrl } from '@decrity/shared'
+import { ScanRequest, ScanResponse, getPlatformFromUrl, isContentTooShort } from '@decrity/shared'
 import { injectAlertBanner } from './injector'
 import { getPlatformHandler } from './platforms'
 import { startProtectionGapDetection } from './gapDetector'
@@ -118,7 +118,7 @@ function observeFileUploads(selector: string) {
  * Handle input submission
  */
 async function handleInputSubmission(content: string, event?: Event) {
-  if (!content || content.trim().length < 10) return
+  if (!content || isContentTooShort(content)) return
 
   const result = await scanAndAlert(content, true)
 

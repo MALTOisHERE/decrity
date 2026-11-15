@@ -36,11 +36,17 @@ export function sanitizeContent(content: string): string {
 }
 
 /**
+ * Raw regex source (not a RegExp object) so it can also be dropped directly
+ * into a JSON schema `pattern` field, e.g. a Fastify route's body schema,
+ * which ajv requires as a string, not a RegExp instance.
+ */
+export const EMAIL_PATTERN_SOURCE = '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$'
+
+/**
  * Validate email format
  */
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
+  return new RegExp(EMAIL_PATTERN_SOURCE).test(email)
 }
 
 /**

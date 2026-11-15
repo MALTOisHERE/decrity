@@ -5,7 +5,7 @@
  */
 
 import { FastifyInstance } from 'fastify'
-import { WaitlistAPI } from '@decrity/shared'
+import { WaitlistAPI, EMAIL_PATTERN_SOURCE } from '@decrity/shared'
 import { persistWaitlistSignup } from '../services/database.js'
 
 export async function waitlistRoute(server: FastifyInstance) {
@@ -21,7 +21,7 @@ export async function waitlistRoute(server: FastifyInstance) {
           // available: a basic pattern is enough to reject obvious garbage,
           // real validation (does this address exist) happens by the email
           // bouncing when the launch announcement is sent.
-          email: { type: 'string', pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$', maxLength: 320 },
+          email: { type: 'string', pattern: EMAIL_PATTERN_SOURCE, maxLength: 320 },
         },
       },
     },
