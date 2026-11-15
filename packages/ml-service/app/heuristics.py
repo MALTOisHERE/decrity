@@ -4,7 +4,8 @@ Rule-based pattern matching
 """
 
 import re
-from typing import Dict
+import unicodedata
+from typing import Dict, List
 
 # Known injection patterns, covering: direct instruction overrides,
 # role-manipulation jailbreaks, system prompt extraction, data exfiltration,
@@ -94,22 +95,86 @@ INJECTION_PATTERNS = [
 # of requiring a second, unrelated signal to corroborate it.
 PATTERN_SCORE = 0.4
 
+# Digit substitutions commonly used to dodge literal string/regex matching
+# while reading identically to a human (and parsing identically to the
+# target AI, which is the actual threat model here). '@' and '$' are
+# deliberately excluded: several data-exfiltration patterns rely on a
+# literal '@' to recognize an email-address target (`[\w.-]+@[\w.-]+`), and
+# substituting it away to also catch leetspeak like "p@ssword" would break
+# that structurally more important detection.
+LEETSPEAK_MAP = str.maketrans(
+    {
+        "0": "o",
+        "1": "i",
+        "3": "e",
+        "4": "a",
+        "5": "s",
+        "7": "t",
+    }
+)
+
+_INVISIBLE_CHARS_PATTERN = re.compile(r"[\u200B-\u200D\uFEFF\u2060-\u2069\u00AD]")
+
+
+def normalize_for_matching(content: str) -> str:
+    """
+    Builds a scratch copy of the content for pattern matching only (never
+    shown to the user, never sent anywhere) that closes three cheap,
+    regex-defeating evasions:
+
+    1. NFKC Unicode normalization collapses lookalike character sets back to
+       plain ASCII, e.g. the Mathematical Alphanumeric block ("ignore" spelled
+       in bold-script Unicode) or full-width Latin letters, which read as
+       ordinary text but don't match an i/g/n/... literal in a regex.
+    2. Stripping zero-width/invisible formatting characters lets a pattern's
+       \\s+/word-boundary matching see through "ignore[ZWSP]all[ZWSP]previous
+       [ZWSP]instructions" as the phrase it actually renders as.
+       has_hidden_content() below still flags the presence of these
+       characters as its own separate signal; this just stops them from also
+       acting as a matching bypass.
+    3. Leetspeak digit substitution ("1gn0r3" -> "ignore") catches the most
+       common deliberate obfuscation idiom cheaply.
+
+    This deliberately does NOT attempt general typo tolerance (e.g. a
+    transposed "ignroe", or a missing letter) via edit-distance/fuzzy
+    matching: that class of input has no fixed set of substitutions to
+    normalize away, and a fuzzy-matching threshold loose enough to catch
+    typos on long trigger phrases starts false-flagging ordinary misspelled
+    benign text. Genuine typo/paraphrase robustness needs real semantic
+    understanding (Layer 2), not a wider regex.
+    """
+    normalized = unicodedata.normalize("NFKC", content)
+    normalized = _INVISIBLE_CHARS_PATTERN.sub("", normalized)
+    return normalized.translate(LEETSPEAK_MAP)
+
 
 def run_heuristic_scan(content: str) -> Dict:
     """Run heuristic scan on content"""
-    matches = []
+    matches: List[str] = []
     score = 0.0
+    normalized = normalize_for_matching(content)
 
     # Check against patterns
     for pattern in INJECTION_PATTERNS:
-        if re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
-            matches.append(pattern)
+        match = re.search(pattern, normalized, re.IGNORECASE | re.MULTILINE)
+        if match:
+            matches.append(match.group(0))
             score += PATTERN_SCORE
 
-    # Check for hidden content
+    # Check for hidden content patterns
     if has_hidden_content(content):
         matches.append("Hidden content detected")
         score += 0.3
+
+    # Check for suspicious repetition (common in jailbreak attempts)
+    if has_suspicious_repetition(content):
+        matches.append("Suspicious repetition pattern")
+        score += 0.15
+
+    # Check for excessive punctuation (obfuscation technique)
+    if has_excessive_punctuation(content):
+        matches.append("Excessive punctuation detected")
+        score += 0.1
 
     # Normalize score
     score = min(score, 1.0)
@@ -129,28 +194,66 @@ def run_heuristic_scan(content: str) -> Dict:
 
 
 def has_hidden_content(content: str) -> bool:
-    """Check for hidden content patterns"""
+    """Check for hidden content (HTML comments, zero-width chars, etc.)"""
     # HTML comments
     if "<!--" in content or "-->" in content:
         return True
 
-    # Zero-width characters
-    zero_width = ["​", "‌", "‍", "﻿"]
-    for char in zero_width:
-        if char in content:
+    # Zero-width and other invisible formatting characters often used for hiding
+    if re.search(r"[\u200B-\u200D\uFEFF\u2060-\u2069]", content):
+        return True
+
+    return False
+
+
+def has_suspicious_repetition(content: str) -> bool:
+    """Check for suspicious repetition patterns"""
+    words = content.lower().split()
+    word_counts: Dict[str, int] = {}
+
+    for word in words:
+        if len(word) < 3:
+            continue  # Skip short words
+        word_counts[word] = word_counts.get(word, 0) + 1
+
+    # If any word appears more than 20% of total words, suspicious. A short
+    # sample makes that ratio noisy on its own: two incidental repeats of an
+    # ordinary word ("Some text ... more text" is 2/7, 29%) can cross it in
+    # completely benign content. Require enough words that the ratio is
+    # actually meaningful.
+    total_words = sum(1 for w in words if len(w) >= 3)
+    if total_words < 10:
+        return False
+
+    for count in word_counts.values():
+        if count / total_words > 0.2:
             return True
 
     return False
 
 
-def generate_reason(verdict: str, matches: list) -> str:
+def has_excessive_punctuation(content: str) -> bool:
+    """Check for excessive punctuation (obfuscation)"""
+    punctuation_chars = set("!?.,;:'\"")
+    punctuation_count = sum(1 for c in content if c in punctuation_chars)
+    total_chars = len(content)
+
+    if total_chars == 0:
+        return False
+
+    # If more than 10% punctuation, suspicious
+    return punctuation_count / total_chars > 0.1
+
+
+def generate_reason(verdict: str, matches: List[str]) -> str:
     """Generate plain-language reason"""
     if verdict == "clean":
         return "No suspicious patterns detected"
 
     if verdict == "suspicious":
-        return (
-            "This content contains patterns that may be attempting to manipulate the AI"
-        )
+        suffix = f": {matches[0]}" if matches else ""
+        return f"This content contains patterns that may be attempting to manipulate the AI{suffix}"
 
-    return "This content likely contains hidden instructions trying to hijack the AI's behavior"
+    # threat
+    suffix = f": {', '.join(matches[:2])}" if matches else ""
+    return f"This content likely contains hidden instructions trying to hijack the AI's behavior{suffix}"

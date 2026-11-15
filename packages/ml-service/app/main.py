@@ -68,11 +68,15 @@ async def classify_content(request: ClassifyRequest):
         # Layer 1: Fast heuristic scan
         heuristic_result = run_heuristic_scan(request.content)
 
-        # If heuristics say clean, trust it
-        if heuristic_result["verdict"] == "clean":
-            return ClassifyResponse(**heuristic_result)
-
-        # Layer 2: ML classification for suspicious/threat cases
+        # Layer 2: always consulted, not only when Layer 1 already found
+        # something. The entire point of a second layer is to catch what
+        # the first one's regex matching structurally can't (typos,
+        # paraphrase, unfamiliar phrasing) -- skipping it on a "clean"
+        # heuristic verdict would skip it on exactly the content it exists
+        # to cover. Safe to call unconditionally because the classifier
+        # itself fails open to a genuine no-signal result (score 0) rather
+        # than a hardcoded score, so a disabled/unreachable classifier
+        # leaves the final result exactly as the heuristic alone.
         clf = get_classifier()
         ml_result = clf.classify(request.content)
 

@@ -111,15 +111,89 @@ const INJECTION_PATTERNS = [
 const PATTERN_SCORE = 0.4
 
 /**
+ * Digit substitutions commonly used to dodge literal string/regex matching
+ * while reading identically to a human (and parsing identically to the
+ * target AI, which is the actual threat model here). '@' and '$' are
+ * deliberately excluded: several data-exfiltration patterns rely on a
+ * literal '@' to recognize an email-address target (`[\w.-]+@[\w.-]+`), and
+ * substituting it away to also catch leetspeak like "p@ssword" would break
+ * that structurally more important detection.
+ */
+const LEETSPEAK_MAP: Record<string, string> = {
+  '0': 'o',
+  '1': 'i',
+  '3': 'e',
+  '4': 'a',
+  '5': 's',
+  '7': 't',
+}
+
+/**
+ * Zero-width/invisible formatting characters that can sit between the
+ * letters of a trigger phrase while it still renders (and parses, to the
+ * target AI) as one unbroken word. Built from explicit code points, not
+ * \u-escaped regex source with the literal characters typed inline: those
+ * are invisible by design, so a stray one slipping into this file as an
+ * actual character instead of escaped text would be effectively
+ * unreviewable in a diff.
+ */
+const INVISIBLE_CODEPOINTS = [
+  0x200b,
+  0x200c,
+  0x200d, // zero-width space / non-joiner / joiner
+  0xfeff, // byte-order mark
+  0x00ad, // soft hyphen
+  ...Array.from({ length: 0x2069 - 0x2060 + 1 }, (_, i) => 0x2060 + i), // invisible math operators/separators
+]
+const INVISIBLE_CHARS_PATTERN = new RegExp(
+  `[${INVISIBLE_CODEPOINTS.map(c => String.fromCharCode(c)).join('')}]`,
+  'g'
+)
+
+/**
+ * Builds a scratch copy of the content for pattern matching only (never
+ * shown to the user, never sent anywhere) that closes three cheap,
+ * regex-defeating evasions:
+ *
+ * 1. NFKC Unicode normalization collapses lookalike character sets back to
+ *    plain ASCII, e.g. the Mathematical Alphanumeric block ("𝐢𝐠𝐧𝐨𝐫𝐞") or
+ *    full-width Latin letters, which read as ordinary text but don't match
+ *    an `i`/`g`/`n`/... literal in a regex.
+ * 2. Stripping the invisible characters above lets a pattern's
+ *    `\s+`/word-boundary matching see through a trigger phrase with one
+ *    inserted between every letter or word as the phrase it actually
+ *    renders as. `hasHiddenContent()` below still flags the presence of
+ *    these characters as its own separate signal; this just stops them
+ *    from also acting as a matching bypass.
+ * 3. Leetspeak digit substitution (`1gn0r3` -> `ignore`) catches the most
+ *    common deliberate obfuscation idiom cheaply.
+ *
+ * This deliberately does NOT attempt general typo tolerance (e.g. a
+ * transposed "ignroe", or a missing letter) via edit-distance/fuzzy
+ * matching: that class of input has no fixed set of substitutions to
+ * normalize away, and a fuzzy-matching threshold loose enough to catch
+ * typos on long trigger phrases starts false-flagging ordinary misspelled
+ * benign text. Genuine typo/paraphrase robustness needs real semantic
+ * understanding (Layer 2), not a wider regex.
+ */
+function normalizeForMatching(content: string): string {
+  return content
+    .normalize('NFKC')
+    .replace(INVISIBLE_CHARS_PATTERN, '')
+    .replace(/[013457]/g, char => LEETSPEAK_MAP[char] ?? char)
+}
+
+/**
  * Run heuristic scan on content
  */
 export function runHeuristicScan(content: string): HeuristicResult {
   const matches: string[] = []
   let score = 0
+  const normalized = normalizeForMatching(content)
 
   // Check against known patterns
   for (const pattern of INJECTION_PATTERNS) {
-    const match = content.match(pattern)
+    const match = normalized.match(pattern)
     if (match) {
       matches.push(match[0])
       score += PATTERN_SCORE
@@ -199,8 +273,13 @@ function hasSuspiciousRepetition(content: string): boolean {
     wordCounts[word] = (wordCounts[word] || 0) + 1
   }
 
-  // If any word appears more than 20% of total words, suspicious
+  // If any word appears more than 20% of total words, suspicious. A short
+  // sample makes that ratio noisy on its own: two incidental repeats of an
+  // ordinary word ("Some text ... more text" is 2/7, 29%) can cross it in
+  // completely benign content. Require enough words that the ratio is
+  // actually meaningful.
   const totalWords = words.filter(w => w.length >= 3).length
+  if (totalWords < 10) return false
   for (const count of Object.values(wordCounts)) {
     if (count / totalWords > 0.2) {
       return true

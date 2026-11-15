@@ -289,9 +289,9 @@ Testing and linting: `pytest`, `ruff check .`, `ruff format .` (see that package
 - Fast (<10ms)
 
 **Layer 2** (`app/classifier.py`):
-- ML classifier (placeholder for v1.0)
-- DistilBERT-based (planned for v1.5)
-- Slower (50-200ms)
+- Semantic classification via an LLM call, routed through LiteLLM so the provider/model is a config choice (`OPENROUTER_API_KEY` + `CLASSIFIER_MODEL` env vars, see `.env.example`), not a code change. Catches what Layer 1's regex matching structurally can't: typos, paraphrase, unfamiliar phrasing in any language.
+- Always consulted, including when Layer 1 says "clean" — that's exactly the content it exists to cover. Fails open to a no-signal result (score 0) when `OPENROUTER_API_KEY` is unset, the call errors, or the response doesn't parse, leaving Layer 1's result as the final word; it never blocks or crashes a scan.
+- Slower than Layer 1, roughly 1-3s for a real LLM call (not the originally planned DistilBERT model — training one needs a labeled dataset and GPU time this project doesn't have; an LLM call was the realistic path to real semantic coverage today, 2026-11-15).
 
 ### Endpoints
 ```
