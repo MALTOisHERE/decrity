@@ -20,7 +20,8 @@ import { getAuthToken } from './auth'
  */
 export async function scanContent(request: ScanRequest): Promise<ScanResponse> {
   // Check privacy mode setting
-  const { privacyMode } = await chrome.storage.sync.get(STORAGE_KEYS.PRIVACY_MODE)
+  const stored = await chrome.storage.sync.get(STORAGE_KEYS.PRIVACY_MODE)
+  const privacyMode = stored[STORAGE_KEYS.PRIVACY_MODE]
 
   if (privacyMode) {
     // Privacy mode: local heuristics only

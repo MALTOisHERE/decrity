@@ -124,9 +124,9 @@
   - [ ] Context menu integration (optional)
 
 - [ ] **Testing & QA** (Week 5-6)
-  - [ ] Write unit tests for heuristics
-  - [ ] Test cache expiration
-  - [ ] Test privacy mode toggle
+  - [x] Write unit tests for heuristics: `packages/extension/src/shared/heuristics.test.ts` (Vitest), covers clean/suspicious/threat thresholds, hidden-content/repetition/punctuation signals, score capping, and reason text
+  - [x] Test cache expiration: `packages/extension/src/background/cache.test.ts`, using `fake-indexeddb` plus a `Date.now` spy to verify TTL expiry and `clearExpiredCache`'s selective deletion
+  - [x] Test privacy mode toggle: `packages/extension/src/background/scanner.test.ts`. Found and fixed a real bug while writing it: `scanContent()` destructured `{ privacyMode }` from `chrome.storage.sync.get(STORAGE_KEYS.PRIVACY_MODE)`, but that call returns the value keyed by the literal storage key (`decrity_privacy_mode`), not a `privacyMode` property, so the destructure was always `undefined` and the API/ML path ran on every scan regardless of the user's setting. Fixed in `scanner.ts` to read the value by its actual key.
   - [ ] Memory leak testing
   - [ ] Performance profiling
   - [ ] Cross-platform browser testing (Chrome, Edge)
@@ -329,8 +329,14 @@
    - Fix: the extension now sends its own Layer 1 heuristic result along with every `/v1/scan` request (`ScanAPI.Request.heuristic`, see `packages/shared/src/types/api.ts`). When the ML service is unreachable, the API now returns that heuristic result instead of a hardcoded clean. If no heuristic was sent at all (a future caller that skips Layer 1), it fails safe to `suspicious` with a plain-language reason, never silently clean. Verified live: stopped the ML service, confirmed a `suspicious` scan correctly returned `suspicious` (not `clean`), both with and without a heuristic in the request.
    - Owner: Backend team
 
+6. **Privacy Mode toggle silently never took effect**
+   - Status: Fixed 2026-11-15
+   - Was: `packages/extension/src/background/scanner.ts`'s `scanContent()` read the setting as `const { privacyMode } = await chrome.storage.sync.get(STORAGE_KEYS.PRIVACY_MODE)`. `chrome.storage.sync.get(key)` resolves to an object keyed by the literal key string (`decrity_privacy_mode`), not a property named `privacyMode`, so the destructure always evaluated to `undefined`. Every scan ran the full API/ML path (`runFullScan`), even for users who had Privacy Mode on, contradicting the "Layer 1 only in Privacy Mode" guarantee in `CLAUDE.md`. Found while writing the privacy-mode-toggle unit test below, not from a user report.
+   - Fix: read the value by its actual key (`stored[STORAGE_KEYS.PRIVACY_MODE]`). Covered by `packages/extension/src/background/scanner.test.ts`, which asserts no `fetch` call happens when Privacy Mode is on.
+   - Owner: Extension team
+
 ### Technical Debt
-- [ ] Add unit tests (extension, API)
+- [x] Add unit tests (extension): heuristics, cache expiration, privacy mode toggle (see Testing & QA above). API tests still outstanding.
 - [ ] Add integration tests
 - [ ] Improve error handling
 - [ ] Add logging infrastructure
