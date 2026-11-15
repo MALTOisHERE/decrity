@@ -50,7 +50,7 @@ A high-level overview of Decrity's development journey.
 **Goal:** Launch on Chrome Web Store
 
 ### Phase 1: Extension Polish (Week 1-2)
-- [ ] Design extension icons
+- [x] Design extension icons: already shipped, see `PROGRESS.md`
 - [ ] Refine alert UI
 - [ ] Add notification system
 - [ ] Test heuristics with real examples

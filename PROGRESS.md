@@ -96,10 +96,7 @@
 
 ### In Progress
 - [ ] **Extension Polish** (Week 1-2)
-  - [ ] Design and add extension icons (16, 32, 48, 128px)
-    - Placeholder icons exist now (brand teal, functional, unblock loading), but no final shield-based design yet
-    - Export in all required sizes
-    - Update manifest.json references
+  - [x] Design and add extension icons (16, 32, 48, 128px): this checklist item was stale. `packages/extension/public/icons/icon-{16,32,48,128}.png` already carry the final shield-based "Mark" design (see `DESIGN_SYSTEM.md`'s brand asset convention), correctly recolored to brand teal (`#2f6f78`) with real transparency, not a placeholder. Shipped in the "Rebrand to Decrity" commit (`56107d5`); `manifest.json` already references them correctly. Verified 2026-11-15.
   - [ ] Test Layer 1 heuristics with real injection examples
   - [x] Refine alert banner styling: rebuilt on shadcn/ui (React + Alert component), mounted inside a Shadow DOM root so it's isolated from each host platform's own styles/React instance; see DESIGN_SYSTEM.md
   - [ ] Add dismissal persistence
@@ -298,10 +295,7 @@
 
 ### Current Issues
 1. **Extension Icons Missing**
-   - Status: Blocker, blocking v1.0
-   - Need: 16x16, 32x32, 48x48, 128x128 PNG files
-   - Priority: High
-   - Owner: Design team
+   - Status: Fixed. This was already stale when checked 2026-11-15: all four sizes exist, final shield design, correctly recolored to brand teal, shipped in `56107d5`. Not a current blocker.
 
 2. **Platform Selectors Fragile**
    - Status: Warning, confirmed real, not just theoretical: a hidden SSR fallback element on claude.ai was silently matching before the real composer (found and fixed 2026-11-06)
