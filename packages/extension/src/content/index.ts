@@ -7,6 +7,7 @@ import { ScanRequest, ScanResponse, getPlatformFromUrl } from '@decrity/shared'
 import { injectAlertBanner } from './injector'
 import { getPlatformHandler } from './platforms'
 import { startProtectionGapDetection } from './gapDetector'
+import { isProtectionEnabled } from './protection'
 
 console.log('Decrity content script loaded on', window.location.href)
 
@@ -140,6 +141,11 @@ async function scanAndAlert(
   // Protection Gap: the input selector isn't reliably found right now, so
   // there's nothing trustworthy to scan against. Pause rather than guess.
   if (platformInProtectionGap) return null
+
+  // Respect the popup's master Protection toggle. Checked fresh per scan,
+  // not cached, so turning it off takes effect immediately on an
+  // already-open tab.
+  if (!(await isProtectionEnabled())) return null
 
   try {
     const request: ScanRequest = {
