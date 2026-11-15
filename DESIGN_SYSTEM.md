@@ -97,7 +97,11 @@ The `bg-primary` (or any other `bg-*`/`text-*`-backed color) is what actually pa
 
 ## Icons
 
-**Never emoji in shipped UI.** Use inline SVG (simple outline style: `fill="none" stroke="currentColor" strokeWidth="1.6-2"`) for brand/one-off icons like the shield logo, or `lucide-react` for anything else once shadcn is set up in that package. The one legitimate exception is `BADGE_TEXT` in `packages/shared/src/constants/index.ts` (checkmark, exclamation mark, warning triangle, circle), that's Chrome's toolbar badge API, which only accepts short text strings, not SVG. Those are monochrome functional glyphs, not decorative emoji, and are fine as-is.
+**Never emoji in shipped UI.** Use inline SVG (simple outline style: `fill="none" stroke="currentColor" strokeWidth="1.6-2"`) for brand/one-off icons like the shield logo, or `lucide-react` for anything else once shadcn is set up in that package.
+
+### Toolbar icon states
+
+The extension's toolbar icon changes per verdict/state via `chrome.action.setIcon()`, swapping the whole icon rather than overlaying `chrome.action.setBadgeText()` text on top of it. Badge text is Chrome-rendered in its own font with no control over centering or shape, which is exactly why an earlier version of this (a `○` character for "disabled") looked malformed; a purpose-drawn icon per state doesn't have that problem. The five states (`packages/extension/public/badges/{state}-{16,32,48,128}.png`, generated once as static assets, not drawn at runtime) are: `clean` (checkmark), `suspicious`/`threat` (exclamation mark, differentiated by color per `BADGE_COLORS` same as before), `disabled` (pause bars), `gap` (a plain dot, deliberately glyph-free). Regenerate via the same Pillow approach used for these if `BADGE_COLORS` ever changes, same idea as the brand mark exports.
 
 ## Standing rule
 

@@ -100,7 +100,7 @@
   - [ ] Test Layer 1 heuristics with real injection examples
   - [x] Refine alert banner styling: rebuilt on shadcn/ui (React + Alert component), mounted inside a Shadow DOM root so it's isolated from each host platform's own styles/React instance; see DESIGN_SYSTEM.md
   - [ ] Add dismissal persistence
-  - [ ] Implement notification system
+  - [x] Implement notification system: `packages/extension/src/background/notify.ts`'s `maybeNotify()`, called from `handleScanRequest` on both the cache-hit and fresh-scan paths. Fires a `chrome.notifications.create()` for suspicious/threat verdicts, gated by the popup's existing "Notifications" toggle (defaults to enabled). This was previously a gap between the product's own claims and its code: `CHROME_STORE_LISTING.md`'s permission table already described this behavior for the `notifications` permission before it existed. 5 tests in `notify.test.ts`.
 
 - [x] **Protection Gap detection + Gap Report** (not originally scoped here, added via `.wayfinder/` tickets 001-004): when a platform's selector(s) stop matching, the extension pauses scanning on it, shows a distinct badge/popup state, and sends a content-free report to the API (`POST /v1/gap-report`, deduped client-side to once per platform per day). Shipped.
 
@@ -373,6 +373,12 @@
 14. **Gap detector's debounce/max-wait/re-arm state machine: no bug, but no coverage either**
     - Status: Verified correct 2026-11-15, now covered by tests
     - `packages/extension/src/content/gapDetector.ts` runs the actual timing logic `.wayfinder/tickets/005-protection-gap-qa-plan.md` was most worried about verifying (debounce, the max-wait ceiling, re-arming on SPA navigation), and previously had zero automated coverage, only the manual DevTools QA script. Checked by adding a jsdom environment (`// @vitest-environment jsdom`, scoped to this one test file via a per-file pragma, not the whole extension suite) and faking timers: resolves "not in gap" once the selector matches after the debounce window, resolves "in gap" once max-wait elapses with no match, and correctly re-arms on `popstate` to flip back to "not in gap" once the element shows up. No defect found.
+    - Owner: Extension team
+
+15. **Toolbar icon states looked malformed and the "disabled" one was unrecognizable**
+    - Status: Fixed 2026-11-15, reported directly by the user: "the bar that shows on top of the extension... if we deactivate the protection on... we have a circle on a grey box what does that mean"
+    - Was: every toolbar state (`clean`, `suspicious`, `threat`, `disabled`, `gap`) used `chrome.action.setBadgeText()` to overlay a Unicode character (✓, !, ⚠, ○, a blank space) on a small colored rectangle via `setBadgeBackgroundColor()`. Chrome renders that text itself, in its own font, with no control over centering, size, or shape, which is exactly why the "disabled" state (a bare circle, `○`) read as meaningless and why the user described all of them as not centered/malformed.
+    - Fix: replaced badge text entirely with `chrome.action.setIcon()`, swapping the whole toolbar icon per state. Generated 5 states × 4 sizes (16/32/48/128) as real PNGs in `packages/extension/public/badges/` via Pillow (super-sampled 4x then downscaled with LANCZOS for clean edges): `clean` = checkmark, `suspicious`/`threat` = exclamation mark (differentiated by color, same as before), `disabled` = a proper pause icon (two bars, directly answering "what does this mean"), `gap` = a plain dot (kept intentionally glyph-free, per its existing design rationale). `packages/extension/src/background/badge.ts` is now the single place that owns all toolbar-icon state (`setVerdictIcon`, `setGapIcon`, `applyProtectionEnabledBadge`), replacing `background/index.ts`'s old inline `updateBadge`/`updateGapBadge`. Removed the now-fully-dead `BADGE_TEXT` constant from `packages/shared`; `BADGE_COLORS` stays, since it's still the canonical hex source both for the UI and for regenerating these PNGs. Updated `DESIGN_SYSTEM.md`'s Icons section, which previously described (and justified) the old badge-text approach. 7 tests in `badge.test.ts` (rewritten for the new `setIcon`-based API).
     - Owner: Extension team
 
 ### Technical Debt

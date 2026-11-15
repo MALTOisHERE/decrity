@@ -3,18 +3,12 @@
  * Handles scan requests, API communication, caching, and badge updates
  */
 
-import {
-  ScanRequest,
-  ScanResponse,
-  STORAGE_KEYS,
-  BADGE_COLORS,
-  BADGE_TEXT,
-  SupportedPlatform,
-} from '@decrity/shared'
+import { ScanRequest, ScanResponse, STORAGE_KEYS, SupportedPlatform } from '@decrity/shared'
 import { scanContent } from './scanner'
 import { getCachedScan, cacheScanResult } from './cache'
 import { maybeSendGapReport } from './gapReport'
-import { applyProtectionEnabledBadge } from './badge'
+import { applyProtectionEnabledBadge, setGapIcon, setVerdictIcon } from './badge'
+import { maybeNotify } from './notify'
 
 console.log('Decrity background service worker initialized')
 
@@ -54,7 +48,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'UPDATE_BADGE') {
-    updateBadge(message.payload.verdict, sender.tab?.id)
+    setVerdictIcon(message.payload.verdict, sender.tab?.id)
     sendResponse({ success: true })
     return false
   }
@@ -90,7 +84,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { platform, inGap } = message.payload as { platform: SupportedPlatform; inGap: boolean }
     setGapState(platform, inGap)
       .then(() => {
-        updateGapBadge(inGap, sender.tab?.id)
+        setGapIcon(inGap, sender.tab?.id)
         sendResponse({ success: true })
         if (inGap) {
           // Fire-and-forget: the badge/popup already reflect the gap state
@@ -118,7 +112,8 @@ async function handleScanRequest(
     const cached = await getCachedScan(request.content)
     if (cached) {
       console.log('Cache hit for scan')
-      updateBadge(cached.verdict, tabId)
+      setVerdictIcon(cached.verdict, tabId)
+      maybeNotify(cached)
       return cached
     }
 
@@ -128,48 +123,14 @@ async function handleScanRequest(
     // Cache result
     await cacheScanResult(request.content, result)
 
-    // Update badge
-    updateBadge(result.verdict, tabId)
+    // Update toolbar icon
+    setVerdictIcon(result.verdict, tabId)
+    maybeNotify(result)
 
     return result
   } catch (error) {
     console.error('Scan request failed:', error)
     throw error
-  }
-}
-
-/**
- * Update extension badge based on threat level
- */
-function updateBadge(verdict: 'clean' | 'suspicious' | 'threat', tabId?: number) {
-  const color = BADGE_COLORS[verdict.toUpperCase() as keyof typeof BADGE_COLORS]
-  const text = BADGE_TEXT[verdict.toUpperCase() as keyof typeof BADGE_TEXT]
-
-  if (tabId) {
-    chrome.action.setBadgeBackgroundColor({ color, tabId })
-    chrome.action.setBadgeText({ text, tabId })
-  } else {
-    chrome.action.setBadgeBackgroundColor({ color })
-    chrome.action.setBadgeText({ text })
-  }
-}
-
-/**
- * Show or clear the GAP badge state for a tab
- */
-function updateGapBadge(inGap: boolean, tabId?: number) {
-  if (inGap) {
-    if (tabId) {
-      chrome.action.setBadgeBackgroundColor({ color: BADGE_COLORS.GAP, tabId })
-      chrome.action.setBadgeText({ text: BADGE_TEXT.GAP, tabId })
-    } else {
-      chrome.action.setBadgeBackgroundColor({ color: BADGE_COLORS.GAP })
-      chrome.action.setBadgeText({ text: BADGE_TEXT.GAP })
-    }
-  } else if (tabId) {
-    chrome.action.setBadgeText({ text: '', tabId })
-  } else {
-    chrome.action.setBadgeText({ text: '' })
   }
 }
 

@@ -36,7 +36,10 @@ export const THREAT_THRESHOLDS = {
 } as const
 
 /**
- * Extension badge colors
+ * Extension badge colors. These are also the canonical source for the
+ * toolbar icon backgrounds baked into packages/extension/public/badges/*.png
+ * (generated, not drawn at runtime); if a color changes here, those PNGs
+ * need regenerating too.
  */
 export const BADGE_COLORS = {
   CLEAN: '#10b981', // green
@@ -44,17 +47,6 @@ export const BADGE_COLORS = {
   THREAT: '#ef4444', // red
   DISABLED: '#6b7280', // gray
   GAP: '#2F6F78', // deep teal — tool-health signal, never a content-danger or disabled color
-} as const
-
-/**
- * Extension badge text
- */
-export const BADGE_TEXT = {
-  CLEAN: '✓',
-  SUSPICIOUS: '!',
-  THREAT: '⚠',
-  DISABLED: '○',
-  GAP: ' ', // deliberately blank: a bare teal dot on the toolbar, not a character someone has to decode
 } as const
 
 /**

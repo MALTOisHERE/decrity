@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { BADGE_COLORS, BADGE_TEXT } from '@decrity/shared'
-import { applyProtectionEnabledBadge } from './badge'
+import { applyProtectionEnabledBadge, setGapIcon, setVerdictIcon } from './badge'
 
-function stubChrome(tabs: { id?: number }[], hostPermissions: string[]) {
+function stubChrome(tabs: { id?: number }[] = [], hostPermissions: string[] = []) {
+  const setIcon = vi.fn()
   vi.stubGlobal('chrome', {
     runtime: {
       getManifest: vi.fn().mockReturnValue({ host_permissions: hostPermissions }),
@@ -10,53 +10,99 @@ function stubChrome(tabs: { id?: number }[], hostPermissions: string[]) {
     tabs: {
       query: vi.fn().mockResolvedValue(tabs),
     },
-    action: {
-      setBadgeText: vi.fn(),
-      setBadgeBackgroundColor: vi.fn(),
-    },
+    action: { setIcon },
   })
+  return setIcon
 }
+
+const DEFAULT_ICON_PATH = {
+  16: 'icons/icon-16.png',
+  32: 'icons/icon-32.png',
+  48: 'icons/icon-48.png',
+  128: 'icons/icon-128.png',
+}
+
+describe('setVerdictIcon', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('sets the icon matching the verdict, scoped to the given tab', () => {
+    const setIcon = stubChrome()
+    setVerdictIcon('threat', 42)
+    expect(setIcon).toHaveBeenCalledWith({
+      path: { 16: 'badges/threat-16.png', 32: 'badges/threat-32.png', 48: 'badges/threat-48.png', 128: 'badges/threat-128.png' },
+      tabId: 42,
+    })
+  })
+})
+
+describe('setGapIcon', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('shows the gap icon while in a gap', () => {
+    const setIcon = stubChrome()
+    setGapIcon(true, 7)
+    expect(setIcon).toHaveBeenCalledWith({
+      path: { 16: 'badges/gap-16.png', 32: 'badges/gap-32.png', 48: 'badges/gap-48.png', 128: 'badges/gap-128.png' },
+      tabId: 7,
+    })
+  })
+
+  it('reverts to the plain brand icon once the gap resolves', () => {
+    const setIcon = stubChrome()
+    setGapIcon(false, 7)
+    expect(setIcon).toHaveBeenCalledWith({ path: DEFAULT_ICON_PATH, tabId: 7 })
+  })
+})
 
 describe('applyProtectionEnabledBadge', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
   })
 
-  it('sets the disabled badge as the default and on every open platform tab', async () => {
-    stubChrome([{ id: 1 }, { id: 2 }], ['https://chatgpt.com/*'])
+  it('sets the disabled icon as the default and on every open platform tab', async () => {
+    const setIcon = stubChrome([{ id: 1 }, { id: 2 }], ['https://chatgpt.com/*'])
 
     await applyProtectionEnabledBadge(false)
 
-    expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: BADGE_TEXT.DISABLED })
-    expect(chrome.action.setBadgeBackgroundColor).toHaveBeenCalledWith({ color: BADGE_COLORS.DISABLED })
-    expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: BADGE_TEXT.DISABLED, tabId: 1 })
-    expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: BADGE_TEXT.DISABLED, tabId: 2 })
+    const disabledPath = {
+      16: 'badges/disabled-16.png',
+      32: 'badges/disabled-32.png',
+      48: 'badges/disabled-48.png',
+      128: 'badges/disabled-128.png',
+    }
+    expect(setIcon).toHaveBeenCalledWith({ path: disabledPath })
+    expect(setIcon).toHaveBeenCalledWith({ path: disabledPath, tabId: 1 })
+    expect(setIcon).toHaveBeenCalledWith({ path: disabledPath, tabId: 2 })
   })
 
-  it('clears the badge back to neutral on every open tab when re-enabled', async () => {
-    stubChrome([{ id: 1 }], ['https://chatgpt.com/*'])
+  it('reverts to the plain brand icon on every open tab when re-enabled', async () => {
+    const setIcon = stubChrome([{ id: 1 }], ['https://chatgpt.com/*'])
 
     await applyProtectionEnabledBadge(true)
 
-    expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: '' })
-    expect(chrome.action.setBadgeText).toHaveBeenCalledWith({ text: '', tabId: 1 })
-    expect(chrome.action.setBadgeBackgroundColor).not.toHaveBeenCalled()
+    expect(setIcon).toHaveBeenCalledWith({ path: DEFAULT_ICON_PATH })
+    expect(setIcon).toHaveBeenCalledWith({ path: DEFAULT_ICON_PATH, tabId: 1 })
   })
 
   it('skips tabs with no id', async () => {
-    stubChrome([{}], ['https://chatgpt.com/*'])
+    const setIcon = stubChrome([{}], ['https://chatgpt.com/*'])
 
     await applyProtectionEnabledBadge(false)
 
     // Only the one extension-wide default call, no per-tab call for the id-less tab.
-    expect(chrome.action.setBadgeText).toHaveBeenCalledTimes(1)
+    expect(setIcon).toHaveBeenCalledTimes(1)
   })
 
   it('skips the tab query entirely when there are no declared host permissions', async () => {
-    stubChrome([{ id: 1 }], [])
+    const setIcon = stubChrome([{ id: 1 }], [])
 
     await applyProtectionEnabledBadge(false)
 
     expect(chrome.tabs.query).not.toHaveBeenCalled()
+    expect(setIcon).toHaveBeenCalledTimes(1)
   })
 })
