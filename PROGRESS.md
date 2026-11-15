@@ -114,7 +114,7 @@
 
 ### Todo
 - [ ] **Extension Features** (Week 3-4)
-  - [ ] Add onboarding flow (3-step interactive demo)
+  - [x] Add onboarding flow (3-step interactive demo): `packages/extension/src/onboarding/` (new Vite entry, wired into `vite.config.ts`'s `rollupOptions.input` and opened via the previously-commented-out `chrome.tabs.create()` call in `background/index.ts`'s `onInstalled` handler). Step 1 explains what gets caught with a concrete example snippet, step 2 shows the real Switch component in its on-by-default state for Privacy Mode, step 3 renders the actual `Banner` component (not a mockup) with a realistic demo `ScanResponse`, so the preview is pixel-identical to the real alert. Verified visually via the Vite dev server (`localhost:5175/src/onboarding/index.html`): all 3 steps, Next/Back, and the finish action render correctly.
   - [ ] Settings persistence improvements
   - [x] Badge icon state management: toolbar badge now reflects a "disabled" state when the Protection toggle is off (see Known Issue #10). Verdict/gap states were already handled.
   - [ ] Keyboard shortcuts (optional)

@@ -218,8 +218,7 @@ chrome.runtime.onInstalled.addListener(details => {
       [STORAGE_KEYS.PRIVACY_MODE]: true,
     })
 
-    // Open onboarding page
-    // chrome.tabs.create({ url: 'onboarding.html' })
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/onboarding/index.html') })
   } else if (details.reason === 'update') {
     console.log('Decrity updated to version', chrome.runtime.getManifest().version)
   }

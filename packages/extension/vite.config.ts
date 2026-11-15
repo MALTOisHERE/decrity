@@ -16,6 +16,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: path.resolve(__dirname, 'src/popup/index.html'),
+        onboarding: path.resolve(__dirname, 'src/onboarding/index.html'),
       },
     },
   },
