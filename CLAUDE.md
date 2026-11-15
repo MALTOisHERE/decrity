@@ -227,8 +227,7 @@ pnpm --filter @decrity/extension build
 Alerts are injected via `content/injector.ts`:
 - Non-blocking banners
 - Plain-language warnings
-- Auto-dismiss for "suspicious" (10s)
-- Persistent for "threat"
+- Persistent until the user dismisses it, for every verdict (suspicious or threat alike; there is no auto-dismiss timer, by explicit user request 2026-11-15 — a banner disappearing on its own, mid-read, was worse than leaving it up)
 
 ---
 

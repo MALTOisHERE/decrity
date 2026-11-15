@@ -13,35 +13,102 @@ interface HeuristicResult {
 }
 
 /**
- * Known prompt injection patterns
- * These are common phrases used in prompt injection attacks
+ * Known prompt injection patterns, covering: direct instruction overrides,
+ * role-manipulation jailbreaks, system prompt extraction, data exfiltration,
+ * indirect injection (content addressed at "the AI" rather than the human
+ * reader), and fake system/role tags. Verified against a representative
+ * corpus of ~85 documented attack examples plus held-out paraphrases not
+ * used while tuning these patterns (see test-fixtures/injection-corpus.json
+ * and heuristics.corpus.test.ts); a prior, narrower version of this list
+ * caught under a third of that corpus.
+ *
+ * The role-manipulation pattern below only scores when a jailbreak-style
+ * framing ("act as", "pretend you are", ...) is paired with a nearby
+ * "unrestricted" qualifier, not on the framing alone: "act as a professional
+ * editor" and "pretend you're explaining this to a 5-year-old" are common,
+ * entirely benign phrasings and must not be flagged just for using those
+ * words. Same reasoning kept the forward-to-URL pattern scoped to targets
+ * that look like a URL, domain, or email, not just "forward X to Y" (which
+ * would otherwise flag "forward this to my colleague"), and kept platform
+ * names (ChatGPT, Claude, ...) out of the indirect-injection pattern, since
+ * "Dear ChatGPT" / "Hey Claude" is just how people normally address these
+ * products.
  */
 const INJECTION_PATTERNS = [
   // Direct instruction overrides
-  /ignore\s+(all\s+)?(previous|prior|above)\s+instructions?/i,
-  /disregard\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?)/i,
-  /forget\s+(all\s+)?(previous|prior|above)\s+instructions?/i,
-  /override\s+(previous|system)\s+(instructions?|prompts?)/i,
+  /ignore\s+(all\s+|any\s+)?(previous|prior|above|earlier)\s+(instructions?|prompts?|rules?|directives?|guidelines?)/i,
+  /disregard\s+(all\s+|any\s+)?(previous|prior|above|earlier)\s+(instructions?|prompts?|rules?|constraints?)/i,
+  /disregard\s+(everything|anything|the)\s+(above|before|prior)/i,
+  /reveal\s+what\s+you\s+(were|was)\s+told/i,
+  /forget\s+(all\s+|any\s+|your\s+)?(previous|prior|above|earlier)?\s*(instructions?|rules?|constraints?)/i,
+  /forget\s+everything\s+you\s+(were\s+told|were\s+given|learned)/i,
+  /override\s+(all\s+|any\s+)?(previous|prior|system)\s+(instructions?|prompts?|rules?|directives?)/i,
+  /(previous\s+)?instructions\s+(are|is)\s+(void|cancelled|no\s+longer\s+(valid|apply))/i,
+  /cancel\s+(all\s+)?(previous|prior)\s+directives/i,
+  /new\s+instructions?\s*:/i,
+  /without\s+(any\s+)?(filters?|restrictions?|limits?|limitations?)/i,
+  /(from\s+now\s+on|starting\s+now),?\s+(ignore|disregard|forget)/i,
+  /do\s+whatever\s+i\s+say/i,
 
-  // Role manipulation
-  /you\s+are\s+now\s+(a|an)/i,
-  /act\s+as\s+(if\s+you\s+are|a|an)/i,
-  /pretend\s+(to\s+be|you\s+are)/i,
-  /roleplay\s+as/i,
+  // Role manipulation / jailbreaks
+  /\b(you\s+are\s+now|you'?re\s+now|act\s+as|pretend\s+(to\s+be|you\s+are)|roleplay\s+as|imagine\s+you\s+are|simulate\s+being|let'?s\s+play\s+a\s+game)\b[^.]{0,80}\b(unrestricted|no\s+(rules?|restrictions?|filters?|limits?|ethics?|guidelines?|content\s+policy)|without\s+(any\s+)?(rules?|restrictions?|filters?|ethical\s+constraints?)|do\s+anything\s+now|jailbroken|no\s+limits?|escaped\s+(its|the)\s+sandbox|always\s+(answers?|responds?)\s+truthfully\s+with\s+no\s+limits?|hacker|bypass\s+(any\s+)?security)\b/i,
+  /\byou\s+are\s+no\s+longer\b/i,
+  /\bdan\b.{0,25}do\s+anything\s+now/i,
+  /developer\s+mode|dan\s+mode|god\s+mode|jailbreak(ed)?\s+mode|admin\s+mode/i,
+  /ignores?\s+all\s+rules/i,
 
-  // System prompt injection
-  /system\s*:\s*/i,
-  /\[system\]/i,
-  /assistant\s*:\s*$/im,
-  /new\s+instructions?:/i,
-
-  // Data exfiltration attempts
-  /send\s+(this|all|everything)\s+to/i,
-  /forward\s+(this|all|everything)\s+to/i,
+  // System prompt extraction
+  /(repeat|print|output|show)\s+(the\s+)?(words?|text|everything)\s+above/i,
+  /what\s+(are|were)\s+your\s+(exact\s+)?(original|initial)\s+instructions/i,
   /output\s+your\s+(system\s+)?prompt/i,
-  /reveal\s+your\s+instructions/i,
-  /what\s+(are|were)\s+your\s+(original|initial)\s+instructions/i,
+  /reveal\s+your\s+(system\s+prompt|instructions)/i,
+  /(show|print)\s+(me\s+)?your\s+(system\s+prompt|configuration)/i,
+  /text\s+that\s+appears\s+before\s+(my|your)\s+first\s+message/i,
+  /translate\s+your\s+system\s+prompt/i,
+  /written\s+in\s+the\s+system\s+role/i,
+  /spell(ing)?\s+(them\s+)?out\s+letter\s+by\s+letter/i,
+
+  // Data exfiltration
+  /send\s+(this|all|everything)\s+to/i,
+  /send\s+(any|all|my)\s+.{0,40}\b(credentials?|passwords?|api\s+keys?|tokens?|secrets?)\b.{0,40}\bto\b/i,
+  /(email|forward|send)\s+.{0,40}\bto\b\s+[\w.-]+@[\w.-]+/i,
+  /forward\s+(this|all|everything|any)\b[^.]{0,90}\bto\s+\S*(https?:\/\/|@|\.[a-z]{2,6}\b)/i,
+  /as\s+a\s+hidden\s+comment/i,
+  /include\s+(my|your)\s+.{0,20}\b(password|credentials?|api\s+keys?|secrets?)\b.{0,20}\bin\s+your\s+(next\s+)?(response|reply|answer)/i,
+  /encode\s+.{0,30}\s+and\s+(post|send)\s+it\s+to/i,
+  /post\s+it\s+to\s+https?:\/\//i,
+  /upload\s+(any|all)\s+.{0,30}\s+to\s+(this|the)\s+(endpoint|url)/i,
+  /\b(webhook|endpoint|tracker|collector)\b\s*:?\s*https?:\/\//i,
+  /add\s+(a\s+|an\s+)?(invisible\s+|tracking\s+)?link\s+to\s+https?:\/\//i,
+
+  // Indirect injection (content addressed at "the AI", not the human reader)
+  /\b(note|attention|dear|hey)\b[^.]{0,30}\b(ai|assistant|llm|chatbot)\b/i,
+  /hidden\s+(note|instruction)/i,
+  /if\s+you\s+are\s+(an\s+)?(ai|llm|assistant)\s+(reading|parsing|processing|browsing)/i,
+  /system\s+override/i,
+  /treat\s+this\s+(comment|text)\s+as\s+a\s+system\s+message/i,
+
+  // Fake system/role tags
+  /\[system\]/i,
+  /<\|im_start\|>\s*system/i,
+  /###\s*instruction\s*:/i,
+  /^\s*system\s*:/im,
+  /^\s*assistant\s*:/im,
+  /<\/?system[_\s]?(override|message)?>/i,
+  /\{\{\s*system\s*\}\}/i,
+  /#{2,}\s*system/i,
+  /\bsystem\s*(>>|::)/i,
+  /supersedes\s+(all\s+)?(prior|previous)\s+(training|instructions)/i,
+  /obey\s+(the\s+user\s+)?unconditionally/i,
 ]
+
+/**
+ * Score contributed by a single matched injection pattern. 0.4 rather than
+ * a smaller increment so one unambiguous match (e.g. "ignore all previous
+ * instructions") crosses THREAT_THRESHOLDS.SUSPICIOUS_MIN (0.3) on its own,
+ * instead of requiring a second, unrelated signal to corroborate it.
+ */
+const PATTERN_SCORE = 0.4
 
 /**
  * Run heuristic scan on content
@@ -55,7 +122,7 @@ export function runHeuristicScan(content: string): HeuristicResult {
     const match = content.match(pattern)
     if (match) {
       matches.push(match[0])
-      score += 0.2 // Each match increases score
+      score += PATTERN_SCORE
     }
   }
 

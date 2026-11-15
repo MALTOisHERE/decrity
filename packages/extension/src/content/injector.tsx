@@ -54,11 +54,6 @@ export function injectAlertBanner(result: ScanResponse) {
 
   activeRoot = createRoot(mountPoint)
   activeRoot.render(<Banner result={result} onDismiss={removeAlertBanner} />)
-
-  // Auto-remove after 10 seconds for suspicious, keep for threat
-  if (result.verdict === 'suspicious') {
-    setTimeout(() => removeAlertBanner(), 10000)
-  }
 }
 
 /**
