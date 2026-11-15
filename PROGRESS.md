@@ -132,7 +132,7 @@
   - [ ] User guide
   - [ ] Privacy policy: first draft exists (`PRIVACY.md`), matches DOC.md Section 10's data handling table, but not legally reviewed and not ready to publish or link from the Chrome Web Store listing
   - [ ] Terms of service
-  - [ ] Chrome Web Store listing copy
+  - [x] Chrome Web Store listing copy: drafted in `CHROME_STORE_LISTING.md` (name, short/detailed description, category, single-purpose statement, per-permission justifications). Not submittable yet: `PRIVACY.md` still needs legal review before it can be linked, and no screenshots exist.
   - [ ] Screenshots and demo video
 
 - [ ] **Deployment** (Week 8)
@@ -327,6 +327,12 @@
    - Status: Fixed 2026-11-15
    - Was: `packages/extension/src/background/scanner.ts`'s `scanContent()` read the setting as `const { privacyMode } = await chrome.storage.sync.get(STORAGE_KEYS.PRIVACY_MODE)`. `chrome.storage.sync.get(key)` resolves to an object keyed by the literal key string (`decrity_privacy_mode`), not a property named `privacyMode`, so the destructure always evaluated to `undefined`. Every scan ran the full API/ML path (`runFullScan`), even for users who had Privacy Mode on, contradicting the "Layer 1 only in Privacy Mode" guarantee in `CLAUDE.md`. Found while writing the privacy-mode-toggle unit test below, not from a user report.
    - Fix: read the value by its actual key (`stored[STORAGE_KEYS.PRIVACY_MODE]`). Covered by `packages/extension/src/background/scanner.test.ts`, which asserts no `fetch` call happens when Privacy Mode is on.
+   - Owner: Extension team
+
+7. **Unused `scripting` permission in manifest.json**
+   - Status: Fixed 2026-11-15
+   - Was: `manifest.json` declared the `scripting` permission, but `chrome.scripting` is never called anywhere in the codebase (confirmed by search). An unused permission violates `CLAUDE.md`'s own "Minimal Permissions" rule and is a real risk during Chrome Web Store review, which checks that every requested permission is actually exercised by the code. Found while drafting `CHROME_STORE_LISTING.md`'s per-permission justification table, writing a justification for a permission that turned out to do nothing.
+   - Fix: removed `scripting` from `manifest.json`'s `permissions` array. Extension still builds clean with no type errors, and all 17 extension unit tests still pass.
    - Owner: Extension team
 
 ### Technical Debt
