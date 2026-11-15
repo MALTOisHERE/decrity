@@ -14,6 +14,7 @@ import {
 import { scanContent } from './scanner'
 import { getCachedScan, cacheScanResult } from './cache'
 import { maybeSendGapReport } from './gapReport'
+import { applyProtectionEnabledBadge } from './badge'
 
 console.log('Decrity background service worker initialized')
 
@@ -73,6 +74,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     getGapState()
       .then(state => sendResponse({ inGap: state[platform] ?? false }))
+      .catch(error => sendResponse({ error: error.message }))
+    return true
+  }
+
+  if (message.type === 'SET_PROTECTION_ENABLED') {
+    const { enabled } = message.payload as { enabled: boolean }
+    applyProtectionEnabledBadge(enabled)
+      .then(() => sendResponse({ success: true }))
       .catch(error => sendResponse({ error: error.message }))
     return true
   }

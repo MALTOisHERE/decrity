@@ -61,6 +61,12 @@ function App() {
 
     try {
       await chrome.storage.sync.set(buildSettingsUpdate(newSettings, key))
+      if (key === 'protectionEnabled') {
+        await chrome.runtime.sendMessage({
+          type: 'SET_PROTECTION_ENABLED',
+          payload: { enabled: value },
+        })
+      }
     } catch (error) {
       console.error('Failed to save setting:', error)
     }

@@ -116,7 +116,7 @@
 - [ ] **Extension Features** (Week 3-4)
   - [ ] Add onboarding flow (3-step interactive demo)
   - [ ] Settings persistence improvements
-  - [ ] Badge icon state management
+  - [x] Badge icon state management: toolbar badge now reflects a "disabled" state when the Protection toggle is off (see Known Issue #10). Verdict/gap states were already handled.
   - [ ] Keyboard shortcuts (optional)
   - [ ] Context menu integration (optional)
 
@@ -346,6 +346,12 @@
    - Was: `popup/App.tsx` lets the user flip a "Protection" switch, and shows "Protected"/"Disabled" on the popup's own badge accordingly, but `protectionEnabled` was never read anywhere in `content/index.ts`, `scanner.ts`, or `background/index.ts`. Scanning (paste/submit/file-upload observers, the API calls they can trigger) ran exactly the same whether the switch was on or off. A user turning protection off, expecting monitoring to stop (e.g. before pasting something sensitive), got no actual change in behavior, directly contradicting what the popup's own badge told them. Found by grepping for every read site of `protectionEnabled` and finding none outside the popup itself.
    - Fix: added `packages/extension/src/content/protection.ts`'s `isProtectionEnabled()`, read fresh (not cached) at the top of `content/index.ts`'s `scanAndAlert()`, alongside the existing Protection Gap check, so scanning is skipped entirely while the toggle is off. Covered by `protection.test.ts` (3 tests): defaults to enabled with no saved settings, and reflects both a saved `true` and `false` value.
    - Owner: Extension team
+
+10. **Toolbar badge never showed a "disabled" state**
+    - Status: Fixed 2026-11-15
+    - Was: `BADGE_COLORS.DISABLED` and `BADGE_TEXT.DISABLED` were already defined in `packages/shared/src/constants/index.ts`, but never referenced anywhere in the extension (confirmed by search) — a strong signal this was intended but never wired up. Once Known Issue #9 was fixed and the Protection toggle actually started gating scanning, the toolbar badge still had no way to reflect "off," only ever showing the last scan verdict (or nothing, if never scanned).
+    - Fix: added `packages/extension/src/background/badge.ts`'s `applyProtectionEnabledBadge()`, wired through a new `SET_PROTECTION_ENABLED` message sent from the popup whenever the toggle changes. Updates both the extension-wide default badge and every already-open platform tab explicitly (a tab-specific badge from an earlier scan verdict would otherwise keep overriding the default), reading the tab list from `chrome.runtime.getManifest().host_permissions` rather than a second hardcoded URL list. Covered by `badge.test.ts` (4 tests).
+    - Owner: Extension team
 
 ### Technical Debt
 - [x] Add unit tests (extension, API): extension covers heuristics, cache expiration, privacy mode toggle (see Testing & QA above). API covers `packages/api/src/services/scanner.test.ts` (the ML-fails-open-to-clean regression from Known Issue #5). Fixing the api package's `tsconfig.json` to exclude `*.test.ts` surfaced that `tsc` had no `noEmit` set, so test files were compiling straight into `dist/` and shipping in the production Docker image; excluded now. `database.ts`'s pure logic (`getUserStats`'s streak/verdict-breakdown math, `getScanHistory`'s pagination) is now covered too, in `packages/api/src/services/database.test.ts`, by mocking `@prisma/client` directly rather than hitting a real database. `packages/api/src/routes/waitlist.test.ts` exercises the route itself via Fastify's `inject()`; writing it found a real bug: the email schema's pattern is `^...$`-anchored, so any value with incidental whitespace (e.g. browser-autofill padding) failed validation before the handler's own `.trim()` ever ran. Fixed with a `preValidation` hook that trims before Fastify's schema check, not after. The other four routes (`scan`, `report`, `user`, `gap-report`) are thin pass-throughs to already-tested services and still untested at the route level.
