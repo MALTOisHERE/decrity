@@ -25,11 +25,21 @@ export async function waitlistRoute(server: FastifyInstance) {
         },
       },
     },
+    // Trims before the schema's pattern runs, not after: the pattern is
+    // anchored (^...$), so a value with incidental whitespace (e.g. from
+    // browser autofill) would otherwise fail validation before the handler
+    // ever got a chance to clean it up.
+    preValidation: (request, _reply, done) => {
+      if (typeof request.body?.email === 'string') {
+        request.body.email = request.body.email.trim()
+      }
+      done()
+    },
   }, async (request, reply) => {
     const { email } = request.body
 
     try {
-      await persistWaitlistSignup(email.trim().toLowerCase())
+      await persistWaitlistSignup(email.toLowerCase())
 
       const response: WaitlistAPI.Response = { joined: true }
       return response
