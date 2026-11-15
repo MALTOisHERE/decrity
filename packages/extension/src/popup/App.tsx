@@ -11,12 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-
-interface Settings {
-  protectionEnabled: boolean
-  privacyMode: boolean
-  notificationsEnabled: boolean
-}
+import { buildSettingsUpdate, type Settings } from './settings'
 
 function App() {
   const [settings, setSettings] = useState<Settings>({
@@ -65,9 +60,7 @@ function App() {
     setSettings(newSettings)
 
     try {
-      await chrome.storage.sync.set({
-        [STORAGE_KEYS.SETTINGS]: newSettings,
-      })
+      await chrome.storage.sync.set(buildSettingsUpdate(newSettings, key))
     } catch (error) {
       console.error('Failed to save setting:', error)
     }
