@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Decrity ML Service",
     description="Prompt injection detection using ML",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # CORS
@@ -32,6 +32,7 @@ app.add_middleware(
 
 # Initialize classifier (lazy loading)
 classifier = None
+
 
 def get_classifier():
     global classifier
@@ -88,11 +89,7 @@ async def classify_content(request: ClassifyRequest):
 
         reason = ml_result["reason"] or heuristic_result["reason"]
 
-        return ClassifyResponse(
-            verdict=verdict,
-            score=final_score,
-            reason=reason
-        )
+        return ClassifyResponse(verdict=verdict, score=final_score, reason=reason)
 
     except Exception as e:
         logger.error(f"Classification failed: {e}")
@@ -101,4 +98,5 @@ async def classify_content(request: ClassifyRequest):
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

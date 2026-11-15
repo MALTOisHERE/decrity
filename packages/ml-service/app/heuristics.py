@@ -4,7 +4,7 @@ Rule-based pattern matching
 """
 
 import re
-from typing import Dict, Literal
+from typing import Dict
 
 # Known injection patterns
 INJECTION_PATTERNS = [
@@ -58,11 +58,7 @@ def run_heuristic_scan(content: str) -> Dict:
     # Generate reason
     reason = generate_reason(verdict, matches)
 
-    return {
-        "verdict": verdict,
-        "score": score,
-        "reason": reason
-    }
+    return {"verdict": verdict, "score": score, "reason": reason}
 
 
 def has_hidden_content(content: str) -> bool:
@@ -72,7 +68,7 @@ def has_hidden_content(content: str) -> bool:
         return True
 
     # Zero-width characters
-    zero_width = ["\u200B", "\u200C", "\u200D", "\uFEFF"]
+    zero_width = ["\u200b", "\u200c", "\u200d", "\ufeff"]
     for char in zero_width:
         if char in content:
             return True
@@ -86,6 +82,8 @@ def generate_reason(verdict: str, matches: list) -> str:
         return "No suspicious patterns detected"
 
     if verdict == "suspicious":
-        return "This content contains patterns that may be attempting to manipulate the AI"
+        return (
+            "This content contains patterns that may be attempting to manipulate the AI"
+        )
 
     return "This content likely contains hidden instructions trying to hijack the AI's behavior"

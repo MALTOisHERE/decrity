@@ -41,12 +41,17 @@ class PromptInjectionClassifier:
         # The heuristics will handle the heavy lifting until model is trained
 
         if self.model is None:
-            # Fallback to basic scoring
-            return {
-                "verdict": "suspicious",
-                "score": 0.5,
-                "reason": "ML classifier not yet trained - using heuristic analysis"
-            }
+            # Fallback to basic scoring. reason is deliberately empty, not a
+            # placeholder string: main.py's classify_content() does
+            # `ml_result["reason"] or heuristic_result["reason"]`, which only
+            # works as the graceful-degrade fallback it's meant to be if this
+            # stays falsy. A non-empty placeholder here would always win that
+            # `or`, so every real detection's actual reason would get
+            # replaced by this internal-sounding message instead of showing
+            # the user why their content was flagged, violating CLAUDE.md's
+            # plain-language rule (no "classifier" in user-facing text) on
+            # every single suspicious/threat result.
+            return {"verdict": "suspicious", "score": 0.5, "reason": ""}
 
         # Future implementation:
         # inputs = self.tokenizer(content, return_tensors="pt", truncation=True, max_length=512)
@@ -60,5 +65,5 @@ class PromptInjectionClassifier:
         return {
             "verdict": "suspicious",
             "score": 0.5,
-            "reason": "Potential prompt injection detected"
+            "reason": "Potential prompt injection detected",
         }

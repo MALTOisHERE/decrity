@@ -1,0 +1,7 @@
+# Dev-only tools (testing, linting). Not installed in the Docker image —
+# see Dockerfile, which only copies requirements.txt — so these never add
+# weight to the production image.
+-r requirements.txt
+pytest==9.2.0
+httpx==0.27.2
+ruff==0.15.13

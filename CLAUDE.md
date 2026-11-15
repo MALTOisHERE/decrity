@@ -60,7 +60,7 @@ pnpm format          # Format all code
 pnpm format:check    # Check formatting
 ```
 
-**No automated tests exist yet.** The root `pnpm test` script (`turbo run test`) is wired up, but no package defines a `test` script, so it's a no-op. Don't assume a test suite exists when verifying changes; rely on `pnpm lint`, `pnpm build`, and manual testing (see Testing Requirements below) instead.
+**Automated tests exist for `shared`, `api`, `extension` (Vitest) and `ml-service` (pytest), added 2026-11-15.** Root `pnpm test` (`turbo run test`) runs the three JS/TS suites; `ml-service` isn't wired into that yet since it's a separate Python toolchain (see its own `README.md` for `uv`/`pytest`/`ruff`). Coverage is intentionally narrow: pure logic with no live DOM/browser/database dependency (heuristics, cache expiration, storage-key wiring, Fastify routes with mocked services, the ML service's heuristic/classify-combination logic). `dashboard` and `landing` still have none. Don't assume full coverage; still rely on `pnpm lint`, `pnpm build`, and manual testing (see Testing Requirements below) for anything DOM-, platform-, or database-dependent.
 
 ### Docker Management
 ```bash
@@ -271,13 +271,16 @@ ScanResult {
 ## ML Service Development
 
 ### Python Environment
+Uses `uv`, not plain `pip`/`venv`: faster, and pulls prebuilt wheels instead of trying to compile `pydantic-core` from source.
 ```bash
 cd packages/ml-service
-python -m venv .venv
-source .venv/bin/activate  # Unix/Mac
+uv venv .venv
+uv pip install --python .venv -r requirements-dev.txt  # tests/lint; use requirements.txt alone for just running the service
 .venv\Scripts\activate     # Windows
-pip install -r requirements.txt
+source .venv/bin/activate  # Unix/Mac
 ```
+
+Testing and linting: `pytest`, `ruff check .`, `ruff format .` (see that package's own `README.md`).
 
 ### Detection Layers
 
