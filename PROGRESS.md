@@ -336,7 +336,7 @@
    - Owner: Extension team
 
 ### Technical Debt
-- [x] Add unit tests (extension, API): extension covers heuristics, cache expiration, privacy mode toggle (see Testing & QA above). API covers `packages/api/src/services/scanner.test.ts` (the ML-fails-open-to-clean regression from Known Issue #5). Fixing the api package's `tsconfig.json` to exclude `*.test.ts` surfaced that `tsc` had no `noEmit` set, so test files were compiling straight into `dist/` and shipping in the production Docker image; excluded now. `database.ts`/routes still untested (need a real or mocked Prisma client, not done this pass).
+- [x] Add unit tests (extension, API): extension covers heuristics, cache expiration, privacy mode toggle (see Testing & QA above). API covers `packages/api/src/services/scanner.test.ts` (the ML-fails-open-to-clean regression from Known Issue #5). Fixing the api package's `tsconfig.json` to exclude `*.test.ts` surfaced that `tsc` had no `noEmit` set, so test files were compiling straight into `dist/` and shipping in the production Docker image; excluded now. `database.ts`'s pure logic (`getUserStats`'s streak/verdict-breakdown math, `getScanHistory`'s pagination) is now covered too, in `packages/api/src/services/database.test.ts`, by mocking `@prisma/client` directly rather than hitting a real database. Route handlers (`routes/*.ts`) still untested.
 - [ ] Add integration tests
 - [ ] Improve error handling
 - [ ] Add logging infrastructure
